@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Ramdank</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_all_series">allSeries</string>
+    <string name="title_activity_all_channels">allChannels</string>
+    <string name="title_activity_channel">channel</string>
+    <string name="title_activity_favorite_channels">favoriteChannels</string>
+    <string name="title_activity_favorite_series">favoriteSeries</string>
+    <string name="title_activity_series">Series</string>
+    <string name="title_activity_times">times</string>
+
+</resources>
