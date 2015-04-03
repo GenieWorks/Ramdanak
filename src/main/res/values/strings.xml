@@ -11,5 +11,6 @@
     <string name="title_activity_favorite_series">favoriteSeries</string>
     <string name="title_activity_series">Series</string>
     <string name="title_activity_times">times</string>
+    <string name="title_activity_android_tab_layout">AndroidTabLayoutActivity</string>
 
 </resources>

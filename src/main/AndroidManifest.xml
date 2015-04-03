@@ -44,6 +44,10 @@
             android:name=".times"
             android:label="@string/title_activity_times" >
         </activity>
+        <activity
+            android:name=".AndroidTabLayoutActivity"
+            android:label="@string/title_activity_android_tab_layout">
+        </activity>
     </application>
 
 </manifest>

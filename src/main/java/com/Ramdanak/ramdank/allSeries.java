@@ -3,7 +3,6 @@ package com.Ramdanak.ramdank;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
-import android.graphics.Movie;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -11,10 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
-import com.Ramdanak.ramdank.R;
-
 import java.util.ArrayList;
-import java.util.List;
 
 /*
     shows list of all programmes and series.
@@ -45,6 +41,15 @@ public class allSeries extends Activity {
         pDialog.setMessage("Loading...");
         pDialog.show();
         //add items to the list view
+        initializeListView();
+
+
+        hidePDialog();
+    }
+    /*
+        initialize listView data
+     */
+    private void initializeListView() {
         //first one
         seriesInfo tempSeries=new seriesInfo();
         tempSeries.setRating(4.5);
@@ -61,8 +66,6 @@ public class allSeries extends Activity {
         tempSeries2.setImg(myLogo);
         seriesList.add(tempSeries2);
         adapter.notifyDataSetChanged();
-
-        hidePDialog();
     }
 
 
