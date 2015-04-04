@@ -22,20 +22,8 @@
             android:label="@string/title_activity_all_series" >
         </activity>
         <activity
-            android:name=".allChannels"
-            android:label="@string/title_activity_all_channels" >
-        </activity>
-        <activity
             android:name=".channel"
             android:label="@string/title_activity_channel" >
-        </activity>
-        <activity
-            android:name=".favoriteChannels"
-            android:label="@string/title_activity_favorite_channels" >
-        </activity>
-        <activity
-            android:name=".favoriteSeries"
-            android:label="@string/title_activity_favorite_series" >
         </activity>
         <activity
             android:name=".Series"
