@@ -1,1 +1,1 @@
-Android application for Ramdan series and pregames. 
+Android application for Ramdan series and programmes.
