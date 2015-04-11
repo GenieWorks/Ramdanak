@@ -1,4 +1,4 @@
-package com.Ramdanak.ramdank;
+package com.Ramdanak.ramdank.DbHelper;
 
 /**
  * Schema of the database
@@ -19,6 +19,8 @@ public final class TvScheduleDatabase {
         public static final String COLUMN_NAME_LOGO = "logo";
         public static final String COLUMN_NAME_RATING_COUNT = "rating_count";
         public static final String COLUMN_NAME_RATING = "rating";
+
+
     }
 
     /**
@@ -54,8 +56,10 @@ public final class TvScheduleDatabase {
     public static abstract class TvRecord {
         public static final String TABLE_NAME = "TV_RECORD";
 
+        public static final String COLUMN_NAME_ID = "id";
         public static final String COLUMN_NAME_CHANNEL_ID = "channel_id";
         public static final String COLUMN_NAME_SHOW_ID = "show_id";
-        public static final String COLUMN_NAME_TIME = "time";
+        public static final String COLUMN_NAME_START_TIME = "start_time";
+        public static final String COLUMN_NAME_END_TIME = "end_time";
     }
 }
