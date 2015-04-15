@@ -6,7 +6,7 @@ package com.Ramdanak.ramdank.model;
 public class TvChannel {
     private int id;
     private String name;
-    private int logo;
+    private byte[] logo;
     private double rating;
     private int rating_count;
     private String frequency;
@@ -17,7 +17,7 @@ public class TvChannel {
 
     }
 
-    public TvChannel(int id, String name, int logo, double rating, int rating_count, String frequency, String code, int vertical) {
+    public TvChannel(int id, String name, byte[] logo, double rating, int rating_count, String frequency, String code, int vertical) {
         this.id = id;
         this.name = name;
         this.logo = logo;
@@ -28,7 +28,7 @@ public class TvChannel {
         this.vertical = vertical;
     }
 
-    public TvChannel(String name, int logo, String frequency, int rating_count, double rating, int vertical, String code) {
+    public TvChannel(String name, byte[] logo, String frequency, int rating_count, double rating, int vertical, String code) {
         this.name = name;
         this.logo = logo;
         this.frequency = frequency;
@@ -46,7 +46,7 @@ public class TvChannel {
         return name;
     }
 
-    public int getLogo() {
+    public byte[] getLogo() {
         return logo;
     }
 
@@ -78,7 +78,7 @@ public class TvChannel {
         this.name = name;
     }
 
-    public void setLogo(int logo) {
+    public void setLogo(byte[] logo) {
         this.logo = logo;
     }
 

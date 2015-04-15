@@ -5,17 +5,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.Bitmap;
-import android.util.Log;
+import android.nfc.Tag;
 
+import com.Ramdanak.ramdank.channel;
 import com.Ramdanak.ramdank.model.TvChannel;
+import com.Ramdanak.ramdank.model.TvRecord;
 import com.Ramdanak.ramdank.model.TvShow;
 
-import java.nio.ByteBuffer;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -41,11 +40,7 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
                     TvScheduleDatabase.TvShows.COLUMN_NAME_TRAILER + TEXT_TYPE + COMMA_SEP +
                     TvScheduleDatabase.TvShows.COLUMN_NAME_LOGO + INT_TYPE + COMMA_SEP +
                     TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT + INT_TYPE + COMMA_SEP +
-                    TvScheduleDatabase.TvShows.COLUMN_NAME_RATING + DOUBLE_TYPE + COMMA_SEP +
-
-                    FOREIGN_KEY + TvScheduleDatabase.TvShows.COLUMN_NAME_LOGO + FOREIGN_KEY2 +
-                    TvScheduleDatabase.Images.TABLE_NAME + "(" + TvScheduleDatabase.Images.COLUMN_NAME_ID
-                    + ")" +
+                    TvScheduleDatabase.TvShows.COLUMN_NAME_RATING + DOUBLE_TYPE +
                     " )";
 
     private static final String SQL_CREATE_TV_CHANNELS =
@@ -62,18 +57,9 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
                     TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO + INT_TYPE + COMMA_SEP +
                     TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT + INT_TYPE + COMMA_SEP +
                     TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING + DOUBLE_TYPE +
-
-                    FOREIGN_KEY + TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO + FOREIGN_KEY2 +
-                    TvScheduleDatabase.Images.TABLE_NAME + "(" + TvScheduleDatabase.Images.COLUMN_NAME_ID
-                    + ")" +
-
                     " )";
 
-    private static final String SQL_CREATE_IMAGES =
-            "CREATE TABLE " + TvScheduleDatabase.Images.TABLE_NAME + " (" +
-                    TvScheduleDatabase.Images.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                    TvScheduleDatabase.Images.COLUMN_NAME_LOGO + BLOB_TYPE +
-                    " )";
+
 
     private static final String SQL_CREATE_TV_RECORDS =
             "CREATE TABLE " + TvScheduleDatabase.TvRecord.TABLE_NAME + " (" +
@@ -96,9 +82,6 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
     private static final String SQL_DELETE_TV_RECORD=
             "DROP TABLE IF EXISTS " + TvScheduleDatabase.TvRecord.TABLE_NAME;
 
-    private static final String SQL_DELETE_IMAGES=
-            "DROP TABLE IF EXISTS " + TvScheduleDatabase.Images.TABLE_NAME;
-
     private static final String SQL_DELETE_TV_CHANNELS =
             "DROP TABLE IF EXISTS " + TvScheduleDatabase.TvShows.TABLE_NAME;
 
@@ -114,7 +97,6 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // create the database schema
-        db.execSQL(SQL_CREATE_IMAGES);
         db.execSQL(SQL_CREATE_TV_SHOWS);
         db.execSQL(SQL_CREATE_TV_CHANNELS);
         db.execSQL(SQL_CREATE_TV_RECORDS);
@@ -125,13 +107,20 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_TV_RECORD);
         db.execSQL(SQL_DELETE_TV_CHANNELS);
         db.execSQL(SQL_DELETE_TV_SHOWS);
-        db.execSQL(SQL_DELETE_IMAGES);
         onCreate(db);
     }
 
     @Override
     public void onOpen(SQLiteDatabase db) {
 
+    }
+    /*
+        Closing Database connection
+     */
+    public void closeDB() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        if (db != null && db.isOpen())
+            db.close();
     }
 
     /*
@@ -150,6 +139,7 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
         //insert row
         long tvShow_id=db.insert(TvScheduleDatabase.TvShows.TABLE_NAME,null,values);
 
+        db.close();
         return tvShow_id;
     }
 
@@ -171,29 +161,14 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
         //insert table
         long tvChannel_id=db.insert(TvScheduleDatabase.TvChannels.TABLE_NAME,null,values);
 
+        db.close();
         return tvChannel_id;
     }
 
     /*
-        * insert image as bitmap
-     */
-    public long insertBitmap( Bitmap bmp)
-    {
-        SQLiteDatabase db=this.getWritableDatabase();
-        int size = bmp.getRowBytes() * bmp.getHeight();
-        ByteBuffer b = ByteBuffer.allocate(size); bmp.copyPixelsToBuffer(b);
-        byte[] bytes = new byte[size];
-        b.get(bytes, 0, bytes.length);
-        ContentValues values=new ContentValues();
-        values.put(TvScheduleDatabase.Images.COLUMN_NAME_LOGO, bytes);
-        long imgId;
-        imgId= db.insert(TvScheduleDatabase.Images.TABLE_NAME, null, values);
-        return imgId;
-    }
-    /*
         insert TvRecord
      */
-    public long insertTvRecord(long showId,long channelId,Date startTime,Date endTime){
+    public long insertTvRecord(TvRecord tvRecord){
         //format of the time
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
 
@@ -201,13 +176,15 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
 
         ContentValues values=new ContentValues();
 
-        values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID,channelId);
-        values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID,showId);
-        values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME,dateFormat.format(startTime));
-        values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME,dateFormat.format(endTime));
+        values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID,tvRecord.getChannelId());
+        values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID,tvRecord.getShowId());
+        values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME,tvRecord.getStartTime());
+        values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME,tvRecord.getEndTime());
 
         long tvRecordId;
         tvRecordId=db.insert(TvScheduleDatabase.TvRecord.TABLE_NAME,null,values);
+
+        db.close();
         return tvRecordId;
     }
 
@@ -229,7 +206,7 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
 
                 ts.setId(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_ID)));
                 ts.setName(c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_NAME)));
-                ts.setLogo(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_LOGO)));
+                ts.setLogo(c.getBlob(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_LOGO)));
                 ts.setRating(c.getDouble(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING)));
                 ts.setRating_count(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT)));
                 ts.setTrailer(c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_TRAILER)));
@@ -237,11 +214,13 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
                 TvShowsList.add(ts);
             } while (c.moveToNext());
         }
+
+
         return TvShowsList;
     }
 
     /*
-        set list of all channels
+        get list of all channels
      */
     public List<TvChannel> getAllTvChannels(){
         List<TvChannel> TvShowsList =new ArrayList<TvChannel>();
@@ -259,7 +238,7 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
                 tc.setId(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_ID)));
                 tc.setRating_count(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT)));
                 tc.setRating(c.getDouble(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING)));
-                tc.setLogo(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO)));
+                tc.setLogo(c.getBlob(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO)));
                 tc.setName(c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME)));
                 tc.setCode(c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_CODE)));
                 tc.setFrequency(c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_FREQUENCY)));
@@ -289,7 +268,8 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
 
         ts.setId(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_ID)));
         ts.setName(c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_NAME)));
-        ts.setLogo(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_LOGO)));
+        ts.setLogo(c.getBlob(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_LOGO)));
+
         ts.setRating(c.getDouble(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING)));
         ts.setRating_count(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT)));
         ts.setTrailer(c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_TRAILER)));
@@ -317,7 +297,7 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
         tc.setId(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_ID)));
         tc.setRating_count(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT)));
         tc.setRating(c.getDouble(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING)));
-        tc.setLogo(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO)));
+        tc.setLogo(c.getBlob(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO)));
         tc.setName(c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME)));
         tc.setCode(c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_CODE)));
         tc.setFrequency(c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_FREQUENCY)));
@@ -327,6 +307,30 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
 
     }
 
+    /*
+        get TvRecord by id
+     */
+    public TvRecord getTvRecordById(long tvRecordId){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT  * FROM " + TvScheduleDatabase.TvRecord.TABLE_NAME + " WHERE "
+                + TvScheduleDatabase.TvRecord.COLUMN_NAME_ID + " = " + tvRecordId;
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c != null)
+            c.moveToFirst();
+
+        TvRecord tr=new TvRecord();
+
+        tr.setId(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_ID)));
+        tr.setChannelId(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID)));
+        tr.setShowId(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID)));
+        tr.setStartTime(c.getString(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME)));
+        tr.setEndTime(c.getString(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME)));
+
+        return tr;
+    }
     /*
         delete TvShow By Id
 
@@ -360,13 +364,63 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
                 new String[] { String.valueOf(TvRecordId) });
 
     }
+
     /*
-        delete image by id
+
+        Update TvChannel
      */
-    public void deleteImage(long ImageId){
+    public int updateTvChannel(TvChannel channel) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TvScheduleDatabase.Images.TABLE_NAME, TvScheduleDatabase.Images.COLUMN_NAME_ID+ " = ?",
-                new String[] { String.valueOf(ImageId) });
+
+        ContentValues values = new ContentValues();
+        values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME, channel.getName());
+        values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO,channel.getLogo());
+        values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_CODE,channel.getCode());
+        values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_FREQUENCY,channel.getFrequency());
+        values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING,channel.getRating());
+        values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT,channel.getRating_count());
+        values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_VERTICAL,channel.getVertical());
+
+        // updating row
+        return db.update(TvScheduleDatabase.TvChannels.TABLE_NAME, values, TvScheduleDatabase.TvChannels.COLUMN_NAME_ID + " = ?",
+                new String[] { String.valueOf(channel.getId()) });
+    }
+
+    /*
+
+        Update TvShow
+     */
+    public int updateTvShow(TvShow show) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_NAME,show.getName());
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING,show.getRating());
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_LOGO,show.getLogo());
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT,show.getRating_count());
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_TRAILER,show.getTrailer());
+
+        // updating row
+        return db.update(TvScheduleDatabase.TvShows.TABLE_NAME, values, TvScheduleDatabase.TvShows.COLUMN_NAME_ID + " = ?",
+                new String[] { String.valueOf(show.getId()) });
+    }
+
+    /*
+
+        Update TvRecord
+     */
+    public int updateTvShow(TvRecord tvRecord) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID,tvRecord.getChannelId());
+        values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID,tvRecord.getShowId());
+        values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME,tvRecord.getStartTime());
+        values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME,tvRecord.getEndTime());
+
+        // updating row
+        return db.update(TvScheduleDatabase.TvRecord.TABLE_NAME, values, TvScheduleDatabase.TvRecord.COLUMN_NAME_ID + " = ?",
+                new String[] { String.valueOf(tvRecord.getId()) });
     }
 
 

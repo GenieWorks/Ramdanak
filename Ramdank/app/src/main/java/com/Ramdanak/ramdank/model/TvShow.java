@@ -8,7 +8,7 @@ public class TvShow {
     private int id;
     private String name;
     private String trailer;
-    private int logo;
+    private byte[] logo;
     private double rating;
     private int rating_count;
 
@@ -16,7 +16,7 @@ public class TvShow {
 
     }
 
-    public TvShow(int id, String name, int logo, String trailer, double rating, int rating_count) {
+    public TvShow(int id, String name, byte[] logo, String trailer, double rating, int rating_count) {
         this.id = id;
         this.name = name;
         this.logo = logo;
@@ -25,7 +25,7 @@ public class TvShow {
         this.rating_count = rating_count;
     }
 
-    public TvShow(String name, String trailer, int logo, double rating, int rating_count) {
+    public TvShow(String name, String trailer, byte[] logo, double rating, int rating_count) {
         this.name = name;
         this.trailer = trailer;
         this.logo = logo;
@@ -49,7 +49,7 @@ public class TvShow {
         this.rating = rating;
     }
 
-    public void setLogo(int logo) {
+    public void setLogo(byte[] logo) {
         this.logo = logo;
     }
 
@@ -69,13 +69,11 @@ public class TvShow {
         return trailer;
     }
 
-    public int getLogo() {
+    public byte[] getLogo() {
         return logo;
     }
 
-    public int getRating_count() {
-        return rating_count;
-    }
+    public int getRating_count() { return rating_count; }
 
     public double getRating() {
         return rating;
