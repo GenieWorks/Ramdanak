@@ -31,7 +31,7 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
     private static final String BLOB_TYPE = " BLOB";
     private static final String COMMA_SEP = ",";
     private static final String FOREIGN_KEY = " FOREIGN KEY(";
-    private static final String FOREIGN_KEY2 = " )REFERENCES(";
+    private static final String FOREIGN_KEY2 = " ) REFERENCES ";
 
     private static final String SQL_CREATE_TV_SHOWS =
             "CREATE TABLE " + TvScheduleDatabase.TvShows.TABLE_NAME + " (" +
@@ -69,11 +69,11 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
                     TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME + TEXT_TYPE  +COMMA_SEP +
                     TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME +TEXT_TYPE +COMMA_SEP +
 
-                    FOREIGN_KEY + TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID + FOREIGN_KEY2 +
+                    FOREIGN_KEY + TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID + ") REFERENCES " +
                     TvScheduleDatabase.TvChannels.TABLE_NAME + "(" + TvScheduleDatabase.TvChannels.COLUMN_NAME_ID
                     + ")" + COMMA_SEP +
 
-                    FOREIGN_KEY + TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID + FOREIGN_KEY2 +
+                    FOREIGN_KEY + TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID + ") REFERENCES "+
                     TvScheduleDatabase.TvShows.TABLE_NAME + "(" + TvScheduleDatabase.TvShows.COLUMN_NAME_ID
                     + ")" +
 
