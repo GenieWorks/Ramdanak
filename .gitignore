@@ -1,1 +1,10 @@
-.idea/
+Ramdank/.idea/gradle.xml
+Ramdank/.idea/libraries/appcompat_v7_19_1_0.xml
+Ramdank/.idea/libraries/support_v4_19_1_0.xml
+Ramdank/.idea/misc.xml
+Ramdank/Ramdank.iml
+Ramdank/app/app.iml
+Ramdank/app/build.gradle
+Ramdank/build.gradle
+Ramdank/gradle/wrapper/gradle-wrapper.properties
+
