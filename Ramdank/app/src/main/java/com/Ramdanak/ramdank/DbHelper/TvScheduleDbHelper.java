@@ -12,6 +12,7 @@ import android.util.Log;
 import com.Ramdanak.ramdank.BitmapHelper;
 import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvShow;
+import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,7 +25,7 @@ import java.util.List;
  * Created by mohamed on 4/3/15.
  *
  */
-public class TvScheduleDbHelper extends SQLiteOpenHelper {
+public class TvScheduleDbHelper extends SQLiteAssetHelper {
     public static final int DATABASE_VERSION = 1;
 
     private static TvScheduleDbHelper instance;
@@ -53,7 +54,8 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
         }
         else
         {
-            DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";
+            DB_PATH = "/data/data/"+context.getPackageName()+"/databases/";
+            Log.d(TAG, DB_PATH);
         }
     }
 
@@ -68,6 +70,7 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
             try {
                 instance.createDataBase();
                 instance.openDataBase();
+                Log.d(TAG, "ready to go");
             } catch (SQLException e) {
                 Log.d(TAG, e.getMessage());
                 instance = null;
@@ -97,7 +100,7 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
                 Log.d(TAG, "copied");
             } catch (IOException e) {
                 Log.e(TAG, e.getMessage());
-                throw new Error("Error copying database");
+                throw e;
 
             }
         }
@@ -181,11 +184,6 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
-
-    }
-
-    @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
@@ -200,7 +198,19 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
 
         String selectQuery = "SELECT  * FROM " + TvScheduleDatabase.TvShows.TABLE_NAME;
 
-        Cursor c = database.rawQuery(selectQuery, null);
+        Cursor c = null;
+        try {
+
+            // check connection
+            if (!database.isOpen()) {
+                database = getReadableDatabase();
+            }
+            c = database.rawQuery(selectQuery, null);
+        } catch (SQLiteException e) {
+            Log.w(TAG, e.getMessage());
+        } catch (IllegalStateException e) {
+            Log.w(TAG, e.getMessage());
+        }
 
         // looping through all rows and adding to list
         if (c!= null && c.moveToFirst()) {
@@ -236,8 +246,19 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
 
         String selectQuery = "SELECT  * FROM " + TvScheduleDatabase.TvChannels.TABLE_NAME;
 
-        Cursor c = database.rawQuery(selectQuery, null);
+        Cursor c = null;
+        try {
 
+            // check connection
+            if (!database.isOpen()) {
+                database = getReadableDatabase();
+            }
+            c = database.rawQuery(selectQuery, null);
+        } catch (SQLiteException e) {
+            Log.w(TAG, e.getMessage());
+        } catch (IllegalStateException e) {
+            Log.w(TAG, e.getMessage());
+        }
         // looping through all rows and adding to list
         if (c!= null && c.moveToFirst()) {
             TvChannel tc; int id, vertical; String name, code, frequency; double rating; byte[] logo;

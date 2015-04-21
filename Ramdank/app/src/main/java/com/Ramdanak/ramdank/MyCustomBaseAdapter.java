@@ -57,10 +57,10 @@ public class MyCustomBaseAdapter extends BaseAdapter {
         holder.txtName.setText(arrayList.get(position).getName());
         holder.imageIcon.setImageBitmap(arrayList.get(position).getLogo());
         holder.ratingBar.setRating((float)arrayList.get(position).getRate());
-        if(arrayList.get(position).isFavorite())
-            holder.favoriteStar.setImageResource(R.drawable.glow_star);
-        else
-            holder.favoriteStar.setImageResource(R.drawable.empty_star);
+        //if(arrayList.get(position).isFavorite())
+        //    holder.favoriteStar.setImageResource(R.drawable.glow_star);
+        //else
+        //    holder.favoriteStar.setImageResource(R.drawable.empty_star);
 
         return convertView;
     }
