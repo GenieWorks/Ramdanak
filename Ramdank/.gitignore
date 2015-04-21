@@ -6,3 +6,9 @@
 build.gradle
 gradle.properties
 gradlew
+
+settings.gradle
+gradle/wrapper/gradle-wrapper.properties
+app/build.gradle
+local.properties
+app/proguard-rules.pro
