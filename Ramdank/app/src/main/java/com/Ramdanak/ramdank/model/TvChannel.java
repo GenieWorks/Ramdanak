@@ -1,61 +1,39 @@
 package com.Ramdanak.ramdank.model;
 
+import android.graphics.Bitmap;
+
 /**
  * Model class for TvChannel used in Database
  */
-public class TvChannel {
+public class TvChannel  implements Showable {
     private int id;
     private String name;
-    private byte[] logo;
+    private Bitmap logo;
     private double rating;
-    private int rating_count;
     private String frequency;
     private String code;
     private int vertical;
 
-    public TvChannel() {
-
-    }
-
-    public TvChannel(int id, String name, byte[] logo, double rating, int rating_count, String frequency, String code, int vertical) {
+    public TvChannel(int id) {
         this.id = id;
-        this.name = name;
-        this.logo = logo;
-        this.rating = rating;
-        this.rating_count = rating_count;
-        this.frequency = frequency;
-        this.code = code;
-        this.vertical = vertical;
-    }
-
-    public TvChannel(String name, byte[] logo, String frequency, int rating_count, double rating, int vertical, String code) {
-        this.name = name;
-        this.logo = logo;
-        this.frequency = frequency;
-        this.rating_count = rating_count;
-        this.rating = rating;
-        this.vertical = vertical;
-        this.code = code;
     }
 
     public int getId() {
         return id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
-    public byte[] getLogo() {
+    @Override
+    public Bitmap getLogo() {
         return logo;
     }
 
     public double getRating() {
         return rating;
-    }
-
-    public int getRating_count() {
-        return rating_count;
     }
 
     public String getFrequency() {
@@ -70,24 +48,16 @@ public class TvChannel {
         return vertical;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setLogo(byte[] logo) {
+    public void setLogo(Bitmap logo) {
         this.logo = logo;
     }
 
     public void setRating(double rating) {
         this.rating = rating;
-    }
-
-    public void setRating_count(int rating_count) {
-        this.rating_count = rating_count;
     }
 
     public void setFrequency(String frequency) {

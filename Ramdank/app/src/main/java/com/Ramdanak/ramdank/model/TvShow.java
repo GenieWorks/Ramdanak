@@ -1,39 +1,24 @@
 package com.Ramdanak.ramdank.model;
 
+import android.graphics.Bitmap;
+
 /**
  * Model class for TvShow used in Database
  */
-public class TvShow {
+public class TvShow implements Showable {
 
     private int id;
     private String name;
     private String trailer;
-    private byte[] logo;
+    //private byte[] logo;
+    private Bitmap logo;
     private double rating;
-    private int rating_count;
 
-    public TvShow(){
-
-    }
-
-    public TvShow(int id, String name, byte[] logo, String trailer, double rating, int rating_count) {
-        this.id = id;
-        this.name = name;
-        this.logo = logo;
-        this.trailer = trailer;
-        this.rating = rating;
-        this.rating_count = rating_count;
-    }
-
-    public TvShow(String name, String trailer, byte[] logo, double rating, int rating_count) {
-        this.name = name;
-        this.trailer = trailer;
-        this.logo = logo;
-        this.rating = rating;
-        this.rating_count = rating_count;
-    }
-
-    public void setId(int id) {
+    /**
+     * Create an instance with id
+     * @param id show's identifier
+     */
+    public TvShow(int id) {
         this.id = id;
     }
 
@@ -49,18 +34,15 @@ public class TvShow {
         this.rating = rating;
     }
 
-    public void setLogo(byte[] logo) {
+    public void setLogo(Bitmap logo) {
         this.logo = logo;
-    }
-
-    public void setRating_count(int rating_count) {
-        this.rating_count = rating_count;
     }
 
     public int getId() {
         return id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -69,11 +51,10 @@ public class TvShow {
         return trailer;
     }
 
-    public byte[] getLogo() {
+    @Override
+    public Bitmap getLogo() {
         return logo;
     }
-
-    public int getRating_count() { return rating_count; }
 
     public double getRating() {
         return rating;

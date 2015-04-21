@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 import com.Ramdanak.ramdank.model.TvChannel;
@@ -18,40 +19,37 @@ import com.Ramdanak.ramdank.model.TvShow;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
-/*
-  Start Activity of the app
+/**
+ * Start Activity of the app
  */
 public class startActivity extends Activity {
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
-        startActivity(new Intent(startActivity.this,Main.class));
-        finish();
-    }
+
+        Thread dbThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (TvScheduleDbHelper.createInstance(getApplicationContext()) == null) {
+                    Log.d("START", "configuration failed!");
+                    finish();
+                }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+            }
+        });
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        dbThread.start();
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            startActivity(new Intent(startActivity.this, Main.class));
+            finish();
         }
-        return super.onOptionsItemSelected(item);
-    }
 
+    }
 }

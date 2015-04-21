@@ -12,21 +12,8 @@ public class TvRecord {
     private String startTime;
     private String endTime;
 
-    public TvRecord(){}
-
-    public TvRecord(int id, int showId, int channelId, String startTime, String endTime) {
+    public TvRecord(int id) {
         this.id = id;
-        this.showId = showId;
-        this.channelId = channelId;
-        this.startTime = startTime;
-        this.endTime = endTime;
-    }
-
-    public TvRecord(String endTime, String startTime, int showId, int channelId) {
-        this.endTime = endTime;
-        this.startTime = startTime;
-        this.showId = showId;
-        this.channelId = channelId;
     }
 
     public int getId() {
@@ -47,10 +34,6 @@ public class TvRecord {
 
     public int getChannelId() {
         return channelId;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setChannelId(int channelId) {
