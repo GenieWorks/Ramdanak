@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -36,7 +37,7 @@ public class ChannelsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.fragment_channel, container, false);
+        v = inflater.inflate(R.layout.fragment_layout, container, false);
 
         // do it only once
         if (channelList == null) {
@@ -44,22 +45,24 @@ public class ChannelsFragment extends Fragment {
 
             // fetch the data from database on another thread
             Thread t = new Thread(new Runnable() {
-                @Override
+               @Override
                 public void run() {
-                    channelList = (ArrayList) TvScheduleDbHelper.getInstance().getAllTvShows();
+                   channelList = (ArrayList) TvScheduleDbHelper.getInstance().getAllTvChannels();
+
 
                     // now update the view but on the UI thread
-                    UIController.runOnUiThread(new Runnable() {
+                   UIController.runOnUiThread(new Runnable() {
                         @Override
-                        public void run() {
+                       public void run() {
 
                             setListView();
-                        }
+
+                       }
                     });
                 }
-            });
+           });
 
-            t.start();
+           t.start();
         } else {
             setListView();
         }
@@ -69,11 +72,12 @@ public class ChannelsFragment extends Fragment {
 
     /*
            set list view data according to the chosen tab
-        */
+    */
     private void setListView() {
-        ListView listView = (ListView) v.findViewById(R.id.srListView);
-        adapter = new MyCustomBaseAdapter(this.getActivity(), channelList);
-        listView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+       ListView listView = (ListView) v.findViewById(R.id.srListView);
+       adapter = new MyCustomBaseAdapter(this.getActivity(), channelList);
+       listView.setAdapter(adapter);
+       adapter.notifyDataSetChanged();
+
     }
 }

@@ -31,10 +31,10 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DbHelper";
 
-    @SuppressLint("SdCardPath")
-    private static String DB_PATH = "/data/data/com.Ramdanak.ramdank/databases/";
+   @SuppressLint("SdCardPath")
+    private static String DB_PATH = "";
 
-    private static String DB_NAME = "Ramadanak";
+    private static String DB_NAME = "Ramdanak";
 
     private SQLiteDatabase database;
 
@@ -48,6 +48,13 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
     private TvScheduleDbHelper(Context context) {
         super(context, DB_NAME, null, 1);
         this.context = context;
+        if(android.os.Build.VERSION.SDK_INT >= 17){
+            DB_PATH = context.getApplicationInfo().dataDir + "/databases/";
+        }
+        else
+        {
+            DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";
+        }
     }
 
     public static TvScheduleDbHelper getInstance() {
@@ -225,7 +232,7 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
      * @return
      */
     public List<TvChannel> getAllTvChannels(){
-        List<TvChannel> TvShowsList =new ArrayList<TvChannel>();
+        List<TvChannel> TvChannelsList =new ArrayList<TvChannel>();
 
         String selectQuery = "SELECT  * FROM " + TvScheduleDatabase.TvChannels.TABLE_NAME;
 
@@ -253,9 +260,9 @@ public class TvScheduleDbHelper extends SQLiteOpenHelper {
                 tc.setRating(rating);
                 tc.setVertical(vertical);
 
-                TvShowsList.add(tc);
+                TvChannelsList.add(tc);
             } while (c.moveToNext());
         }
-        return TvShowsList;
+        return TvChannelsList;
     }
 }
