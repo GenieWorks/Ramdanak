@@ -11,6 +11,13 @@
         android:layout_alignParentRight="true"
         />
 
+    <ImageView
+        android:id="@+id/favoriteStar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"/>
+
 
 
         <TextView
@@ -24,13 +31,22 @@
             android:layout_marginTop="25dp"
             android:textSize="25dp"
             android:padding="2dp"
+            android:layout_marginRight="20dp"
             android:textColor="#000"
             android:textStyle="bold" />
 
-
-
-
-
+    <RatingBar android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:stepSize="1.0"
+        android:rating="3.5"
+        android:layout_below="@+id/name"
+        android:layout_toLeftOf="@+id/icon"
+        android:layout_marginRight="20dp"
+        style="?android:attr/ratingBarStyleSmall"
+        >
+        </RatingBar>
 
 
 

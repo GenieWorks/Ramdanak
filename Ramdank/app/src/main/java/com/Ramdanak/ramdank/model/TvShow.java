@@ -56,7 +56,16 @@ public class TvShow implements Showable {
         return logo;
     }
 
+    @Override
+    public double getRate(){return rating;}
+
+    //TODO add is_favorite to database and get info from it
+    @Override
+    public boolean isFavorite(){return true;}
+
     public double getRating() {
         return rating;
     }
+
+
 }

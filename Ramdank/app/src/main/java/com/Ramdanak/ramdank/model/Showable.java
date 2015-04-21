@@ -19,4 +19,14 @@ public interface Showable {
      * @return
      */
     String getName();
+    /**
+     * Gets the object rating
+     * @return
+     */
+    double getRate();
+    /**
+     * returns boolean to indicate if show or channel is in favorite list or not
+     * @return
+     */
+    boolean isFavorite();
 }

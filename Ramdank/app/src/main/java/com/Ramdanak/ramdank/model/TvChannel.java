@@ -1,6 +1,11 @@
 package com.Ramdanak.ramdank.model;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+
+import com.Ramdanak.ramdank.BitmapHelper;
+import com.Ramdanak.ramdank.R;
 
 /**
  * Model class for TvChannel used in Database
@@ -31,6 +36,13 @@ public class TvChannel  implements Showable {
     public Bitmap getLogo() {
         return logo;
     }
+
+    @Override
+    public double getRate(){return rating;}
+
+    //TODO add is_favorite to database and get info from it
+    @Override
+    public boolean isFavorite(){ return true;}
 
     public double getRating() {
         return rating;

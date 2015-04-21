@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.Ramdanak.ramdank.model.Showable;
@@ -45,6 +46,9 @@ public class MyCustomBaseAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.txtName = (TextView) convertView.findViewById(R.id.name);
             holder.imageIcon = (ImageView) convertView.findViewById(R.id.icon);
+            holder.ratingBar=(RatingBar) convertView.findViewById(R.id.ratingBar);
+            holder.favoriteStar=(ImageView) convertView.findViewById(R.id.favoriteStar);
+
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -52,6 +56,11 @@ public class MyCustomBaseAdapter extends BaseAdapter {
 
         holder.txtName.setText(arrayList.get(position).getName());
         holder.imageIcon.setImageBitmap(arrayList.get(position).getLogo());
+        holder.ratingBar.setRating((float)arrayList.get(position).getRate());
+        if(arrayList.get(position).isFavorite())
+            holder.favoriteStar.setImageResource(R.drawable.glow_star);
+        else
+            holder.favoriteStar.setImageResource(R.drawable.empty_star);
 
         return convertView;
     }
@@ -65,5 +74,7 @@ public class MyCustomBaseAdapter extends BaseAdapter {
     private class ViewHolder {
         TextView txtName;
         ImageView imageIcon;
+        ImageView favoriteStar;
+        RatingBar ratingBar;
     }
 }
