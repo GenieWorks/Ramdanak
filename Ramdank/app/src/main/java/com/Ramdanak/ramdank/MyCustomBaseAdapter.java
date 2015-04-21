@@ -11,25 +11,27 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.Ramdanak.ramdank.model.Showable;
+
 public class MyCustomBaseAdapter extends BaseAdapter {
     //for debugging
     private static String TAG = "CustomBaseAdapter";
 
-    private static ArrayList<seriesInfo> searchArrayList;
+    private ArrayList<Showable> arrayList;
 
     private LayoutInflater mInflater;
 
-    public MyCustomBaseAdapter(Context context, ArrayList<seriesInfo> series) {
-        searchArrayList = series;
-        mInflater = LayoutInflater.from(context);
+    public MyCustomBaseAdapter(Context context, ArrayList<Showable> series) {
+        this.arrayList = series;
+        this.mInflater = LayoutInflater.from(context);
     }
 
     public int getCount() {
-        return searchArrayList.size();
+        return arrayList.size();
     }
 
     public Object getItem(int position) {
-        return searchArrayList.get(position);
+        return arrayList.get(position);
     }
 
     public long getItemId(int position) {
@@ -48,22 +50,20 @@ public class MyCustomBaseAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.txtName.setText(searchArrayList.get(position).getTitle());
-
-        //holder.imageIcon.setImageURI(searchArrayList.get(position).getIcon());
-        holder.imageIcon.setImageBitmap(searchArrayList.get(position).getImg());
+        holder.txtName.setText(arrayList.get(position).getName());
+        holder.imageIcon.setImageBitmap(arrayList.get(position).getLogo());
 
         return convertView;
     }
 
-    public static class ViewHolder {
-        TextView txtName;
-        ImageView imageIcon;
+    public void updateList(ArrayList<Showable> newList) {
+        arrayList.clear();
+        arrayList.addAll(newList);
+        this.notifyDataSetChanged();
     }
 
-    public void updateList(ArrayList<seriesInfo> newList) {
-        searchArrayList.clear();
-        searchArrayList.addAll(newList);
-        this.notifyDataSetChanged();
+    private class ViewHolder {
+        TextView txtName;
+        ImageView imageIcon;
     }
 }
