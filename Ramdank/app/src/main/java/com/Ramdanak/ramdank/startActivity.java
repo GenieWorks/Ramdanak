@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
@@ -26,30 +28,48 @@ public class startActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_start);
+    }
 
-        Thread dbThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (TvScheduleDbHelper.createInstance(getApplicationContext()) == null) {
-                    Log.d("START", "configuration failed!");
-                    finish();
-                }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ApplicationInitializer initializer = new ApplicationInitializer();
+        initializer.execute();
+    }
 
-
+    /**
+     * Initialize the program database and network manager.
+     */
+    private class ApplicationInitializer extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            if (TvScheduleDbHelper.createInstance(getApplicationContext()) == null) {
+                Log.d("START", "configuration failed!");
+                return false;
             }
-        });
 
-        dbThread.start();
-
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            startActivity(new Intent(startActivity.this, Main.class));
-            finish();
+            NetworkManager.init(getApplicationContext());
+            return true;
         }
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            ProgressBar mSpinner = (ProgressBar) findViewById(R.id.Splash_ProgressBar);
+            mSpinner.setIndeterminate(true);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+
+            // proceed to app if everything was initialized correctly
+            if (aBoolean)
+                startActivity(new Intent(startActivity.this, Main.class));
+
+            finish();
+        }
     }
 }
