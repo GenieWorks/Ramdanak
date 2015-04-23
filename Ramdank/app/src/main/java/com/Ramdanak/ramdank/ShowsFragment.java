@@ -23,7 +23,7 @@ import java.util.List;
 
 public class ShowsFragment extends Fragment   {
     private static final String TAG = "SHOWS";
-    private ArrayList<Showable> seriesList;
+    private static ArrayList<Showable> seriesList;
     private MyCustomBaseAdapter adapter;
     private View v;
 
