@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 public class ChannelsFragment extends Fragment {
     private static final String TAG = "CHANNELS";
-    private ArrayList<Showable> channelList;
+    private static ArrayList<Showable> channelList;
     private MyCustomBaseAdapter adapter;
     private View v;
 
@@ -37,7 +37,7 @@ public class ChannelsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.fragment_layout, container, false);
+        v = inflater.inflate(R.layout.fragment_channel, container, false);
 
         // do it only once
         if (channelList == null) {
@@ -74,7 +74,7 @@ public class ChannelsFragment extends Fragment {
            set list view data according to the chosen tab
     */
     private void setListView() {
-       ListView listView = (ListView) v.findViewById(R.id.srListView);
+       ListView listView = (ListView) v.findViewById(R.id.channelList);
        adapter = new MyCustomBaseAdapter(this.getActivity(), channelList);
        listView.setAdapter(adapter);
        adapter.notifyDataSetChanged();
