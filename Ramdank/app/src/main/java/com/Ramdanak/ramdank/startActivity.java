@@ -1,12 +1,14 @@
 package com.Ramdanak.ramdank;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -59,6 +61,8 @@ public class startActivity extends Activity {
 
             ProgressBar mSpinner = (ProgressBar) findViewById(R.id.Splash_ProgressBar);
             mSpinner.setIndeterminate(true);
+
+
         }
 
         @Override
