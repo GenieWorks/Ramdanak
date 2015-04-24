@@ -2,9 +2,11 @@ package com.Ramdanak.ramdank;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
@@ -39,25 +42,8 @@ public class ShowsFragment extends Fragment   {
 
         // do it only once
         if (seriesList == null) {
-            Log.d(TAG, "appear only once");
-            // fetch the data from database on another thread
-            Thread t = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    seriesList = (ArrayList) TvScheduleDbHelper.getInstance().getAllTvShows();
-
-                    // now update the view but on the UI thread
-                    UIController.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            setListView();
-                        }
-                    });
-                }
-            });
-
-            t.start();
+            FetchDataWorker worker = new FetchDataWorker();
+            worker.execute();
         } else {
             setListView();
         }
@@ -65,10 +51,29 @@ public class ShowsFragment extends Fragment   {
         return v;
     }
 
+
     private void setListView() {
         ListView listView = (ListView) v.findViewById(R.id.srListView);
         adapter = new MyCustomBaseAdapter(this.getActivity(), seriesList);
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Fetch the data of the shows from the database
+     */
+    private class FetchDataWorker extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            seriesList = (ArrayList) TvScheduleDbHelper.getInstance().getAllTvShows();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            setListView();
+        }
     }
 }

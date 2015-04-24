@@ -6,6 +6,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.nfc.Tag;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -41,28 +42,8 @@ public class ChannelsFragment extends Fragment {
 
         // do it only once
         if (channelList == null) {
-            Log.d(TAG, "appear only once");
-
-            // fetch the data from database on another thread
-            Thread t = new Thread(new Runnable() {
-               @Override
-                public void run() {
-                   channelList = (ArrayList) TvScheduleDbHelper.getInstance().getAllTvChannels();
-
-
-                    // now update the view but on the UI thread
-                   UIController.runOnUiThread(new Runnable() {
-                        @Override
-                       public void run() {
-
-                            setListView();
-
-                       }
-                    });
-                }
-           });
-
-           t.start();
+            FetchDataWorker worker = new FetchDataWorker();
+            worker.execute();
         } else {
             setListView();
         }
@@ -79,5 +60,23 @@ public class ChannelsFragment extends Fragment {
        listView.setAdapter(adapter);
        adapter.notifyDataSetChanged();
 
+    }
+
+    /**
+     * Fetch the data of the shows from the database
+     */
+    private class FetchDataWorker extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            channelList = (ArrayList) TvScheduleDbHelper.getInstance().getAllTvChannels();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            setListView();
+        }
     }
 }
