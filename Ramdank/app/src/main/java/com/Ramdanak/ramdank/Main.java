@@ -19,7 +19,7 @@ public class Main extends FragmentActivity {
         setContentView(R.layout.activity_all_series);
 
         if (dbHelper == null)
-            dbHelper  = TvScheduleDbHelper.getInstance();
+           dbHelper  = TvScheduleDbHelper.getInstance();
 
         init();
     }
@@ -27,7 +27,7 @@ public class Main extends FragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dbHelper.close();
+       // dbHelper.close();
     }
 
     /**
@@ -43,11 +43,9 @@ public class Main extends FragmentActivity {
         mTabHost.addTab(
                 mTabHost.newTabSpec("allChannelsTab").setIndicator("كل القنوات"),
                 ChannelsFragment.class, null);
-        /*mTabHost.addTab(
-                mTabHost.newTabSpec("favouriteSeriesTab").setIndicator("المسلسلات المفضله"),
-                FragmentTab.class, null);
         mTabHost.addTab(
-                mTabHost.newTabSpec("favouriteChannelsTab").setIndicator("القنوات المفضله"),
-                FragmentTab.class, null);*/
+                mTabHost.newTabSpec("favouriteSeriesTab").setIndicator("سعرض الان"),
+                ShowsRunningNowFragment.class, null);
+
     }
 }

@@ -8,11 +8,16 @@ import android.util.Log;
 
 import com.Ramdanak.ramdank.BitmapHelper;
 import com.Ramdanak.ramdank.model.TvChannel;
+import com.Ramdanak.ramdank.model.TvRecord;
 import com.Ramdanak.ramdank.model.TvShow;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by mohamed on 4/3/15.
@@ -23,7 +28,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
 
     private static TvScheduleDbHelper instance;
     private static final String TAG = "DbHelper";
-    private static String DB_NAME = "Ramadanak";
+    private static String DB_NAME = "Ramdanak";
     private SQLiteDatabase database;
 
     /**
@@ -77,7 +82,10 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
                 database = getReadableDatabase();
             }
             c = database.rawQuery(selectQuery, null);
-        } catch (SQLiteException | IllegalStateException e) {
+        } catch (SQLiteException  e) {
+            Log.w(TAG, e.getMessage());
+        }
+        catch(IllegalStateException e){
             Log.w(TAG, e.getMessage());
         }
 
@@ -125,7 +133,10 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
                 database = getReadableDatabase();
             }
             c = database.rawQuery(selectQuery, null);
-        } catch (SQLiteException | IllegalStateException e) {
+        } catch (SQLiteException e) {
+            Log.w(TAG, e.getMessage());
+        }
+        catch( IllegalStateException e){
             Log.w(TAG, e.getMessage());
         }
         // looping through all rows and adding to list
@@ -156,5 +167,105 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
             c.close();
         }
         return TvChannelsList;
+    }
+    /**
+     * get list of all TvRecords displayed now
+     */
+    public List<TvRecord> getSowsDisplayedNow(){
+        List<TvRecord> TvRecordsNow=new ArrayList<TvRecord>();
+
+        DateFormat df = new SimpleDateFormat("HH:MM");
+        String dateNowString = df.format(Calendar.getInstance(Locale.getDefault()).getTime());
+
+
+        String selectQuery ="SELECT * FROM "+TvScheduleDatabase.TvRecord.TABLE_NAME +" WHERE "+"strftime( \'%H:%M\',"+"'"+dateNowString+"') >="+" strftime( \'%H:%M\',"+TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME+")"
+                +" AND "+"strftime( \'%H:%M\',"+"'"+dateNowString+"') <="+" strftime( \'%H:%M\',"+TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME+")";
+
+
+
+        Cursor c = database.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c!= null && c.moveToFirst()) {
+            TvRecord tr; int id, showId,channelId; String startTime, endTime;
+
+            do {
+
+                id = c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_ID));
+                showId = c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID));
+                channelId = c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID));
+                startTime = c.getString(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME));
+                endTime = c.getString(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME));
+
+
+                tr = new TvRecord(id);
+                tr.setShowId(showId);
+                tr.setChannelId(channelId);
+                tr.setStartTime(startTime);
+                tr.setEndTime(endTime);
+
+
+                TvRecordsNow.add(tr);
+            } while (c.moveToNext());
+        }
+        return TvRecordsNow;
+    }
+
+    /*
+            get TvChannel by Id
+     */
+    public TvChannel getTvChannelById(long tvChannelId){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT  * FROM " + TvScheduleDatabase.TvChannels.TABLE_NAME + " WHERE "
+                + TvScheduleDatabase.TvChannels.COLUMN_NAME_ID + " = " + tvChannelId;
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c != null)
+            c.moveToFirst();
+
+        TvChannel tc = new TvChannel(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_ID)));
+
+        //tc.setId(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_ID)));
+        //tc.setRating_count(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT)));
+        tc.setRating(c.getDouble(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING)));
+        tc.setLogo(BitmapHelper.BytesToBitmap(c.getBlob(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO))));
+        tc.setName(c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME)));
+        tc.setCode(c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_CODE)));
+        tc.setFrequency(c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_FREQUENCY)));
+        tc.setVertical(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_VERTICAL)));
+
+        return tc;
+
+    }
+
+    /*
+           get TvShow by Id
+    */
+    public TvShow getTvShowById(long tvShowId){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT  * FROM " + TvScheduleDatabase.TvShows.TABLE_NAME + " WHERE "
+                + TvScheduleDatabase.TvShows.COLUMN_NAME_ID + " = " + tvShowId;
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c != null)
+            c.moveToFirst();
+
+        TvShow ts = new TvShow(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_ID)));
+
+        //tc.setId(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_ID)));
+        //tc.setRating_count(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT)));
+        ts.setRating(c.getDouble(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING)));
+        ts.setLogo(BitmapHelper.BytesToBitmap(c.getBlob(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_LOGO))));
+        ts.setName(c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_NAME)));
+       ts.setTrailer(c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_TRAILER)));
+
+
+
+        return ts;
+
     }
 }
