@@ -46,9 +46,15 @@ public class startActivity extends Activity {
     private class ApplicationInitializer extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Void... params) {
-            if (TvScheduleDbHelper.createInstance(getApplicationContext()) == null) {
-                Log.d("START", "configuration failed!");
-                return false;
+            try {
+                if (TvScheduleDbHelper.createInstance(getApplicationContext()) == null) {
+                    Log.d("START", "configuration failed!");
+                    return false;
+                }
+            } catch (InstantiationError e) {
+                //Log.e(TAG, e.getMessage());
+                Toast.makeText(getApplicationContext(), "Ramdanak failed to start! please contact the developers for details"
+                , Toast.LENGTH_LONG).show();
             }
 
             NetworkManager.init(getApplicationContext());

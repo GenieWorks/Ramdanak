@@ -30,6 +30,7 @@ public class NetworkManager {
 
     /**
      * Create instance of class
+     *
      * @param context application context of the main activity.
      */
     private NetworkManager(Context context) {
@@ -41,6 +42,7 @@ public class NetworkManager {
 
     /**
      * Gets the instance of the network manager class
+     *
      * @return class instance
      */
     public static NetworkManager getInstance() {
@@ -49,6 +51,7 @@ public class NetworkManager {
 
     /**
      * Is mobile connected to internet
+     *
      * @return
      */
     public boolean isConnected() {
@@ -57,6 +60,7 @@ public class NetworkManager {
 
     /**
      * Gets the Server URL.
+     *
      * @return server URL
      */
     public String getServerURL() {
@@ -65,6 +69,7 @@ public class NetworkManager {
 
     /**
      * Initializes the client class
+     *
      * @param context application context of the main activity.
      */
     public static void init(Context context) {
@@ -74,10 +79,11 @@ public class NetworkManager {
 
     /**
      * Enable mobile wifi.
+     *
      * @return true on success, false otherwise.
      */
     public boolean enableWifi() {
-        WifiManager wifiManager = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 
         if (wifiManager != null && wifiManager.setWifiEnabled(true)) {
             Log.d(TAG, "wifi enabled!");
@@ -96,17 +102,12 @@ public class NetworkManager {
             @Override
             public void run() {
                 Toast.makeText(context, "please enable data roaming", Toast.LENGTH_LONG).show();
-                Intent intent=new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
+                Intent intent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                ComponentName cn = new ComponentName("com.android.phone","com.android.phone.Settings");
+                ComponentName cn = new ComponentName("com.android.phone", "com.android.phone.Settings");
                 intent.setComponent(cn);
                 context.startActivity(intent);
             }
         });
     }
-<<<<<<< HEAD
 }
-=======
-
-}
->>>>>>> 6ded73472f5ab374a20382a87e2b573702b7d675

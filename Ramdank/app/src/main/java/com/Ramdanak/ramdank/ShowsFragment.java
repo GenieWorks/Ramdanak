@@ -58,9 +58,6 @@ public class ShowsFragment extends Fragment   {
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
-<<<<<<< HEAD
-}
-=======
 
     /**
      * Fetch the data of the shows from the database
@@ -80,4 +77,3 @@ public class ShowsFragment extends Fragment   {
         }
     }
 }
->>>>>>> 6ded73472f5ab374a20382a87e2b573702b7d675

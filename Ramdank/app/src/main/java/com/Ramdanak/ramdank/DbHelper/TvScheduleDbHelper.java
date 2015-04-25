@@ -39,7 +39,13 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
     private TvScheduleDbHelper(Context context) {
         super(context, DB_NAME, null, DATABASE_VERSION);
 
-        database = getReadableDatabase();
+        try {
+            database = getReadableDatabase();
+        } catch (SQLiteAssetException e) {
+            Log.e(TAG, e.getMessage());
+
+            throw new InstantiationError("Failed to initialize the database.");    // terminate the program
+        }
     }
 
     public static TvScheduleDbHelper getInstance() {
@@ -183,7 +189,20 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
 
 
 
-        Cursor c = database.rawQuery(selectQuery, null);
+        Cursor c = null;
+        try {
+
+            // check connection
+            if (!database.isOpen()) {
+                database = getReadableDatabase();
+            }
+            c = database.rawQuery(selectQuery, null);
+        } catch (SQLiteException e) {
+            Log.w(TAG, e.getMessage());
+        }
+        catch( IllegalStateException e){
+            Log.w(TAG, e.getMessage());
+        }
 
         // looping through all rows and adding to list
         if (c!= null && c.moveToFirst()) {
@@ -215,12 +234,25 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
             get TvChannel by Id
      */
     public TvChannel getTvChannelById(long tvChannelId){
-        SQLiteDatabase db = this.getReadableDatabase();
+        //SQLiteDatabase db = this.getReadableDatabase();
 
         String selectQuery = "SELECT  * FROM " + TvScheduleDatabase.TvChannels.TABLE_NAME + " WHERE "
                 + TvScheduleDatabase.TvChannels.COLUMN_NAME_ID + " = " + tvChannelId;
 
-        Cursor c = db.rawQuery(selectQuery, null);
+        Cursor c = null;
+        try {
+
+            // check connection
+            if (!database.isOpen()) {
+                database = getReadableDatabase();
+            }
+            c = database.rawQuery(selectQuery, null);
+        } catch (SQLiteException e) {
+            Log.w(TAG, e.getMessage());
+        }
+        catch( IllegalStateException e){
+            Log.w(TAG, e.getMessage());
+        }
 
         if (c != null)
             c.moveToFirst();
@@ -244,12 +276,25 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
            get TvShow by Id
     */
     public TvShow getTvShowById(long tvShowId){
-        SQLiteDatabase db = this.getReadableDatabase();
+        //SQLiteDatabase db = this.getReadableDatabase();
 
         String selectQuery = "SELECT  * FROM " + TvScheduleDatabase.TvShows.TABLE_NAME + " WHERE "
                 + TvScheduleDatabase.TvShows.COLUMN_NAME_ID + " = " + tvShowId;
 
-        Cursor c = db.rawQuery(selectQuery, null);
+        Cursor c = null;
+        try {
+
+            // check connection
+            if (!database.isOpen()) {
+                database = getReadableDatabase();
+            }
+            c = database.rawQuery(selectQuery, null);
+        } catch (SQLiteException e) {
+            Log.w(TAG, e.getMessage());
+        }
+        catch( IllegalStateException e){
+            Log.w(TAG, e.getMessage());
+        }
 
         if (c != null)
             c.moveToFirst();

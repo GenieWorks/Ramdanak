@@ -17,17 +17,13 @@ public class Main extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_series);
-
-        if (dbHelper == null)
-           dbHelper  = TvScheduleDbHelper.getInstance();
-
         init();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-       // dbHelper.close();
+        TvScheduleDbHelper.getInstance().close();
     }
 
     /**
@@ -44,7 +40,7 @@ public class Main extends FragmentActivity {
                 mTabHost.newTabSpec("allChannelsTab").setIndicator("كل القنوات"),
                 ChannelsFragment.class, null);
         mTabHost.addTab(
-                mTabHost.newTabSpec("favouriteSeriesTab").setIndicator("سعرض الان"),
+                mTabHost.newTabSpec("favouriteSeriesTab").setIndicator("يعرض الان"),
                 ShowsRunningNowFragment.class, null);
 
     }
