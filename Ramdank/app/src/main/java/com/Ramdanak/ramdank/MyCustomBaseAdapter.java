@@ -60,7 +60,7 @@ public class MyCustomBaseAdapter extends BaseAdapter {
         if(arrayList.get(position).isFavorite())
             holder.favoriteStar.setImageResource(R.drawable.glow_star);
         else
-            holder.favoriteStar.setImageResource(R.drawable.empty_star);
+          holder.favoriteStar.setImageResource(R.drawable.empty_star);
 
         return convertView;
     }

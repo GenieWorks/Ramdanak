@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ public class ShowsFragment extends Fragment   {
     private static ArrayList<Showable> seriesList;
     private MyCustomBaseAdapter adapter;
     private View v;
+    private ListView listView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,18 @@ public class ShowsFragment extends Fragment   {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_layout, container, false);
+        listView= (ListView) v.findViewById(R.id.srListView);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                TvShow tvShowSelected =(TvShow) listView.getItemAtPosition(position);
+                Globals.tvShowId=tvShowSelected.getId();
+                Intent intent = new Intent(getActivity(), Show.class);
+                startActivity(intent);
+            }
+        });
 
         // do it only once
         if (seriesList == null) {

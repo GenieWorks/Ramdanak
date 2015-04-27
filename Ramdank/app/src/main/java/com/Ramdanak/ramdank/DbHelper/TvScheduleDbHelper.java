@@ -10,8 +10,10 @@ import com.Ramdanak.ramdank.BitmapHelper;
 import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvRecord;
 import com.Ramdanak.ramdank.model.TvShow;
+import com.readystatesoftware.sqliteasset.SQLiteAssetException;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,12 +42,14 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         super(context, DB_NAME, null, DATABASE_VERSION);
 
         try {
+
             database = getReadableDatabase();
         } catch (SQLiteAssetException e) {
             Log.e(TAG, e.getMessage());
 
             throw new InstantiationError("Failed to initialize the database.");    // terminate the program
         }
+
     }
 
     public static TvScheduleDbHelper getInstance() {
@@ -312,5 +316,42 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
 
         return ts;
 
+    }
+
+    /*
+        * get list of all channels showing a certain show
+     */
+    public List<TvChannel> getChannelsShowingAShow(int showId){
+        String selectQuery = "SELECT  DISTINCT  "+ TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID +" FROM " + TvScheduleDatabase.TvRecord.TABLE_NAME + " WHERE "
+                + TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID + " = " + showId;
+
+        List<TvChannel> TvChannelsList =new ArrayList<TvChannel>();
+
+        Cursor c = null;
+        try {
+
+            // check connection
+            if (!database.isOpen()) {
+                database = getReadableDatabase();
+            }
+            c = database.rawQuery(selectQuery, null);
+        } catch (SQLiteException e) {
+            Log.w(TAG, e.getMessage());
+        }
+        catch( IllegalStateException e){
+            Log.w(TAG, e.getMessage());
+        }
+        // looping through all rows and adding to list
+        if (c!= null && c.moveToFirst()) {
+
+
+            do {
+
+                TvChannelsList.add(this.getTvChannelById(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID))));
+            } while (c.moveToNext());
+
+            c.close();
+        }
+        return TvChannelsList;
     }
 }
