@@ -1,17 +1,21 @@
 package com.Ramdanak.ramdank;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
-import com.Ramdanak.ramdank.R;
 import com.Ramdanak.ramdank.model.Showable;
 import com.Ramdanak.ramdank.model.TvShow;
 
@@ -39,6 +43,15 @@ public class Show extends Activity {
 
     private MyCustomBaseAdapter adapter;
 
+    private TextView ratingText;
+
+    private ImageButton shareButton;
+
+    private Button favouriteButton;
+
+    private Button videoButton;
+
+    private Button descriptionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +63,58 @@ public class Show extends Activity {
 
         tvShowLogo=(ImageView) findViewById(R.id.showLogo);
 
-
         tvShowLogo.setImageBitmap(tvShow.getLogo());
+
+        ratingText=(TextView) findViewById(R.id.ratingText);
+
+        ratingText.setText(String.valueOf(tvShow.getRate()));
+
+        shareButton=(ImageButton) findViewById(R.id.facebookShare);
+        //TODO add action to facebook share button
+
+        favouriteButton =(Button) findViewById(R.id.favouriteButton);
+
+        if(tvShow.isFavorite())
+            favouriteButton.setText("ازل من المفضله");
+
+        favouriteButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                //Update tvShow isFavourite attribute
+                //TODO move this to AsyncTask- if needed
+               if(tvShow.isFavorite()){
+                    //TODO ADD is_favourite to database
+                   favouriteButton.setText("اضف للمفضله");
+               }
+               else{
+                   //TODO ADD is_favourite to database
+                   favouriteButton.setText("ازل من المفضله");
+               }
+
+            }
+
+        });
+
+        videoButton=(Button) findViewById(R.id.videoButton);
+
+
+
+        videoButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(tvShow.getTrailer())));
+            }
+
+        });
+
+
+        descriptionButton=(Button) findViewById(R.id.favouriteButton);
+
+        //TODO add Show description to database to show a popup-window contains description of show
+
+
 
         tvShowNameView=(TextView) findViewById(R.id.name);
 
@@ -120,4 +183,6 @@ public class Show extends Activity {
             setChannelListView();
         }
     }
+
+
 }

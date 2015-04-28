@@ -1,5 +1,6 @@
 package com.Ramdanak.ramdank.DbHelper;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -42,12 +43,11 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         super(context, DB_NAME, null, DATABASE_VERSION);
 
         try {
-
             database = getReadableDatabase();
-        } catch (SQLiteAssetException e) {
-            Log.e(TAG, e.getMessage());
+       } catch (SQLiteAssetException e) {
+           Log.e(TAG, e.getMessage());
 
-            throw new InstantiationError("Failed to initialize the database.");    // terminate the program
+           throw new InstantiationError("Failed to initialize the database.");    // terminate the program
         }
 
     }
@@ -353,5 +353,23 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
             c.close();
         }
         return TvChannelsList;
+    }
+
+    /*
+
+       Update TvShow
+    */
+    public int updateTvShow(TvShow show) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_NAME,show.getName());
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING,show.getRating());
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_LOGO,BitmapHelper.bitmapToBytes(show.getLogo()));
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_TRAILER,show.getTrailer());
+
+        // updating row
+        return db.update(TvScheduleDatabase.TvShows.TABLE_NAME, values, TvScheduleDatabase.TvShows.COLUMN_NAME_ID + " = ?",
+                new String[] { String.valueOf(show.getId()) });
     }
 }

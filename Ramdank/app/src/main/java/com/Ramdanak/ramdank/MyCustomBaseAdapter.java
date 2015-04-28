@@ -48,6 +48,7 @@ public class MyCustomBaseAdapter extends BaseAdapter {
             holder.imageIcon = (ImageView) convertView.findViewById(R.id.icon);
             holder.ratingBar=(RatingBar) convertView.findViewById(R.id.ratingBar);
             holder.favoriteStar=(ImageView) convertView.findViewById(R.id.favoriteStar);
+            holder.ratingText=(TextView) convertView.findViewById(R.id.ratingText);
 
             convertView.setTag(holder);
         } else {
@@ -62,6 +63,7 @@ public class MyCustomBaseAdapter extends BaseAdapter {
         else
           holder.favoriteStar.setImageResource(R.drawable.empty_star);
 
+        holder.ratingText.setText(String.valueOf(arrayList.get(position).getRate()));
         return convertView;
     }
 
@@ -76,5 +78,6 @@ public class MyCustomBaseAdapter extends BaseAdapter {
         ImageView imageIcon;
         ImageView favoriteStar;
         RatingBar ratingBar;
+        TextView ratingText;
     }
 }

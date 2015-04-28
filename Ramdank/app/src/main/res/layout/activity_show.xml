@@ -19,11 +19,11 @@
 
             <ImageView
                 android:id="@+id/showLogo"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="10dp"
                 android:layout_marginTop="25dp"
                 android:scaleType="fitXY"
-                android:layout_width="150dp"
-                android:layout_height="200dp"
+                android:layout_width="100dp"
+                android:layout_height="170dp"
                 android:layout_alignParentRight="true"
                 />
 
@@ -42,36 +42,78 @@
                 android:textColor="#000"
                 android:textStyle="bold" />
 
-            <RatingBar android:id="@+id/ratingBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:numStars="5"
-                android:stepSize="1.0"
-                android:rating="3.5"
-                android:layout_marginTop="10dp"
-                android:layout_below="@+id/name"
-                android:layout_toLeftOf="@+id/showLogo"
-                android:layout_marginRight="20dp"
-                style="?android:attr/ratingBarStyleSmall"
-                >
-            </RatingBar>
+                 <RatingBar android:id="@+id/ratingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:stepSize="1.0"
+                    android:rating="3.5"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@+id/name"
+                    android:layout_toLeftOf="@+id/showLogo"
+                    android:layout_marginRight="20dp"
+                    style="?android:attr/ratingBarStyleSmall"
+                />
+
+                 <TextView
+                   android:id="@+id/ratingText"
+                    android:text="4.8"
+                    android:layout_toLeftOf="@id/ratingBar"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@+id/name"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"/>
 
                 <Button
                     android:id="@+id/videoButton"
                     android:background="@drawable/button_shape"
-                    android:drawableRight="@drawable/ic_action_forward"
-                    android:layout_width="120dp"
-                    android:layout_height="50dp"
+                    android:layout_width="150dp"
+                    android:layout_height="40dp"
                     android:text="شاهد الفيديو"
                     android:textColor="#000"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
                     android:layout_marginTop="20dp"
                     android:layout_below="@+id/ratingBar"
                     android:layout_toLeftOf="@+id/showLogo"
+                    android:drawableRight="@drawable/arrow"
                     />
 
+            <ImageButton
+                android:id="@+id/facebookShare"
+                android:background="@drawable/button_shape"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_toLeftOf="@+id/videoButton"
+                android:layout_below="@+id/ratingBar"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/share"
+                />
 
+                <Button
+                    android:id="@+id/favouriteButton"
+                    android:background="@drawable/button_shape"
+                    android:text="اضف للمفضله"
+                    android:layout_below="@+id/videoButton"
+                    android:layout_toLeftOf="@+id/showLogo"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_width="150dp"
+                    android:textColor="#000"
+                    android:drawableRight="@drawable/glow_star"
+                    android:layout_height="40dp"/>
 
+                <Button
+                    android:id="@+id/descriptionButton"
+                    android:layout_toLeftOf="@+id/favouriteButton"
+                    android:text="التفاصيل"
+                    android:background="@drawable/button_shape"
+                    android:drawableRight="@drawable/arrow"
+                    android:layout_below="@+id/facebookShare"
+                    android:layout_width="150dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_height="40dp" />
 
 
         </RelativeLayout>
