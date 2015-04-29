@@ -74,7 +74,7 @@ public class ShowsRunningNowFragment extends Fragment {
                 {
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        //do some thing here which you need
+
                     }
                 });
 

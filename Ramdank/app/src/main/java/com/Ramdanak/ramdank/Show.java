@@ -1,7 +1,9 @@
 package com.Ramdanak.ramdank;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
+import android.media.Rating;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -51,7 +53,7 @@ public class Show extends Activity {
 
     private Button videoButton;
 
-    private Button descriptionButton;
+    private Button ratingButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,11 +112,18 @@ public class Show extends Activity {
         });
 
 
-        descriptionButton=(Button) findViewById(R.id.favouriteButton);
-
-        //TODO add Show description to database to show a popup-window contains description of show
+        ratingButton=(Button) findViewById(R.id.ratingButton);
 
 
+
+        ratingButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                addRating();
+            }
+
+        });
 
         tvShowNameView=(TextView) findViewById(R.id.name);
 
@@ -155,6 +164,36 @@ public class Show extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    /*
+        shows dialogBox to add rating to the show
+     */
+    private void addRating(){
+
+        //TODO add field to database previous_user_rate to tell the user it's details and if he want to change it or not
+        final Dialog rankDialog = new Dialog(Show.this, R.style.FullHeightDialog);
+        rankDialog.setContentView(R.layout.rank_dialog);
+        rankDialog.setCancelable(true);
+
+        //TODO add a facebook share button to share user rating :)
+
+       final RatingBar ratingBar = (RatingBar)rankDialog.findViewById(R.id.dialog_ratingbar);
+
+
+        TextView text = (TextView) rankDialog.findViewById(R.id.rank_dialog_text1);
+
+
+        Button updateButton = (Button) rankDialog.findViewById(R.id.rank_dialog_button);
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float ratingValue=ratingBar.getRating();
+                //TODO add rating value to user rating in database,and post in server
+                rankDialog.dismiss();
+            }
+        });
+
+        rankDialog.show();
+    }
     /*
           set list view of channels
    */
