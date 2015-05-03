@@ -36,6 +36,19 @@
             android:textColor="#000"
             android:textStyle="bold" />
 
+    <TextView
+        android:id="@+id/viewActionText"
+        android:textColor="#000"
+        android:textSize="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableRight="@drawable/arrow"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="15dp"
+        android:visibility="gone"
+        />
+
     <RatingBar android:id="@+id/ratingBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

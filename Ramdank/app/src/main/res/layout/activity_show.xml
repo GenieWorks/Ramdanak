@@ -67,50 +67,40 @@
                 <Button
                     android:id="@+id/videoButton"
                     android:background="@drawable/button_shape"
-                    android:layout_width="150dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:text="شاهد الفيديو"
                     android:textColor="#000"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="20dp"
-                    android:layout_below="@+id/ratingBar"
+                    android:layout_below="@+id/ratingText"
                     android:layout_toLeftOf="@+id/showLogo"
                     android:drawableRight="@drawable/arrow"
                     />
 
-            <ImageButton
-                android:id="@+id/facebookShare"
-                android:background="@drawable/button_shape"
-                android:layout_width="150dp"
-                android:layout_height="40dp"
-                android:layout_toLeftOf="@+id/videoButton"
-                android:layout_below="@+id/ratingBar"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="20dp"
-                android:src="@drawable/share"
-                />
+
 
                 <Button
                     android:id="@+id/favouriteButton"
                     android:background="@drawable/button_shape"
                     android:text="اضف للمفضله"
-                    android:layout_below="@+id/videoButton"
+                    android:layout_below="@+id/ratingButton"
                     android:layout_toLeftOf="@+id/showLogo"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginRight="60dp"
                     android:layout_marginTop="20dp"
-                    android:layout_width="150dp"
+                    android:layout_width="wrap_content"
                     android:textColor="#000"
                     android:drawableRight="@drawable/glow_star"
                     android:layout_height="40dp"/>
 
                 <Button
                     android:id="@+id/ratingButton"
-                    android:layout_toLeftOf="@+id/favouriteButton"
+                    android:layout_toLeftOf="@+id/videoButton"
                     android:text="اضف تقييم"
                     android:background="@drawable/button_shape"
                     android:drawableRight="@drawable/arrow"
-                    android:layout_below="@+id/facebookShare"
-                    android:layout_width="150dp"
+                    android:layout_below="@+id/ratingText"
+                    android:layout_width="wrap_content"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="20dp"
                     android:layout_height="40dp" />
@@ -156,6 +146,7 @@
                 android:layout_below="@+id/listText"
                 android:divider="#d9d9d9"
                 android:background="#fff"
+                android:cacheColorHint="#00000000"
                 android:dividerHeight="1dp" />
         </RelativeLayout>
 

@@ -22,7 +22,11 @@ public class MyCustomBaseAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
 
-    public MyCustomBaseAdapter(Context context, ArrayList<Showable> series) {
+    //action text in listView viewed in Channel and Show Activities list view
+    private String actionText;
+
+    public MyCustomBaseAdapter(Context context, ArrayList<Showable> series,String action) {
+        this.actionText=action;
         this.arrayList = series;
         this.mInflater = LayoutInflater.from(context);
     }
@@ -49,6 +53,7 @@ public class MyCustomBaseAdapter extends BaseAdapter {
             holder.ratingBar=(RatingBar) convertView.findViewById(R.id.ratingBar);
             holder.favoriteStar=(ImageView) convertView.findViewById(R.id.favoriteStar);
             holder.ratingText=(TextView) convertView.findViewById(R.id.ratingText);
+            holder.actionTextView=(TextView) convertView.findViewById(R.id.viewActionText);
 
             convertView.setTag(holder);
         } else {
@@ -58,10 +63,22 @@ public class MyCustomBaseAdapter extends BaseAdapter {
         holder.txtName.setText(arrayList.get(position).getName());
         holder.imageIcon.setImageBitmap(arrayList.get(position).getLogo());
         holder.ratingBar.setRating((float)arrayList.get(position).getRate());
-        if(arrayList.get(position).isFavorite())
+
+        //default hide action textView and show favorite star
+        holder.favoriteStar.setVisibility(View.VISIBLE);
+        holder.actionTextView.setVisibility(View.GONE);
+
+        if(arrayList.get(position).isFavorite()&&actionText=="") {
             holder.favoriteStar.setImageResource(R.drawable.glow_star);
-        else
-          holder.favoriteStar.setImageResource(R.drawable.empty_star);
+        }
+        else if(actionText=="") {
+            holder.favoriteStar.setImageResource(R.drawable.empty_star);
+        }
+        else {
+            holder.actionTextView.setText(actionText);
+            holder.actionTextView.setVisibility(View.VISIBLE);
+            holder.favoriteStar.setVisibility(View.GONE);
+        }
 
         holder.ratingText.setText(String.valueOf(arrayList.get(position).getRate()));
         return convertView;
@@ -79,5 +96,6 @@ public class MyCustomBaseAdapter extends BaseAdapter {
         ImageView favoriteStar;
         RatingBar ratingBar;
         TextView ratingText;
+        TextView actionTextView;
     }
 }

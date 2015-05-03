@@ -59,7 +59,7 @@ public class ShowsFragment extends Fragment   {
 
     private void setListView() {
         ListView listView = (ListView) v.findViewById(R.id.srListView);
-        adapter = new MyCustomBaseAdapter(this.getActivity(), seriesList);
+        adapter = new MyCustomBaseAdapter(this.getActivity(), seriesList,"");
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }

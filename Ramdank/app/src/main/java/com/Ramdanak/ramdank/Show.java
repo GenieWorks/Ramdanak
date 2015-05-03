@@ -47,7 +47,7 @@ public class Show extends Activity {
 
     private TextView ratingText;
 
-    private ImageButton shareButton;
+
 
     private Button favouriteButton;
 
@@ -71,7 +71,7 @@ public class Show extends Activity {
 
         ratingText.setText(String.valueOf(tvShow.getRate()));
 
-        shareButton=(ImageButton) findViewById(R.id.facebookShare);
+
         //TODO add action to facebook share button
 
         favouriteButton =(Button) findViewById(R.id.favouriteButton);
@@ -199,7 +199,7 @@ public class Show extends Activity {
    */
     private void setChannelListView() {
 
-        adapter = new MyCustomBaseAdapter(this, channelList);
+        adapter = new MyCustomBaseAdapter(this, channelList,"اعرض المواعيد");
         channelsListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
