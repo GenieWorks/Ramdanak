@@ -62,7 +62,7 @@ public class MyCustomBaseAdapter extends BaseAdapter {
 
         holder.txtName.setText(arrayList.get(position).getName());
         holder.imageIcon.setImageBitmap(arrayList.get(position).getLogo());
-        holder.ratingBar.setRating((float)arrayList.get(position).getRate());
+        holder.ratingBar.setRating(arrayList.get(position).getRate());
 
         //default hide action textView and show favorite star
         holder.favoriteStar.setVisibility(View.VISIBLE);

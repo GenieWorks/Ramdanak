@@ -10,9 +10,12 @@ public class TvShow implements Showable {
     private int id;
     private String name;
     private String trailer;
-    //private byte[] logo;
     private Bitmap logo;
-    private double rating;
+    private float rating;
+    private float previous_rate;
+    private String description;
+    //0 if not in favorite list and 1 otherwise
+    private int is_favorite;
 
     /**
      * Create an instance with id
@@ -30,12 +33,24 @@ public class TvShow implements Showable {
         this.trailer = trailer;
     }
 
-    public void setRating(double rating) {
+    public void setRating(float rating) {
         this.rating = rating;
+    }
+
+    public void setPrevious_rate(float previous_rate) {
+        this.previous_rate = previous_rate;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setLogo(Bitmap logo) {
         this.logo = logo;
+    }
+
+    public void setIs_favorite(int is_favorite) {
+        this.is_favorite = is_favorite;
     }
 
     public int getId() {
@@ -57,15 +72,25 @@ public class TvShow implements Showable {
     }
 
     @Override
-    public double getRate(){return rating;}
+    public float getRate(){return rating;}
 
     //TODO add is_favorite to database and get info from it
     @Override
     public boolean isFavorite(){return true;}
 
-    public double getRating() {
+    public float getRating() {
         return rating;
     }
 
+    public String getDescription() {
+        return description;
+    }
 
+    public float getPrevious_rate() {
+        return previous_rate;
+    }
+
+    public int getIs_favorite() {
+        return is_favorite;
+    }
 }
