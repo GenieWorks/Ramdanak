@@ -23,7 +23,7 @@ public interface Showable {
      * Gets the object rating
      * @return
      */
-    double getRate();
+    float getRate();
     /**
      * returns boolean to indicate if show or channel is in favorite list or not
      * @return

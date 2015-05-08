@@ -56,7 +56,7 @@ public class ChannelsFragment extends Fragment {
     */
     private void setListView() {
        ListView listView = (ListView) v.findViewById(R.id.channelList);
-       adapter = new MyCustomBaseAdapter(this.getActivity(), channelList);
+       adapter = new MyCustomBaseAdapter(this.getActivity(), channelList,"");
        listView.setAdapter(adapter);
        adapter.notifyDataSetChanged();
 

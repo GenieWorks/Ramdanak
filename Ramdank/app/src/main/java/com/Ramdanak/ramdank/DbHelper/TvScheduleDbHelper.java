@@ -1,5 +1,6 @@
 package com.Ramdanak.ramdank.DbHelper;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -42,12 +43,11 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         super(context, DB_NAME, null, DATABASE_VERSION);
 
         try {
-
             database = getReadableDatabase();
-        } catch (SQLiteAssetException e) {
-            Log.e(TAG, e.getMessage());
+       } catch (SQLiteAssetException e) {
+           Log.e(TAG, e.getMessage());
 
-            throw new InstantiationError("Failed to initialize the database.");    // terminate the program
+           throw new InstantiationError("Failed to initialize the database.");    // terminate the program
         }
 
     }
@@ -101,21 +101,28 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
 
         // looping through all rows and adding to list
         if (c!= null && c.moveToFirst()) {
-            TvShow ts;  int id; String name, trailer; double rating; byte[] logo;
+            TvShow ts;  int id,is_favorite; String name, trailer,description; float rating,previous_rate; byte[] logo;
+
             Log.d(TAG, "loading shows");
             do {
 
                 id = c.getInt(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_ID));
                 name = c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_NAME));
                 trailer = c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_TRAILER));
-                rating = c.getDouble(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING));
+                rating = c.getFloat(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING));
                 logo = c.getBlob(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_LOGO));
+                previous_rate=c.getFloat(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_PREVIOUS_RATING));
+                description=c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_DESCRIPTION));
+                is_favorite=c.getInt(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_IS_FAVORITE));
 
                 ts = new TvShow(id);
                 ts.setName(name);
                 ts.setLogo(BitmapHelper.BytesToBitmap(logo));
                 ts.setRating(rating);
                 ts.setTrailer(trailer);
+                ts.setDescription(description);
+                ts.setPrevious_rate(previous_rate);
+                ts.setIs_favorite(is_favorite);
 
                 TvShowsList.add(ts);
 
@@ -151,25 +158,26 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         }
         // looping through all rows and adding to list
         if (c!= null && c.moveToFirst()) {
-            TvChannel tc; int id, vertical; String name, code, frequency; double rating; byte[] logo;
+            TvChannel tc; int id,is_favorite, vertical; String name, description; float rating,previous_rating; byte[] logo;
 
             do {
 
                 id = c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_ID));
                 name = c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME));
-                code = c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_CODE));
-                frequency = c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_FREQUENCY));
-                rating = c.getDouble(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING));
+
+                rating = c.getFloat(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING));
                 logo = c.getBlob(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO));
-                vertical = c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_VERTICAL));
+                previous_rating=c.getFloat(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_PREVIOUS_RATE));
+                description=c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_DESCRIPTION));
+                is_favorite=c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_IS_FAVORITE));
 
                 tc = new TvChannel(id);
                 tc.setName(name);
                 tc.setLogo(BitmapHelper.BytesToBitmap(logo));
-                tc.setCode(code);
-                tc.setFrequency(frequency);
                 tc.setRating(rating);
-                tc.setVertical(vertical);
+                tc.setPrevious_rate(previous_rating);
+                tc.setDescription(description);
+                tc.setIs_favorite(is_favorite);
 
                 TvChannelsList.add(tc);
             } while (c.moveToNext());
@@ -265,12 +273,12 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
 
         //tc.setId(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_ID)));
         //tc.setRating_count(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT)));
-        tc.setRating(c.getDouble(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING)));
+        tc.setRating(c.getFloat(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING)));
         tc.setLogo(BitmapHelper.BytesToBitmap(c.getBlob(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO))));
         tc.setName(c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME)));
-        tc.setCode(c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_CODE)));
-        tc.setFrequency(c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_FREQUENCY)));
-        tc.setVertical(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_VERTICAL)));
+        tc.setDescription(c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_DESCRIPTION)));
+        tc.setPrevious_rate(c.getFloat(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_PREVIOUS_RATE)));
+        tc.setIs_favorite(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_IS_FAVORITE)));
 
         return tc;
 
@@ -305,14 +313,13 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
 
         TvShow ts = new TvShow(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_ID)));
 
-        //tc.setId(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_ID)));
-        //tc.setRating_count(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT)));
-        ts.setRating(c.getDouble(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING)));
+        ts.setRating(c.getFloat(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING)));
+        ts.setPrevious_rate(c.getFloat(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_PREVIOUS_RATING)));
+        ts.setDescription(c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_DESCRIPTION)));
         ts.setLogo(BitmapHelper.BytesToBitmap(c.getBlob(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_LOGO))));
         ts.setName(c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_NAME)));
-       ts.setTrailer(c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_TRAILER)));
-
-
+        ts.setTrailer(c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_TRAILER)));
+        ts.setIs_favorite(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_IS_FAVORITE)));
 
         return ts;
 
@@ -353,5 +360,26 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
             c.close();
         }
         return TvChannelsList;
+    }
+
+    /*
+
+       Update TvShow
+    */
+    public int updateTvShow(TvShow show) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_NAME,show.getName());
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING,show.getRating());
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_LOGO,BitmapHelper.bitmapToBytes(show.getLogo()));
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_TRAILER,show.getTrailer());
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_DESCRIPTION,show.getDescription());
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_PREVIOUS_RATING,show.getPrevious_rate());
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_IS_FAVORITE,show.getIs_favorite());
+
+        // updating row
+        return db.update(TvScheduleDatabase.TvShows.TABLE_NAME, values, TvScheduleDatabase.TvShows.COLUMN_NAME_ID + " = ?",
+                new String[] { String.valueOf(show.getId()) });
     }
 }

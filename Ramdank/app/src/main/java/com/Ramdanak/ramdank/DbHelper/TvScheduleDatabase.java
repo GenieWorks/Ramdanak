@@ -18,8 +18,9 @@ public final class TvScheduleDatabase {
         public static final String COLUMN_NAME_TRAILER = "trailer";
         public static final String COLUMN_NAME_LOGO = "logo";
         public static final String COLUMN_NAME_RATING = "rating";
-
-
+        public static final String COLUMN_NAME_PREVIOUS_RATING="previous_rate";
+        public static final String COLUMN_NAME_DESCRIPTION = "description";
+        public static final String COLUMN_NAME_IS_FAVORITE="is_favorite";
     }
 
     /**
@@ -32,10 +33,10 @@ public final class TvScheduleDatabase {
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_LOGO = "logo";
         public static final String COLUMN_NAME_RATING = "rating";
+        public static final String COLUMN_NAME_PREVIOUS_RATE="previous_rate";
+        public static final String COLUMN_NAME_DESCRIPTION = "description";
+        public static final String COLUMN_NAME_IS_FAVORITE="is_favorite";
 
-        public static final String COLUMN_NAME_FREQUENCY = "frequency";
-        public static final String COLUMN_NAME_CODE = "code";
-        public static final String COLUMN_NAME_VERTICAL = "vertical";
     }
 
     /**

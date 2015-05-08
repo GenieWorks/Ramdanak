@@ -1,17 +1,23 @@
 package com.Ramdanak.ramdank;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Intent;
+import android.media.Rating;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
-import com.Ramdanak.ramdank.R;
 import com.Ramdanak.ramdank.model.Showable;
 import com.Ramdanak.ramdank.model.TvShow;
 
@@ -39,6 +45,15 @@ public class Show extends Activity {
 
     private MyCustomBaseAdapter adapter;
 
+    private TextView ratingText;
+
+
+
+    private Button favouriteButton;
+
+    private Button videoButton;
+
+    private Button ratingButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +65,65 @@ public class Show extends Activity {
 
         tvShowLogo=(ImageView) findViewById(R.id.showLogo);
 
-
         tvShowLogo.setImageBitmap(tvShow.getLogo());
+
+        ratingText=(TextView) findViewById(R.id.ratingText);
+
+        ratingText.setText(String.valueOf(tvShow.getRate()));
+
+
+        //TODO add action to facebook share button
+
+        favouriteButton =(Button) findViewById(R.id.favouriteButton);
+
+        if(tvShow.isFavorite())
+            favouriteButton.setText("ازل من المفضله");
+
+        favouriteButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                //Update tvShow isFavourite attribute
+                //TODO move this to AsyncTask- if needed
+               if(tvShow.isFavorite()){
+                    //TODO ADD is_favourite to database
+                   favouriteButton.setText("اضف للمفضله");
+               }
+               else{
+                   //TODO ADD is_favourite to database
+                   favouriteButton.setText("ازل من المفضله");
+               }
+
+            }
+
+        });
+
+        videoButton=(Button) findViewById(R.id.videoButton);
+
+
+
+        videoButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(tvShow.getTrailer())));
+            }
+
+        });
+
+
+        ratingButton=(Button) findViewById(R.id.ratingButton);
+
+
+
+        ratingButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                addRating();
+            }
+
+        });
 
         tvShowNameView=(TextView) findViewById(R.id.name);
 
@@ -93,11 +165,41 @@ public class Show extends Activity {
     }
 
     /*
+        shows dialogBox to add rating to the show
+     */
+    private void addRating(){
+
+        //TODO add field to database previous_user_rate to tell the user it's details and if he want to change it or not
+        final Dialog rankDialog = new Dialog(Show.this, R.style.FullHeightDialog);
+        rankDialog.setContentView(R.layout.rank_dialog);
+        rankDialog.setCancelable(true);
+
+        //TODO add a facebook share button to share user rating :)
+
+       final RatingBar ratingBar = (RatingBar)rankDialog.findViewById(R.id.dialog_ratingbar);
+
+
+        TextView text = (TextView) rankDialog.findViewById(R.id.rank_dialog_text1);
+
+
+        Button updateButton = (Button) rankDialog.findViewById(R.id.rank_dialog_button);
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float ratingValue=ratingBar.getRating();
+                //TODO add rating value to user rating in database,and post in server
+                rankDialog.dismiss();
+            }
+        });
+
+        rankDialog.show();
+    }
+    /*
           set list view of channels
    */
     private void setChannelListView() {
 
-        adapter = new MyCustomBaseAdapter(this, channelList);
+        adapter = new MyCustomBaseAdapter(this, channelList,"اعرض المواعيد");
         channelsListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -120,4 +222,6 @@ public class Show extends Activity {
             setChannelListView();
         }
     }
+
+
 }

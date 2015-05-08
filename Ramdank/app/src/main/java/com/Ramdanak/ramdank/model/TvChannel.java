@@ -14,10 +14,11 @@ public class TvChannel  implements Showable {
     private int id;
     private String name;
     private Bitmap logo;
-    private double rating;
-    private String frequency;
-    private String code;
-    private int vertical;
+    private float rating;
+    private float previous_rate;
+    private String description;
+    //0 if not in favorite list and 1 otherwise
+    private int is_favorite;
 
     public TvChannel(int id) {
         this.id = id;
@@ -38,7 +39,11 @@ public class TvChannel  implements Showable {
     }
 
     @Override
-    public double getRate(){return rating;}
+    public float getRate(){return rating;}
+
+    public int getIs_favorite() {
+        return is_favorite;
+    }
 
     //TODO add is_favorite to database and get info from it
     @Override
@@ -48,16 +53,12 @@ public class TvChannel  implements Showable {
         return rating;
     }
 
-    public String getFrequency() {
-        return frequency;
+    public float getPrevious_rate() {
+        return previous_rate;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public int getVertical() {
-        return vertical;
+    public String getDescription() {
+        return description;
     }
 
     public void setName(String name) {
@@ -68,20 +69,20 @@ public class TvChannel  implements Showable {
         this.logo = logo;
     }
 
-    public void setRating(double rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 
-    public void setFrequency(String frequency) {
-        this.frequency = frequency;
+    public void setPrevious_rate(float previous_rate) {
+        this.previous_rate = previous_rate;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public void setVertical(int vertical) {
-        this.vertical = vertical;
+    public void setIs_favorite(int is_favorite) {
+        this.is_favorite = is_favorite;
     }
 }
 
