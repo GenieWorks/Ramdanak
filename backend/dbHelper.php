@@ -29,7 +29,7 @@ function open_database() {
  */
 function update_show_rating($show, $user_rating) {
     // get the rating count and the current rating for the show
-    $query = "SELECT Rating_count, Rating FROM Show WHER Show_ID = " . $show;
+    $query = "SELECT rating_count, rating FROM Show WHER _id = " . $show;
     $result = mysql_query($query);
     
     if (!$result) {
@@ -42,8 +42,8 @@ function update_show_rating($show, $user_rating) {
     // calculate the new rating
     $new_rating = ($rating_count * $rating + $user_rating) / ($rating_count + 1);
     
-    $query = "UPDATE Show SET Rating_count = " . ($rating_count + 1)
-            . " Rating = " . $new_rating . " WHERE Show_ID = " . $show;
+    $query = "UPDATE Show SET rating_count = " . ($rating_count + 1)
+            . " rating = " . $new_rating . " WHERE _id = " . $show;
     
     return mysql_query($query);
 }
@@ -56,7 +56,7 @@ function update_show_rating($show, $user_rating) {
  */
 function update_channel_rating($channel, $user_rating) {
     // get the rating count and the current rating for the channel
-    $query = "SELECT Rating_count, Rating FROM Channel WHER Channel_ID = " . $channel;
+    $query = "SELECT rating_count, rating FROM Channel WHER _id = " . $channel;
     $result = mysql_query($query);
     
     if (!$result) {
@@ -69,8 +69,8 @@ function update_channel_rating($channel, $user_rating) {
     // calculate the new rating
     $new_rating = ($rating_count * $rating + $user_rating) / ($rating_count + 1);
     
-    $query = "UPDATE Channel SET Rating_count = " . ($rating_count + 1)
-            . " Rating = " . $new_rating . " WHERE Channel_ID = " . $channel;
+    $query = "UPDATE Channel SET rating_count = " . ($rating_count + 1)
+            . " rating = " . $new_rating . " WHERE _id = " . $channel;
     
     return mysql_query($query);
 }
