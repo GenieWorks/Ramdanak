@@ -12,3 +12,4 @@ Ramdank/gradle/wrapper/gradle-wrapper.properties
 Ramdank/app/build/intermediates/res/debug/drawable-mdpi-v4/abc_textfield_search_default_mtrl_alpha.9.png
 *.jpg
 Ramdank/app/build/
+.idea/
