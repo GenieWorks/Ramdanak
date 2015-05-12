@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 import com.Ramdanak.ramdank.model.Showable;
 import com.Ramdanak.ramdank.model.TvShow;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 
@@ -47,13 +48,15 @@ public class Show extends Activity {
 
     private TextView ratingText;
 
-
+    private TextView description;
 
     private Button favouriteButton;
 
     private Button videoButton;
 
     private Button ratingButton;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +70,14 @@ public class Show extends Activity {
 
         tvShowLogo.setImageBitmap(tvShow.getLogo());
 
+
         ratingText=(TextView) findViewById(R.id.ratingText);
 
         ratingText.setText(String.valueOf(tvShow.getRate()));
 
+        description=(TextView) findViewById(R.id.descText);
+
+        description.setText(tvShow.getDescription());
 
         //TODO add action to facebook share button
 
@@ -133,10 +140,10 @@ public class Show extends Activity {
 
         tvShowRatingBar.setRating((float)tvShow.getRate());
 
-        channelsListView=(ListView) findViewById(R.id.channelList);
+       channelsListView=(ListView) findViewById(R.id.channelList);
 
-        if (channelList == null) {
-            FetchDataWorker worker = new FetchDataWorker();
+       if (channelList == null) {
+           FetchDataWorker worker = new FetchDataWorker();
             worker.execute();
         } else {
             setChannelListView();
@@ -201,9 +208,9 @@ public class Show extends Activity {
 
         adapter = new MyCustomBaseAdapter(this, channelList,"اعرض المواعيد");
         channelsListView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+       adapter.notifyDataSetChanged();
 
-    }
+   }
 
     /**
      * Fetch the data of the shows from the database
@@ -219,7 +226,7 @@ public class Show extends Activity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            setChannelListView();
+           setChannelListView();
         }
     }
 
