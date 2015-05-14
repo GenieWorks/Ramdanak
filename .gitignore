@@ -9,3 +9,5 @@ Ramdank/build.gradle
 Ramdank/gradle/wrapper/gradle-wrapper.properties
 
 .idea/
+Ramdank/app/build/
+backend/nbproject/private/
