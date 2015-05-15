@@ -45,9 +45,14 @@ public class TvChannel  implements Showable {
         return is_favorite;
     }
 
-    //TODO add is_favorite to database and get info from it
+    //0-> not favourite ,1->favourite
     @Override
-    public boolean isFavorite(){ return true;}
+    public boolean isFavorite(){
+        if(this.is_favorite==0)
+            return false;
+       else
+            return true;
+    }
 
     public double getRating() {
         return rating;

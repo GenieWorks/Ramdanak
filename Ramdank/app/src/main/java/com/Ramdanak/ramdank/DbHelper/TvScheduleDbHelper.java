@@ -378,8 +378,10 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_PREVIOUS_RATING,show.getPrevious_rate());
         values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_IS_FAVORITE,show.getIs_favorite());
 
+
         // updating row
         return db.update(TvScheduleDatabase.TvShows.TABLE_NAME, values, TvScheduleDatabase.TvShows.COLUMN_NAME_ID + " = ?",
                 new String[] { String.valueOf(show.getId()) });
+
     }
 }

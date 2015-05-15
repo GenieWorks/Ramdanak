@@ -91,13 +91,18 @@ public class Show extends Activity {
             @Override
             public void onClick(View arg0) {
                 //Update tvShow isFavourite attribute
-                //TODO move this to AsyncTask- if needed
                if(tvShow.isFavorite()){
-                    //TODO ADD is_favourite to database
+                   tvShow.setIs_favorite(0);
+                  // dbHelper.updateTvShow(tvShow);
+                   UpDateDataWorker myWorker=new UpDateDataWorker();
+                   myWorker.execute();
                    favouriteButton.setText("اضف للمفضله");
                }
                else{
-                   //TODO ADD is_favourite to database
+                   tvShow.setIs_favorite(1);
+                   //dbHelper.updateTvShow(tvShow);
+                   UpDateDataWorker myWorker=new UpDateDataWorker();
+                   myWorker.execute();
                    favouriteButton.setText("ازل من المفضله");
                }
 
@@ -227,6 +232,23 @@ public class Show extends Activity {
             super.onPostExecute(aVoid);
 
            setChannelListView();
+        }
+    }
+
+    /**
+     * Update TvShow
+     */
+    private class UpDateDataWorker extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            //TODO check if this method is correct
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            dbHelper.updateTvShow(tvShow);
         }
     }
 
