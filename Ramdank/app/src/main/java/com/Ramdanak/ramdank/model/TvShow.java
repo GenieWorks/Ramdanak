@@ -49,6 +49,7 @@ public class TvShow implements Showable {
         this.logo = logo;
     }
 
+    //0-> not favourite ,1->favourite
     public void setIs_favorite(int is_favorite) {
         this.is_favorite = is_favorite;
     }
@@ -74,9 +75,14 @@ public class TvShow implements Showable {
     @Override
     public float getRate(){return rating;}
 
-    //TODO add is_favorite to database and get info from it
+    //0->not favourite 1->favourite
     @Override
-    public boolean isFavorite(){return true;}
+    public boolean isFavorite(){
+        if(this.is_favorite==0)
+            return false;
+        else
+            return true;
+    }
 
     public float getRating() {
         return rating;
