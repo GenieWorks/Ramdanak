@@ -6,4 +6,6 @@ package com.Ramdanak.ramdank;
 public abstract class Globals {
 
     public static int tvShowId;
+
+    public static int tvChannelId;
 }
