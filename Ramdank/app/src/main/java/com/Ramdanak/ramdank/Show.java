@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 import com.Ramdanak.ramdank.model.Showable;
+import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvShow;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -146,6 +148,17 @@ public class Show extends Activity {
         tvShowRatingBar.setRating((float)tvShow.getRate());
 
        channelsListView=(ListView) findViewById(R.id.channelList);
+
+        channelsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                TvChannel tvChannelSelected =(TvChannel) channelsListView.getItemAtPosition(position);
+                Globals.tvChannelId=tvChannelSelected.getId();
+                Intent intent = new Intent(Show.this,times.class);
+                startActivity(intent);
+            }
+        });
 
        if (channelList == null) {
            FetchDataWorker worker = new FetchDataWorker();
