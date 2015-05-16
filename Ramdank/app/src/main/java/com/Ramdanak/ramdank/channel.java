@@ -2,11 +2,13 @@ package com.Ramdanak.ramdank;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 import com.Ramdanak.ramdank.model.Showable;
 import com.Ramdanak.ramdank.model.TvChannel;
+import com.Ramdanak.ramdank.model.TvShow;
 
 import java.util.ArrayList;
 
@@ -125,6 +128,17 @@ public class channel extends Activity {
         tvChannelRatingBar.setRating((float)tvChannel.getRate());
 
         showsListView=(ListView) findViewById(R.id.showsList);
+
+        showsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                TvShow tvShowSelected =(TvShow) showsListView.getItemAtPosition(position);
+                Globals.tvShowId=tvShowSelected.getId();
+                Intent intent = new Intent(channel.this,times.class);
+                startActivity(intent);
+            }
+        });
 
         if (showsList == null) {
             FetchDataWorker worker = new FetchDataWorker();
