@@ -199,7 +199,9 @@ public class Show extends Activity {
             @Override
             public void onClick(View v) {
                 float ratingValue=ratingBar.getRating();
-                //TODO add rating value to user rating in database,and post in server
+                tvShow.setPrevious_rate(ratingValue);
+                UpDateDataWorker myWorker=new UpDateDataWorker();
+                myWorker.execute();
                 rankDialog.dismiss();
             }
         });
@@ -213,12 +215,12 @@ public class Show extends Activity {
 
         adapter = new MyCustomBaseAdapter(this, channelList,"اعرض المواعيد");
         channelsListView.setAdapter(adapter);
-       adapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
 
    }
 
     /**
-     * Fetch the data of the shows from the database
+     * Fetch the data of the channels from the database
      */
     private class FetchDataWorker extends AsyncTask<Void, Void, Void> {
         @Override
