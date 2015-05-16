@@ -23,7 +23,7 @@ import java.util.Objects;
 public class UpdateManager {
 
     private class SendRating extends AsyncTask<Object, Void, Boolean> {
-
+        private final String TAG = "RatingTask";
         /**
          * @see AsyncTask<Object, Void, Boolean>.doInBackground
          * @param params id comes first, then the rating value as double. Finally true if channel
@@ -32,23 +32,29 @@ public class UpdateManager {
          */
         @Override
         protected Boolean doInBackground(Object... params) {
-            int id = (int) params[0];
-            double raring = (double) params[1];
-            boolean isChannelRating = (boolean) params[2];
+            int id = (Integer) params[0];
+            double raring = (Double) params[1];
+            boolean isChannelRating = (Boolean) params[2];
+
+            NetworkManager manager = NetworkManager.getInstance();
+            if(!manager.isConnected())
+                manager.enableWifi();
+            Log.d(TAG, "start");
 
             try{
                 HttpClient httpclient = new DefaultHttpClient();
-                HttpPost httppost = new HttpPost(NetworkManager.getInstance().getServerURL());
+                HttpPost httppost = new HttpPost(manager.getServerURL());
 
                 List nameValuePairs = new ArrayList<BasicNameValuePair>();
+                nameValuePairs.add(new BasicNameValuePair("request_type", "rating"));
 
                 if (isChannelRating)
-                    nameValuePairs.add(new BasicNameValuePair("POST_TYPE", "R_C"));
+                    nameValuePairs.add(new BasicNameValuePair("t", "c"));
                 else
-                    nameValuePairs.add(new BasicNameValuePair("POST_TYPE", "R_S"));
+                    nameValuePairs.add(new BasicNameValuePair("t", "s"));
 
                 nameValuePairs.add(new BasicNameValuePair("id", String.valueOf(id)));
-                nameValuePairs.add(new BasicNameValuePair("rating", String.valueOf(raring)));
+                nameValuePairs.add(new BasicNameValuePair("r", String.valueOf(raring)));
 
                 UrlEncodedFormEntity form = new UrlEncodedFormEntity(nameValuePairs, "UTF-8");
                 form.setContentEncoding(HTTP.UTF_8);
@@ -60,18 +66,18 @@ public class UpdateManager {
                 //Log.d(TAG, String.valueOf(response.getStatusLine().getStatusCode()));
                 int status = response.getStatusLine().getStatusCode();
                 if ( status == 200) {
-                    //  Log.d(TAG, "Success");
+                      Log.d(TAG, "Success");
                     return true;
                 } else if (status == 500) {
-                    //Log.e(TAG, "Internal server error");
+                    Log.e(TAG, "Internal server error");
                     return false;
                 } else {
-                    //Log.e(TAG, "bad argument!");
+                    Log.e(TAG, "bad argument! " + status);
                     return  false;
                 }
 
             } catch (Exception e) {
-                //Log.e(TAG, e.getMessage());
+                Log.e(TAG, e.getMessage());
                 return false;
             }
         }
