@@ -11,5 +11,17 @@ and open the template in the editor.
     </head>
     <body>
         <h1>Ramdanak</h1>
+        <?php 
+            include_once 'dbHelper.php';
+            $connection = open_database();
+            
+            if (!$connection) {
+                echo 'failled';
+            } else {
+                echo 'sucess';
+            }
+            
+            close_connection($connection);
+        ?>
     </body>
 </html>
