@@ -14,7 +14,7 @@ function open_database() {
     }
 
     // TODO: add database name
-    if (!mysqli_select_db($connection, "")) {
+    if (!mysqli_select_db($connection, "Ramdanak")) {
         return false;
     }
 
@@ -73,6 +73,19 @@ function update_channel_rating($channel, $user_rating) {
             . " rating = " . $new_rating . " WHERE _id = " . $channel;
     
     return mysql_query($query);
+}
+
+/**
+ * Gets the list of all avialable updates for the user.
+ * @param type $last_update last update id user have.
+ */
+function get_list_of_updates_for_user($last_update) {
+    $query = "SELECT * FROM Update WHERE id > " . $last_update;
+    $result = mysql_query($query);
+    
+    if (!$result) {
+        
+    }
 }
 
 /**
