@@ -1,10 +1,14 @@
-<RelativeLayout
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+  <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#87ceeb"
     >
+
 
     <ImageView
         android:id="@+id/showLogo"
@@ -103,6 +107,7 @@
         android:layout_marginTop="25dp"
         android:layout_below="@+id/videoButton"
         android:textSize="25dp"
+        android:gravity="right"
         android:layout_marginRight="1dp"
         android:layout_marginLeft="1dp"
         android:background="#eee9e9"
@@ -115,6 +120,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="مسلسل جامد فشخ"
+        android:gravity="right"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_below="@+id/desc"
         android:textSize="25dp"
@@ -129,6 +135,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="يعرض على:"
+        android:gravity="right"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_below="@+id/descText"
         android:textSize="25dp"
@@ -150,4 +157,5 @@
         android:dividerHeight="1dp" />
 
 
-</RelativeLayout>
+  </RelativeLayout>
+</ScrollView>

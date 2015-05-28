@@ -285,6 +285,53 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
     }
 
     /*
+        returns list of TvRecords by channel and show Ids
+     */
+    public ArrayList<TvRecord> getTvRecords(long tvShowId,long tvChannelId){
+
+        ArrayList<TvRecord> records=new ArrayList<TvRecord>();
+
+        String selectQuery = "SELECT  * FROM " + TvScheduleDatabase.TvRecord.TABLE_NAME + " WHERE "
+                + TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID + " = " + tvChannelId+" AND "
+                +TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID+" = "+tvShowId;
+
+        Cursor c = null;
+        try {
+
+            // check connection
+            if (!database.isOpen()) {
+                database = getReadableDatabase();
+            }
+            c = database.rawQuery(selectQuery, null);
+        } catch (SQLiteException e) {
+            Log.w(TAG, e.getMessage());
+        }
+        catch( IllegalStateException e){
+            Log.w(TAG, e.getMessage());
+        }
+
+        // looping through all rows and adding to list
+        if (c!= null && c.moveToFirst()) {
+
+
+            do {
+                TvRecord record=new TvRecord(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_ID)));
+
+                record.setChannelId(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID)));
+                record.setShowId(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID)));
+                record.setStartTime(c.getString(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME)));
+                record.setEndTime(c.getString(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME)));
+
+
+                records.add(record);
+            } while (c.moveToNext());
+
+            c.close();
+        }
+        return records;
+    }
+
+    /*
            get TvShow by Id
     */
     public TvShow getTvShowById(long tvShowId){
