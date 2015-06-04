@@ -67,6 +67,7 @@ public class channel extends Activity {
 
         tvChannelLogo.setImageBitmap(tvChannel.getLogo());
 
+        this.setTitle(tvChannel.getName());
 
         ratingText=(TextView) findViewById(R.id.ratingText);
 

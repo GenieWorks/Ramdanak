@@ -66,12 +66,15 @@ public class Show extends Activity {
         setContentView(R.layout.activity_show);
         dbHelper=TvScheduleDbHelper.getInstance();
 
+        this.setTitle("");
+
         tvShow=dbHelper.getTvShowById(Globals.tvShowId);
 
         tvShowLogo=(ImageView) findViewById(R.id.showLogo);
 
         tvShowLogo.setImageBitmap(tvShow.getLogo());
 
+        this.setTitle(tvShow.getName());
 
         ratingText=(TextView) findViewById(R.id.ratingText);
 

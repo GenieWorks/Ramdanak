@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
@@ -22,6 +25,8 @@ public class ShowsFragment extends Fragment   {
     private MyCustomBaseAdapter adapter;
     private View v;
     private ListView listView;
+
+    private EditText inputSearch;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,7 @@ public class ShowsFragment extends Fragment   {
             }
         });
 
+
         // do it only once
         if (seriesList == null) {
             FetchDataWorker worker = new FetchDataWorker();
@@ -52,6 +58,25 @@ public class ShowsFragment extends Fragment   {
         } else {
             setListView();
         }
+
+        inputSearch=(EditText) v.findViewById(R.id.inputSearch);
+
+        inputSearch.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+                adapter.getFilter().filter(cs.toString());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                          int arg3) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+            }
+        });
 
         return v;
     }

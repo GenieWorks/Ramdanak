@@ -1,6 +1,8 @@
 package com.Ramdanak.ramdank;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
@@ -8,16 +10,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.Ramdanak.ramdank.model.Showable;
 
-public class MyCustomBaseAdapter extends BaseAdapter {
+
+public class MyCustomBaseAdapter extends BaseAdapter implements Filterable {
     //for debugging
     private static String TAG = "CustomBaseAdapter";
 
+    private ArrayList<Showable> originalData;
+
+    //filtered data
     private ArrayList<Showable> arrayList;
 
     private LayoutInflater mInflater;
@@ -25,9 +33,13 @@ public class MyCustomBaseAdapter extends BaseAdapter {
     //action text in listView viewed in Channel and Show Activities list view
     private String actionText;
 
+    private ItemFilter mFilter;
+
     public MyCustomBaseAdapter(Context context, ArrayList<Showable> series,String action) {
         this.actionText=action;
         this.arrayList = series;
+        this.originalData=series;
+        mFilter = new ItemFilter();
         this.mInflater = LayoutInflater.from(context);
     }
 
@@ -84,6 +96,8 @@ public class MyCustomBaseAdapter extends BaseAdapter {
         return convertView;
     }
 
+
+
     public void updateList(ArrayList<Showable> newList) {
         arrayList.clear();
         arrayList.addAll(newList);
@@ -97,5 +111,46 @@ public class MyCustomBaseAdapter extends BaseAdapter {
         RatingBar ratingBar;
         TextView ratingText;
         TextView actionTextView;
+    }
+
+    public Filter getFilter() {
+        return mFilter;
+    }
+
+    private class ItemFilter extends Filter {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+
+            String filterString = constraint.toString().toLowerCase();
+
+            FilterResults results = new FilterResults();
+
+            final List<Showable> list = originalData;
+
+            int count = list.size();
+            final ArrayList<Showable> nlist = new ArrayList<Showable>(count);
+
+            String filterableString ;
+
+            for (int i = 0; i < count; i++) {
+                filterableString = list.get(i).getName();
+                if (filterableString.toLowerCase().contains(filterString)) {
+                    nlist.add(list.get(i));
+                }
+            }
+
+            results.values = nlist;
+            results.count = nlist.size();
+
+            return results;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            arrayList = (ArrayList<Showable>) results.values;
+            notifyDataSetChanged();
+        }
+
     }
 }

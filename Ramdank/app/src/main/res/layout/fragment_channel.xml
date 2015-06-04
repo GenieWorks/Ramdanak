@@ -8,6 +8,14 @@
     android:gravity="center_vertical|left"
     >
 
+
+    <EditText android:id="@+id/inputSearch"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="ابحث عن قناه..."
+        android:inputType="textVisiblePassword"/>
+
+
     <ListView
         android:id="@+id/channelList"
         android:layout_width="fill_parent"
