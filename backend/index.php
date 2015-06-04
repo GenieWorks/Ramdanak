@@ -15,13 +15,14 @@ and open the template in the editor.
             include_once 'dbHelper.php';
             $connection = open_database();
             
-            if (!$connection) {
+            if ($connection == null) {
                 echo 'failled';
             } else {
                 echo 'sucess';
+                close_connection($connection);
             }
             
-            close_connection($connection);
+            
         ?>
     </body>
 </html>

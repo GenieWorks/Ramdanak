@@ -14,7 +14,7 @@ $request_type = filter_input(INPUT_POST, 'request_type');
 $connection = open_database();
 
 // couldn't open a database connection
-if ($connection == FALSE) {
+if ($connection == null) {
     header('HTTP/1.1 500 Server Down', true, 500);
 }
 
@@ -28,17 +28,22 @@ if (strcmp($request_type, "updates") == 0) {
 
     $user_rating = filter_input(INPUT_POST, 'r');
     $type = filter_input(INPUT_POST, 't');
+    $result = false;
 
     if (strcmp($type, "channel")) {
         $show = filter_input(INPUT_POST, 'id');
-        update_show_rating($show, $user_rating);
+        $result = update_show_rating($show, $user_rating);
     } else {
         $channel = filter_input(INPUT_POST, 'id');
-        update_channel_rating($channel, $user_rating);
+        $result = update_channel_rating($channel, $user_rating);
     }
 
-    // send the okay header
-    header('HTTP/1.1 200 OK!', true, 200);
+    if ($result) {
+        // send the okay header
+        header('HTTP/1.1 200 OK!', true, 200);
+    } else {
+        header('HTTP/1.1 500 Server Down', true, 500);
+    }
 } else {
     header('HTTP/1.1 400 Bad Request', true, 400);
 }

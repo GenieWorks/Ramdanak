@@ -15,7 +15,7 @@ function open_database() {
 
     // TODO: add database name
     if (!mysqli_select_db($connection, "Ramdanak")) {
-        return false;
+        return null;
     }
 
     return $connection;
@@ -60,7 +60,7 @@ function update_channel_rating($channel, $user_rating) {
     $result = mysql_query($query);
     
     if (!$result) {
-        die('Could not query:' . mysql_error());
+        return false;
     }
     
     $rating_count = mysql_result($result, 0);
@@ -93,7 +93,7 @@ function get_list_of_updates_for_user($last_update) {
  * @param mysql_connection $connection current open connection
  */
 function close_connection($connection) {
-    if ($connection != NULL || $connection != FALSE) {
+    if ($connection != NULL) {
         mysql_close($connection);
     }
 }
