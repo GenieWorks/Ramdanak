@@ -8,6 +8,11 @@
     android:gravity="center_vertical|left"
     >
 
+    <EditText android:id="@+id/inputSearch"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="ابحث عن مسلسل او برنامج..."
+        android:inputType="textVisiblePassword"/>
     <ListView
         android:id="@+id/srListView"
         android:layout_width="fill_parent"
