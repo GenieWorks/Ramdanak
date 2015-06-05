@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
@@ -57,8 +58,6 @@ public class Show extends Activity {
     private Button videoButton;
 
     private Button ratingButton;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,21 +171,30 @@ public class Show extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate menu resource file.
         getMenuInflater().inflate(R.menu.show, menu);
+
+        // Locate MenuItem with ShareActionProvider
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+
+        // Fetch and store ShareActionProvider
+        ShareActionProvider mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+
+        if (mShareActionProvider != null) {
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, "المسلسل ده فشيخ " + tvShow.getName());
+            shareIntent.setType("text/plain");
+            mShareActionProvider.setShareIntent(shareIntent);
+        }
+
+        // Return true to display menu
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    // Call to update the share intent
+    private void setShareIntent(Intent shareIntent) {
+
     }
 
     /*
