@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
@@ -7,7 +8,15 @@
     android:background="#fff"
     android:gravity="center_vertical|left"
     >
-
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/banner_ad_unit_id">
+    </com.google.android.gms.ads.AdView>
 
     <EditText android:id="@+id/inputSearch"
         android:layout_width="fill_parent"
@@ -16,12 +25,16 @@
         android:inputType="textVisiblePassword"/>
 
 
+
     <ListView
         android:id="@+id/channelList"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/inputSearch"
         android:divider="#d9d9d9"
         android:cacheColorHint="#00000000"
         android:dividerHeight="1dp" />
 
-</LinearLayout>
+
+
+</RelativeLayout>

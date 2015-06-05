@@ -16,6 +16,8 @@ import android.widget.ListView;
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 import com.Ramdanak.ramdank.model.Showable;
 import com.Ramdanak.ramdank.model.TvShow;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 
@@ -38,6 +40,10 @@ public class ShowsFragment extends Fragment   {
                              Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.shows_layout, container, false);
         listView= (ListView) v.findViewById(R.id.srListView);
+
+        AdView mAdView = (AdView) v.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

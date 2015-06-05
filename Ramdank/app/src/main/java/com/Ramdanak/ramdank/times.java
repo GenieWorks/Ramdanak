@@ -18,6 +18,8 @@ import com.Ramdanak.ramdank.R;
 import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvRecord;
 import com.Ramdanak.ramdank.model.TvShow;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -57,6 +59,10 @@ public class times extends Activity {
         dbHelper=TvScheduleDbHelper.getInstance();
 
         timesListView=(ListView) findViewById(R.id.timesList);
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         timesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

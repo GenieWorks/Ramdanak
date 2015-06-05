@@ -18,6 +18,8 @@ import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 import com.Ramdanak.ramdank.model.Showable;
 import com.Ramdanak.ramdank.model.TvRecord;
 import com.Ramdanak.ramdank.model.TvShow;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 
@@ -45,6 +47,9 @@ public class ShowsRunningNowFragment extends Fragment {
                              Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.shows_layout, container, false);
 
+        AdView mAdView = (AdView) v.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         // do it only once
         if (seriesList == null) {

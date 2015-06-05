@@ -24,6 +24,8 @@ import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 import com.Ramdanak.ramdank.model.Showable;
 import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvShow;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.nio.channels.Channel;
 import java.util.ArrayList;
@@ -61,6 +63,10 @@ public class ChannelsFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        AdView mAdView = (AdView) v.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
 
         // do it only once
