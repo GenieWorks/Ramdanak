@@ -3,7 +3,6 @@ package com.Ramdanak.ramdank;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,7 +13,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
-import com.Ramdanak.ramdank.R;
 import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvRecord;
 import com.Ramdanak.ramdank.model.TvShow;
@@ -25,11 +23,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-/*
-        show times of a certain series or programme  on a certain channel
-        ,and allow the user to choose a certain time to make the app remind him on time
+/**
+ * show times of a certain series or programme  on a certain channel
+ ,and allow the user to choose a certain time to make the app remind him on time
  */
-
 public class times extends Activity {
 
     private static ArrayList<TvRecord> recordsList;
@@ -45,6 +42,7 @@ public class times extends Activity {
     private TvChannel myChannel;
 
     private TvScheduleDbHelper dbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +50,7 @@ public class times extends Activity {
 
         this.setTitle("مواعيد العرض");
 
-        myAlarm=new AlarmAdapter();
+        myAlarm=new AlarmAdapter(this);
 
         dbHelper=TvScheduleDbHelper.getInstance();
 
@@ -102,7 +100,7 @@ public class times extends Activity {
     }
 
     /*
-        *Message to tell the user he wants to add a reminder orr not
+        *Message to tell the user he wants to add a reminder or not
      */
     private void reminderMessage(final Calendar cal){
 
