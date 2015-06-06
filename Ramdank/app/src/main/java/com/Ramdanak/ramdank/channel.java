@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,8 +21,15 @@ import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 import com.Ramdanak.ramdank.model.Showable;
 import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvShow;
+import com.parse.FunctionCallback;
+import com.parse.GetCallback;
+import com.parse.ParseCloud;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /*
 
@@ -77,8 +85,6 @@ public class channel extends Activity {
         description=(TextView) findViewById(R.id.descText);
 
         description.setText(tvChannel.getDescription());
-
-        //TODO add action to facebook share button
 
         favouriteButton =(Button) findViewById(R.id.favouriteButton);
 
@@ -179,22 +185,16 @@ public class channel extends Activity {
     /*
         shows dialogBox to add rating to the show
      */
-    private void addRating(){
-
+    private void addRating() {
         //TODO add field to database previous_user_rate to tell the user it's details and if he want to change it or not
         final Dialog rankDialog = new Dialog(channel.this, R.style.FullHeightDialog);
         rankDialog.setContentView(R.layout.rank_dialog);
         rankDialog.setCancelable(true);
 
-        //TODO add a facebook share button to share user rating :)
-
         final RatingBar ratingBar = (RatingBar)rankDialog.findViewById(R.id.dialog_ratingbar);
-
-
         TextView text = (TextView) rankDialog.findViewById(R.id.rank_dialog_text1);
-
-
         Button updateButton = (Button) rankDialog.findViewById(R.id.rank_dialog_button);
+
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,6 +202,22 @@ public class channel extends Activity {
                 tvChannel.setPrevious_rate(ratingValue);
                 UpDateDataWorker myWorker=new UpDateDataWorker();
                 myWorker.execute();
+
+                /// send user rating to server
+                HashMap<String, String> values = new HashMap<String, String>();
+                values.put("server_id", tvChannel.getServer_id());
+                values.put("rating", String.valueOf(ratingBar.getRating()));
+                ParseCloud.callFunctionInBackground("channelRating", values, new FunctionCallback<String>() {
+                    @Override
+                    public void done(String s, ParseException e) {
+                        if (e == null) {
+                            Log.d(Application.TAG, s);
+                        } else {
+                            Log.e(Application.TAG, "failed to update rating to the cloud", e);
+                        }
+                    }
+                });
+
                 rankDialog.dismiss();
             }
         });
