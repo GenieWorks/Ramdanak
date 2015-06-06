@@ -51,6 +51,7 @@ public class ShowsRunningNowFragment extends Fragment {
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
+
         // do it only once
         if (seriesList == null) {
             FetchDataWorker worker = new FetchDataWorker();
@@ -80,6 +81,16 @@ public class ShowsRunningNowFragment extends Fragment {
 
 
         return v;
+    }
+
+    /*
+        to update the listView onResume
+     */
+    @Override
+    public void onResume(){
+        super.onResume();
+        FetchDataWorker worker = new FetchDataWorker();
+        worker.execute();
     }
 
     private void setListView() {

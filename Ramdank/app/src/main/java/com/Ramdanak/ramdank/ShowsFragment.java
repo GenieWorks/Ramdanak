@@ -41,9 +41,7 @@ public class ShowsFragment extends Fragment   {
         v = inflater.inflate(R.layout.shows_layout, container, false);
         listView= (ListView) v.findViewById(R.id.srListView);
 
-        AdView mAdView = (AdView) v.findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -56,6 +54,9 @@ public class ShowsFragment extends Fragment   {
             }
         });
 
+        AdView mAdView = (AdView) v.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         // do it only once
         if (seriesList == null) {
@@ -85,6 +86,16 @@ public class ShowsFragment extends Fragment   {
         });
 
         return v;
+    }
+
+    /*
+        to update the listView onResume
+     */
+    @Override
+    public void onResume(){
+       super.onResume();
+        FetchDataWorker worker = new FetchDataWorker();
+        worker.execute();
     }
 
 

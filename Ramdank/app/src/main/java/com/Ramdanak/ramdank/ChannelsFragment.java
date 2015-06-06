@@ -51,6 +51,11 @@ public class ChannelsFragment extends Fragment {
                              Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_channel, container, false);
 
+        AdView mAdView = (AdView) v.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+
         listView= (ListView) v.findViewById(R.id.channelList);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -63,10 +68,6 @@ public class ChannelsFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
-        AdView mAdView = (AdView) v.findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
 
 
         // do it only once
@@ -98,6 +99,18 @@ public class ChannelsFragment extends Fragment {
 
         return v;
     }
+
+
+    /*
+        to update the listView onResume
+     */
+    @Override
+    public void onResume(){
+        super.onResume();
+        FetchDataWorker worker = new FetchDataWorker();
+        worker.execute();
+    }
+
 
     /*
            set list view data according to the chosen tab
