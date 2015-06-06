@@ -20,6 +20,10 @@ public class TvChannel  implements Showable {
     //0 if not in favorite list and 1 otherwise
     private int is_favorite;
 
+    private int rating_count;
+    private int priority;
+    private String server_id;
+
     public TvChannel(int id) {
         this.id = id;
     }
@@ -62,6 +66,18 @@ public class TvChannel  implements Showable {
         return previous_rate;
     }
 
+    public int getRating_count() {
+        return rating_count;
+    }
+
+    public String getServer_id() {
+        return server_id;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -88,6 +104,18 @@ public class TvChannel  implements Showable {
 
     public void setIs_favorite(int is_favorite) {
         this.is_favorite = is_favorite;
+    }
+
+    public void setServer_id(String server_id) {
+        this.server_id = server_id;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public void setRating_count(int rating_count) {
+        this.rating_count = rating_count;
     }
 }
 

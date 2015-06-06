@@ -12,6 +12,10 @@ public class TvRecord {
     private String startTime;
     private String endTime;
 
+    //0 for not reminded ,and 1 for reminded
+    private int is_reminded;
+    private String server_id;
+
     public TvRecord(int id) {
         this.id = id;
     }
@@ -36,6 +40,20 @@ public class TvRecord {
         return channelId;
     }
 
+    public int getIs_reminded() {
+        return is_reminded;
+    }
+
+    public String getServer_id() {
+        return server_id;
+    }
+
+    public boolean is_reminded(){
+        if(is_reminded==0)
+            return false;
+        return true;
+    }
+
     public void setChannelId(int channelId) {
         this.channelId = channelId;
     }
@@ -50,5 +68,13 @@ public class TvRecord {
 
     public void setShowId(int showId) {
         this.showId = showId;
+    }
+
+    public void setIs_reminded(int is_reminded) {
+        this.is_reminded = is_reminded;
+    }
+
+    public void setServer_id(String server_id) {
+        this.server_id = server_id;
     }
 }

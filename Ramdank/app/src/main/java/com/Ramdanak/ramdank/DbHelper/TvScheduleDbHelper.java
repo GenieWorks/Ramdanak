@@ -101,7 +101,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
 
         // looping through all rows and adding to list
         if (c!= null && c.moveToFirst()) {
-            TvShow ts;  int id,is_favorite; String name, trailer,description; float rating,previous_rate; byte[] logo;
+            TvShow ts;  int id,is_favorite,priority,rating_count; String name,server_id, trailer,description; float rating,previous_rate; byte[] logo;
 
             Log.d(TAG, "loading shows");
             do {
@@ -114,6 +114,9 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
                 previous_rate=c.getFloat(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_PREVIOUS_RATING));
                 description=c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_DESCRIPTION));
                 is_favorite=c.getInt(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_IS_FAVORITE));
+                server_id=c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_SERVER_ID));
+                priority=c.getInt(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_PRIORITY));
+                rating_count=c.getInt(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT));
 
                 ts = new TvShow(id);
                 ts.setName(name);
@@ -123,6 +126,9 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
                 ts.setDescription(description);
                 ts.setPrevious_rate(previous_rate);
                 ts.setIs_favorite(is_favorite);
+                ts.setPriority(priority);
+                ts.setServer_id(server_id);
+                ts.setRating_count(rating_count);
 
                 TvShowsList.add(ts);
 
@@ -158,7 +164,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         }
         // looping through all rows and adding to list
         if (c!= null && c.moveToFirst()) {
-            TvChannel tc; int id,is_favorite, vertical; String name, description; float rating,previous_rating; byte[] logo;
+            TvChannel tc; int id,is_favorite,rating_count,priority; String name,server_id, description; float rating,previous_rating; byte[] logo;
 
             do {
 
@@ -171,6 +177,11 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
                 description=c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_DESCRIPTION));
                 is_favorite=c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_IS_FAVORITE));
 
+                priority=c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_PRIORITY));
+                server_id=c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_SERVER_ID));
+                rating_count=c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT));
+
+
                 tc = new TvChannel(id);
                 tc.setName(name);
                 tc.setLogo(BitmapHelper.BytesToBitmap(logo));
@@ -178,6 +189,9 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
                 tc.setPrevious_rate(previous_rating);
                 tc.setDescription(description);
                 tc.setIs_favorite(is_favorite);
+                tc.setRating_count(rating_count);
+                tc.setServer_id(server_id);
+                tc.setPriority(priority);
 
                 TvChannelsList.add(tc);
             } while (c.moveToNext());
@@ -218,7 +232,8 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
 
         // looping through all rows and adding to list
         if (c!= null && c.moveToFirst()) {
-            TvRecord tr; int id, showId,channelId; String startTime, endTime;
+            TvRecord tr; int id, showId,channelId,is_reminded; String startTime, endTime;
+            String server_id;
 
             do {
 
@@ -227,14 +242,16 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
                 channelId = c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID));
                 startTime = c.getString(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME));
                 endTime = c.getString(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME));
-
+                is_reminded=c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_IS_REMINDED));
+                server_id=c.getString(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_SERVER_ID));
 
                 tr = new TvRecord(id);
                 tr.setShowId(showId);
                 tr.setChannelId(channelId);
                 tr.setStartTime(startTime);
                 tr.setEndTime(endTime);
-
+                tr.setIs_reminded(is_reminded);
+                tr.setServer_id(server_id);
 
                 TvRecordsNow.add(tr);
             } while (c.moveToNext());
@@ -279,6 +296,9 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         tc.setDescription(c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_DESCRIPTION)));
         tc.setPrevious_rate(c.getFloat(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_PREVIOUS_RATE)));
         tc.setIs_favorite(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_IS_FAVORITE)));
+        tc.setPriority(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_PRIORITY)));
+        tc.setServer_id(c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_SERVER_ID)));
+        tc.setRating_count(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT)));
 
         return tc;
 
@@ -321,7 +341,8 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
                 record.setShowId(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID)));
                 record.setStartTime(c.getString(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME)));
                 record.setEndTime(c.getString(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME)));
-
+                record.setIs_reminded(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_IS_REMINDED)));
+                record.setServer_id(c.getString(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_SERVER_ID)));
 
                 records.add(record);
             } while (c.moveToNext());
@@ -367,6 +388,9 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         ts.setName(c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_NAME)));
         ts.setTrailer(c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_TRAILER)));
         ts.setIs_favorite(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_IS_FAVORITE)));
+        ts.setRating_count(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT)));
+        ts.setPriority(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_PRIORITY)));
+        ts.setServer_id(c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_SERVER_ID)));
 
         return ts;
 
@@ -461,7 +485,9 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_DESCRIPTION,show.getDescription());
         values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_PREVIOUS_RATING,show.getPrevious_rate());
         values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_IS_FAVORITE,show.getIs_favorite());
-
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT,show.getPrevious_rate());
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_PRIORITY,show.getPriority());
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_SERVER_ID,show.getServer_id());
 
         // updating row
         return db.update(TvScheduleDatabase.TvShows.TABLE_NAME, values, TvScheduleDatabase.TvShows.COLUMN_NAME_ID + " = ?",
@@ -484,6 +510,9 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO,BitmapHelper.bitmapToBytes(channel.getLogo()));
         values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME,channel.getName());
         values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_PREVIOUS_RATE,channel.getPrevious_rate());
+        values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT,channel.getRating_count());
+        values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_PRIORITY,channel.getPriority());
+        values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_SERVER_ID,channel.getServer_id());
 
         // updating row
         return db.update(TvScheduleDatabase.TvChannels.TABLE_NAME, values, TvScheduleDatabase.TvChannels.COLUMN_NAME_ID + " = ?",
