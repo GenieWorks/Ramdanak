@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 import com.Ramdanak.ramdank.BitmapHelper;
+import com.Ramdanak.ramdank.channel;
 import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvRecord;
 import com.Ramdanak.ramdank.model.TvShow;
@@ -517,6 +518,27 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         // updating row
         return db.update(TvScheduleDatabase.TvChannels.TABLE_NAME, values, TvScheduleDatabase.TvChannels.COLUMN_NAME_ID + " = ?",
                 new String[] { String.valueOf(channel.getId()) });
+
+    }
+
+    /*
+            Update TvRecord
+     */
+    public int updateTvRecord(TvRecord record) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_ID,record.getId());
+        values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID,record.getShowId());
+        values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID,record.getChannelId());
+        values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME,record.getStartTime());
+        values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME,record.getEndTime());
+        values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SERVER_ID,record.getServer_id());
+        values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_IS_REMINDED,record.is_reminded());
+
+        // updating row
+        return db.update(TvScheduleDatabase.TvRecord.TABLE_NAME, values, TvScheduleDatabase.TvRecord.COLUMN_NAME_ID + " = ?",
+                new String[] { String.valueOf(record.getId()) });
 
     }
 }

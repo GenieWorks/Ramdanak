@@ -10,6 +10,7 @@ import android.os.Build;
 import android.util.Log;
 
 /**
+ * Make a notification in the notification area.
  * Created by mohamed on 4/3/15.
  */
 public final class NotificationHelper {
@@ -20,20 +21,19 @@ public final class NotificationHelper {
     public static void makeNotification(Context context, String title, String message) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (Build.VERSION.SDK_INT >= 11) {
-            Notification.Builder builder = new Notification.Builder(context.getApplicationContext());
 
-            builder.setContentTitle(title)
-                    .setSmallIcon(R.drawable.ic_launcher)
-                    .setContentText(message)
-                    .setSound(soundUri);
+        Notification.Builder builder = new Notification.Builder(context.getApplicationContext());
 
-            Log.d(TAG, "making notification");
+        builder.setContentTitle(title)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentText(message)
+                .setSound(soundUri);
 
-            if (Build.VERSION.SDK_INT >= 16)
-                notificationManager.notify(0, builder.build());
-            else
-                notificationManager.notify(0, builder.getNotification());
-        }
+        Log.d(TAG, "making notification");
+
+        if (Build.VERSION.SDK_INT >= 16)
+            notificationManager.notify(0, builder.build());
+        else
+            notificationManager.notify(0, builder.getNotification());
     }
 }

@@ -3,9 +3,9 @@ package com.Ramdanak.ramdank;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,8 +13,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.Ramdanak.ramdank.DbHelper.TvScheduleDatabase;
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
-import com.Ramdanak.ramdank.R;
 import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvRecord;
 import com.Ramdanak.ramdank.model.TvShow;
@@ -27,11 +27,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-/*
-        show times of a certain series or programme  on a certain channel
-        ,and allow the user to choose a certain time to make the app remind him on time
+/**
+ * show times of a certain series or programme  on a certain channel
+ ,and allow the user to choose a certain time to make the app remind him on time
  */
-
 public class times extends Activity {
 
     private static ArrayList<TvRecord> recordsList;
@@ -47,6 +46,11 @@ public class times extends Activity {
     private TvChannel myChannel;
 
     private TvScheduleDbHelper dbHelper;
+
+    private TvRecord myRecord;
+
+    private static final String TAG = "Times";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +58,7 @@ public class times extends Activity {
 
         this.setTitle("مواعيد العرض");
 
-        myAlarm=new AlarmAdapter();
+        myAlarm=new AlarmAdapter(this);
 
         dbHelper=TvScheduleDbHelper.getInstance();
 
@@ -68,7 +72,8 @@ public class times extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                TvRecord myRecord =(TvRecord) timesListView.getItemAtPosition(position);
+                myRecord =(TvRecord) timesListView.getItemAtPosition(position);
+
                 Calendar cal = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm",Locale.FRANCE);
                 try {
@@ -76,7 +81,15 @@ public class times extends Activity {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                reminderMessage(cal);
+
+                //remind the user with this time
+                if(!myRecord.is_reminded()){
+                    reminderMessage(cal);
+                }
+                //cancel this remind
+                else{
+                    cancelReminderMessage(cal);
+                }
             }
         });
 
@@ -104,18 +117,11 @@ public class times extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
     /*
-        *Message to tell the user he wants to add a reminder orr not
+        *Message to tell the user he wants to add a reminder or not
      */
     private void reminderMessage(final Calendar cal){
 
@@ -125,9 +131,20 @@ public class times extends Activity {
                 .setMessage("Do you want the app to remind you on this time?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        myAlarm.setAlarmForShow(myShow.getName(), myChannel.getName(), cal);
-                        Toast.makeText(getApplicationContext(), "سيتم تذكيرك بهذا الميعاد طوال الشهر الكريم",
-                                Toast.LENGTH_LONG).show();
+                        try {
+                            myAlarm.setAlarmForShow(myShow.getName(), myChannel.getName(), cal);
+                            Toast.makeText(getApplicationContext(), "سنذكرك بهذا الموعد طوال الشهر الكريم",
+                                    Toast.LENGTH_SHORT).show();
+                            //upDate that TvRecord
+                            myRecord.setIs_reminded(1);
+                            UpdateDataWorker myWorker = new UpdateDataWorker();
+                            myWorker.execute();
+                        }
+                        catch(Exception e){
+                            e.printStackTrace();
+                            Log.e(TAG, String.valueOf(Globals.tvChannelId));
+                            Log.e(TAG, String.valueOf(Globals.tvShowId));
+                        }
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -139,6 +156,54 @@ public class times extends Activity {
         AlertDialog alert = builder.create();
         alert.show();
     }
+
+
+    /*
+        cancel reminder message
+     */
+    private void cancelReminderMessage(final Calendar cal){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder
+                .setTitle("Cancel Reminder")
+                .setMessage("Do you want to cancel this reminder?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            myAlarm.cancelAlarm(myShow.getName(), myChannel.getName(), cal);
+                            Toast.makeText(getApplicationContext(),"لن يتم تذكيرك بهذا الموعد مجددا" ,
+                                    Toast.LENGTH_SHORT).show();
+                            //upDate that TvRecord
+                            myRecord.setIs_reminded(0);
+                            UpdateDataWorker myWorker = new UpdateDataWorker();
+                            myWorker.execute();
+                        }
+                        catch(Exception e){
+                            e.printStackTrace();
+                            Log.e(TAG, String.valueOf(Globals.tvChannelId));
+                            Log.e(TAG, String.valueOf(Globals.tvShowId));
+                        }
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    @Override
+    public void onResume(){
+       super.onResume();
+        if(myShow==null||myChannel==null) {
+            FetchDataWorker worker = new FetchDataWorker();
+            worker.execute();
+        }
+    }
+
+
 
     /**
      * Fetch the data of the TvRecords from the database
@@ -161,5 +226,25 @@ public class times extends Activity {
         }
     }
 
+    /*
+        Update TvRecord worker
+     */
+    private class UpdateDataWorker  extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            dbHelper.updateTvRecord(myRecord);
+            //update ListView
+            FetchDataWorker worker = new FetchDataWorker();
+            worker.execute();
+        }
+    }
 
 }

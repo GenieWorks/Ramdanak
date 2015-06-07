@@ -49,6 +49,7 @@ public class TimesCustomBaseAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.remindText=(TextView) convertView.findViewById(R.id.remindText);
             holder.time = (TextView) convertView.findViewById(R.id.time);
+
             convertView.setTag(holder);
 
         } else {
@@ -56,6 +57,13 @@ public class TimesCustomBaseAdapter extends BaseAdapter {
         }
 
         holder.time.setText(arrayList.get(position).getStartTime());
+
+        if(!arrayList.get(position).is_reminded()){
+            holder.remindText.setText("ذكرنى");
+        }
+        else{
+            holder.remindText.setText("لا تذكرنى");
+        }
 
 
         return convertView;

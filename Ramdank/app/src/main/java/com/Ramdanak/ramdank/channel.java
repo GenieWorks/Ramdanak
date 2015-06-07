@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
@@ -126,7 +127,7 @@ public class channel extends Activity {
 
         tvChannelRatingBar=(RatingBar) findViewById(R.id.ratingBar);
 
-        tvChannelRatingBar.setRating((float)tvChannel.getRate());
+        tvChannelRatingBar.setRating((float) tvChannel.getRate());
 
         showsListView=(ListView) findViewById(R.id.showsList);
 
@@ -134,9 +135,9 @@ public class channel extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                TvShow tvShowSelected =(TvShow) showsListView.getItemAtPosition(position);
-                Globals.tvShowId=tvShowSelected.getId();
-                Intent intent = new Intent(channel.this,times.class);
+                TvShow tvShowSelected = (TvShow) showsListView.getItemAtPosition(position);
+                Globals.tvShowId = tvShowSelected.getId();
+                Intent intent = new Intent(channel.this, times.class);
                 startActivity(intent);
             }
         });
@@ -153,21 +154,26 @@ public class channel extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate menu resource file.
         getMenuInflater().inflate(R.menu.channel, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        // Locate MenuItem with ShareActionProvider
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+
+        // Fetch and store ShareActionProvider
+        ShareActionProvider mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+
+        if (mShareActionProvider != null) {
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, "افضل قناة في رمضان " + tvChannel.getName());
+            shareIntent.setType("text/plain");
+            mShareActionProvider.setShareIntent(shareIntent);
         }
-        return super.onOptionsItemSelected(item);
+
+
+        // Return true to display menu
+        return true;
     }
 
     /*
