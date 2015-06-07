@@ -56,19 +56,15 @@
         android:layout_width="30dp"
         android:layout_height="30dp"/>
 
-    <Button
-        android:id="@+id/favouriteButton"
-        android:background="@drawable/button_shape"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:text="اضف للمفضله"
-        android:textColor="#000"
-        android:layout_marginRight="50dp"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/channelLogo"
-        android:layout_alignParentRight="true"
-        android:drawableRight="@drawable/glow_star"
-        />
+    <ImageButton
+        android:id="@+id/imageButton1"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentLeft="true"
+        android:scaleType="fitXY"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/glow_star" />
 
 
 
@@ -80,9 +76,8 @@
         android:background="@drawable/button_shape"
         android:drawableRight="@drawable/arrow"
         android:layout_below="@+id/channelLogo"
-        android:layout_width="wrap_content"
-        android:layout_marginLeft="50dp"
-        android:layout_alignParentLeft="true"
+        android:layout_width="130dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:layout_height="40dp" />
 
@@ -92,8 +87,8 @@
         android:layout_height="wrap_content"
         android:text="التفاصيل"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_marginTop="25dp"
-        android:layout_below="@+id/favouriteButton"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/ratingButton"
         android:textSize="25dp"
         android:gravity="right"
         android:layout_marginRight="1dp"

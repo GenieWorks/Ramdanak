@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 import com.Ramdanak.ramdank.model.Showable;
@@ -98,31 +99,12 @@ public class ShowsRunningNowFragment extends Fragment {
         adapter = new MyCustomBaseAdapter(this.getActivity(), seriesList,"");
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-        if(seriesList.isEmpty())
-            noShowsMessage();
+        if(seriesList.isEmpty()) {
+            Toast.makeText(getActivity().getApplicationContext(),"لا توجد عروض الان رجاء حاول مجددا على رأس الساعه",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
-    /*
-        *shows message to tell user that there were no shows running now and to try again later
-     */
-    private void noShowsMessage(){
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(super.getActivity());
-        builder
-                .setTitle("لا توجد عروض الان")
-                .setMessage("لا توجد عروض الان رجاء حاول مجددا على رأس الساعه")
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton("موافق", new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-
-                    }
-                });
-
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
     /**
      * Fetch the data of the shows from the database
      */

@@ -5,8 +5,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 
 /**
  * Tabbed Activity to show(allSeries ,allChannels ,favourite series,favourite channels).
@@ -46,7 +44,6 @@ public class Main extends FragmentActivity {
         mTabHost.addTab(
                 mTabHost.newTabSpec("favouriteSeriesTab").setIndicator("يعرض الان"),
                 ShowsRunningNowFragment.class, null);
-
 
     }
 }

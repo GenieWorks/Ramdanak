@@ -16,7 +16,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 import com.Ramdanak.ramdank.model.Showable;
@@ -51,14 +53,11 @@ public class Show extends Activity {
 
     private TextView description;
 
-    private Button favouriteButton;
-
     private Button videoButton;
 
     private Button ratingButton;
 
-
-
+    private ImageButton favouriteImageButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,14 +82,16 @@ public class Show extends Activity {
 
         description.setText(tvShow.getDescription());
 
-        //TODO add action to facebook share button
-
-        favouriteButton =(Button) findViewById(R.id.favouriteButton);
+        favouriteImageButton=(ImageButton) findViewById(R.id.imageButton1);
 
         if(tvShow.isFavorite())
-            favouriteButton.setText("ازل من المفضله");
+            favouriteImageButton.setImageResource(R.drawable.glow_star);
+        else
+            favouriteImageButton.setImageResource(R.drawable.empty_star);
 
-        favouriteButton.setOnClickListener(new View.OnClickListener() {
+
+
+        favouriteImageButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -100,14 +101,18 @@ public class Show extends Activity {
                   // dbHelper.updateTvShow(tvShow);
                    UpDateDataWorker myWorker=new UpDateDataWorker();
                    myWorker.execute();
-                   favouriteButton.setText("اضف للمفضله");
+                   favouriteImageButton.setImageResource(R.drawable.empty_star);
+                   Toast.makeText(getApplicationContext(),"تمت الازاله من قائمه المفضلات لديك",
+                           Toast.LENGTH_SHORT).show();
                }
                else{
                    tvShow.setIs_favorite(1);
                    //dbHelper.updateTvShow(tvShow);
                    UpDateDataWorker myWorker=new UpDateDataWorker();
                    myWorker.execute();
-                   favouriteButton.setText("ازل من المفضله");
+                   favouriteImageButton.setImageResource(R.drawable.glow_star);
+                   Toast.makeText(getApplicationContext(),"تمت الأضافه الى قائمه المفضلات لديك",
+                           Toast.LENGTH_SHORT).show();
                }
 
             }
@@ -174,21 +179,30 @@ public class Show extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate menu resource file.
         getMenuInflater().inflate(R.menu.show, menu);
+
+        // Locate MenuItem with ShareActionProvider
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+
+        // Fetch and store ShareActionProvider
+        ShareActionProvider mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+
+        if (mShareActionProvider != null) {
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, "المسلسل ده فشيخ " + tvShow.getName());
+            shareIntent.setType("text/plain");
+            mShareActionProvider.setShareIntent(shareIntent);
+        }
+
+        // Return true to display menu
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    // Call to update the share intent
+    private void setShareIntent(Intent shareIntent) {
+
     }
 
     /*
@@ -204,7 +218,6 @@ public class Show extends Activity {
         //TODO add a facebook share button to share user rating :)
 
        final RatingBar ratingBar = (RatingBar)rankDialog.findViewById(R.id.dialog_ratingbar);
-
 
         TextView text = (TextView) rankDialog.findViewById(R.id.rank_dialog_text1);
 

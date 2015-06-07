@@ -2,7 +2,6 @@ package com.Ramdanak.ramdank;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -11,10 +10,10 @@ import android.util.Log;
 import java.util.Calendar;
 
 /**
- * AlarmAdapter creates, cancels alarms.
- * Created by mohamed on 4/3/15.
+ * Creates or cancels alarms.
+ * Created by Mohamed on 6/5/2015.
  */
-public final class AlarmAdapter extends BroadcastReceiver {
+public class AlarmAdapter {
     public static final String TAG = "ALARM_ADAPTER";
     public static final String TV = "TV";
     public static final String SHOW = "SHOW";
@@ -25,11 +24,20 @@ public final class AlarmAdapter extends BroadcastReceiver {
     private Context context;
 
     /**
+     * Construct instance of the adapter.
+     * @param context application context
+     */
+    public AlarmAdapter(Context context) {
+        this.context = context;
+        alarmManager = (AlarmManager) context.getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+    }
+
+    /**
      * Register an alarm.
      * @param calendar of the time of the alarm
      */
     public void setAlarmForShow(String show, String channel, Calendar calendar) {
-        Intent intent = new Intent(context.getApplicationContext(), AlarmAdapter.class);
+        Intent intent = new Intent(context.getApplicationContext(), AlarmEventReceiver.class);
 
         if (show != null && !show.equals("") && channel != null && !channel.equals("")) {
 
@@ -59,31 +67,5 @@ public final class AlarmAdapter extends BroadcastReceiver {
     public void cancelAlarm(String show, String channel, Calendar calendar) {
         setAlarmForShow(show, channel, calendar);
         alarmManager.cancel(pendingIntent);
-    }
-
-    /**
-     * Construct instance of the adapter
-     * @param context application context
-     */
-    public AlarmAdapter(Context context) {
-        this.context = context;
-        alarmManager = (AlarmManager) context.getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-    }
-
-    public AlarmAdapter() {
-
-    }
-
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "received alarm");
-        String channel = intent.getStringExtra(TV);
-        String show    = intent.getStringExtra(SHOW);
-
-        String title = "don't miss " + show;
-        String message = show + " is now on " + channel + ", don't miss it";
-
-        NotificationHelper.makeNotification(context, title, message);
     }
 }
