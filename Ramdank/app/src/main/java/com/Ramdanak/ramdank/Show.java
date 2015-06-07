@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 import com.Ramdanak.ramdank.model.Showable;
@@ -52,12 +53,11 @@ public class Show extends Activity {
 
     private TextView description;
 
-    private Button favouriteButton;
-
     private Button videoButton;
 
     private Button ratingButton;
 
+    private ImageButton favouriteImageButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,14 +82,16 @@ public class Show extends Activity {
 
         description.setText(tvShow.getDescription());
 
-        //TODO add action to facebook share button
-
-        favouriteButton =(Button) findViewById(R.id.favouriteButton);
+        favouriteImageButton=(ImageButton) findViewById(R.id.imageButton1);
 
         if(tvShow.isFavorite())
-            favouriteButton.setText("ازل من المفضله");
+            favouriteImageButton.setImageResource(R.drawable.glow_star);
+        else
+            favouriteImageButton.setImageResource(R.drawable.empty_star);
 
-        favouriteButton.setOnClickListener(new View.OnClickListener() {
+
+
+        favouriteImageButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -99,14 +101,18 @@ public class Show extends Activity {
                   // dbHelper.updateTvShow(tvShow);
                    UpDateDataWorker myWorker=new UpDateDataWorker();
                    myWorker.execute();
-                   favouriteButton.setText("اضف للمفضله");
+                   favouriteImageButton.setImageResource(R.drawable.empty_star);
+                   Toast.makeText(getApplicationContext(),"تمت الازاله من قائمه المفضلات لديك",
+                           Toast.LENGTH_SHORT).show();
                }
                else{
                    tvShow.setIs_favorite(1);
                    //dbHelper.updateTvShow(tvShow);
                    UpDateDataWorker myWorker=new UpDateDataWorker();
                    myWorker.execute();
-                   favouriteButton.setText("ازل من المفضله");
+                   favouriteImageButton.setImageResource(R.drawable.glow_star);
+                   Toast.makeText(getApplicationContext(),"تمت الأضافه الى قائمه المفضلات لديك",
+                           Toast.LENGTH_SHORT).show();
                }
 
             }
