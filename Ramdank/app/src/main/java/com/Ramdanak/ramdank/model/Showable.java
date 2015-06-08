@@ -29,4 +29,10 @@ public interface Showable {
      * @return
      */
     boolean isFavorite();
+
+    /**
+     * returns priority of this object
+     * @return int
+     */
+    int getPriority();
 }

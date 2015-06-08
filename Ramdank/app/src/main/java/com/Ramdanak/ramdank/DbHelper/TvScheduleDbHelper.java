@@ -486,7 +486,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_DESCRIPTION,show.getDescription());
         values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_PREVIOUS_RATING,show.getPrevious_rate());
         values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_IS_FAVORITE,show.getIs_favorite());
-        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT,show.getPrevious_rate());
+        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT,show.getRating_count());
         values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_PRIORITY,show.getPriority());
         values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_SERVER_ID,show.getServer_id());
 

@@ -56,6 +56,8 @@ public class channel extends Activity {
 
     private ImageButton favouriteImageButton;
 
+    private TextView ratingCountText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +78,10 @@ public class channel extends Activity {
 
         description=(TextView) findViewById(R.id.descText);
 
+        ratingCountText=(TextView) findViewById(R.id.ratingCount);
+
+        ratingCountText.setText (tvChannel.getRating_count()+ "  "+ "تقييم");
+
         description.setText(tvChannel.getDescription());
 
         favouriteImageButton=(ImageButton) findViewById(R.id.imageButton1);
@@ -92,6 +98,8 @@ public class channel extends Activity {
                 //Update tvShow isFavourite attribute
                 if(tvChannel.isFavorite()){
                     tvChannel.setIs_favorite(0);
+                    //add -100 priority if removed from favourites
+                    tvChannel.setPriority(tvChannel.getPriority()-100);
                     UpDateDataWorker myWorker=new UpDateDataWorker();
                     myWorker.execute();
                     favouriteImageButton.setImageResource(R.drawable.empty_star);
@@ -100,6 +108,8 @@ public class channel extends Activity {
                 }
                 else{
                     tvChannel.setIs_favorite(1);
+                    //add +100 priority if added to favourites
+                    tvChannel.setPriority(tvChannel.getPriority()+100);
                     UpDateDataWorker myWorker=new UpDateDataWorker();
                     myWorker.execute();
                     favouriteImageButton.setImageResource(R.drawable.glow_star);
@@ -185,7 +195,7 @@ public class channel extends Activity {
      */
     private void addRating(){
 
-        //TODO add field to database previous_user_rate to tell the user it's details and if he want to change it or not
+
         final Dialog rankDialog = new Dialog(channel.this, R.style.FullHeightDialog);
         rankDialog.setContentView(R.layout.rank_dialog);
         rankDialog.setCancelable(true);
@@ -194,6 +204,10 @@ public class channel extends Activity {
 
         final RatingBar ratingBar = (RatingBar)rankDialog.findViewById(R.id.dialog_ratingbar);
 
+        //channel was rated before
+        if(tvChannel.getPrevious_rate()!=0){
+            ratingBar.setRating(tvChannel.getPrevious_rate());
+        }
 
         TextView text = (TextView) rankDialog.findViewById(R.id.rank_dialog_text1);
 

@@ -58,6 +58,17 @@
         style="?android:attr/ratingBarStyleSmall"
         />
 
+      <TextView
+          android:id="@+id/ratingCount"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/ratingBar"
+          android:layout_toLeftOf="@+id/showLogo"
+          android:text="rating count"
+          android:layout_marginRight="20dp"
+          android:layout_marginTop="10dp"
+          />
+
     <TextView
         android:id="@+id/ratingText"
         android:text="4.8"
@@ -120,7 +131,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="مسلسل جامد فشخ"
-        android:gravity="right"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_below="@+id/desc"
         android:textSize="25dp"

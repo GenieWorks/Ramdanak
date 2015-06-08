@@ -58,6 +58,11 @@ public class TvChannel  implements Showable {
             return true;
     }
 
+    @Override
+    public int getPriority() {
+        return priority;
+    }
+
     public double getRating() {
         return rating;
     }
@@ -72,10 +77,6 @@ public class TvChannel  implements Showable {
 
     public String getServer_id() {
         return server_id;
-    }
-
-    public int getPriority() {
-        return priority;
     }
 
     public String getDescription() {

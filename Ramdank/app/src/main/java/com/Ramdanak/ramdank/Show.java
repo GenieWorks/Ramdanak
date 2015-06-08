@@ -58,6 +58,9 @@ public class Show extends Activity {
     private Button ratingButton;
 
     private ImageButton favouriteImageButton;
+
+    private TextView ratingCountText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +80,10 @@ public class Show extends Activity {
         ratingText=(TextView) findViewById(R.id.ratingText);
 
         ratingText.setText(String.valueOf(tvShow.getRate()));
+
+        ratingCountText=(TextView) findViewById(R.id.ratingCount);
+
+        ratingCountText.setText (tvShow.getRating_count()+"  "+ "تقييم");
 
         description=(TextView) findViewById(R.id.descText);
 
@@ -98,7 +105,8 @@ public class Show extends Activity {
                 //Update tvShow isFavourite attribute
                if(tvShow.isFavorite()){
                    tvShow.setIs_favorite(0);
-                  // dbHelper.updateTvShow(tvShow);
+                   //decrease 100 from priority if not in favourite list
+                   tvShow.setPriority(tvShow.getPriority()-100);
                    UpDateDataWorker myWorker=new UpDateDataWorker();
                    myWorker.execute();
                    favouriteImageButton.setImageResource(R.drawable.empty_star);
@@ -107,7 +115,8 @@ public class Show extends Activity {
                }
                else{
                    tvShow.setIs_favorite(1);
-                   //dbHelper.updateTvShow(tvShow);
+                   //add 100 to priority if in favourite list
+                   tvShow.setPriority(tvShow.getPriority()+100);
                    UpDateDataWorker myWorker=new UpDateDataWorker();
                    myWorker.execute();
                    favouriteImageButton.setImageResource(R.drawable.glow_star);
@@ -127,7 +136,14 @@ public class Show extends Activity {
 
             @Override
             public void onClick(View arg0) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(tvShow.getTrailer())));
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(tvShow.getTrailer())));
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(),"sorry we couldn't open this video for you,shake your device to use instabug and tell us what is wrong",
+                            Toast.LENGTH_LONG).show();
+                }
             }
 
         });
@@ -210,7 +226,7 @@ public class Show extends Activity {
      */
     private void addRating(){
 
-        //TODO add field to database previous_user_rate to tell the user it's details and if he want to change it or not
+
         final Dialog rankDialog = new Dialog(Show.this, R.style.FullHeightDialog);
         rankDialog.setContentView(R.layout.rank_dialog);
         rankDialog.setCancelable(true);
@@ -219,6 +235,10 @@ public class Show extends Activity {
 
        final RatingBar ratingBar = (RatingBar)rankDialog.findViewById(R.id.dialog_ratingbar);
 
+        //the show was rated before
+        if(tvShow.getPrevious_rate()!=0){
+            ratingBar.setRating(tvShow.getPrevious_rate());
+        }
         TextView text = (TextView) rankDialog.findViewById(R.id.rank_dialog_text1);
 
 

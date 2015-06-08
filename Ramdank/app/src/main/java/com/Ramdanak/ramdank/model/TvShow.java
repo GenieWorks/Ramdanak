@@ -100,6 +100,11 @@ public class TvShow implements Showable {
             return true;
     }
 
+    @Override
+    public int getPriority() {
+        return priority;
+    }
+
     public float getRating() {
         return rating;
     }
@@ -118,10 +123,6 @@ public class TvShow implements Showable {
 
     public int getRating_count() {
         return rating_count;
-    }
-
-    public int getPriority() {
-        return priority;
     }
 
     public String getServer_id() {

@@ -1,6 +1,8 @@
 package com.Ramdanak.ramdank;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import android.content.Context;
@@ -17,6 +19,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.Ramdanak.ramdank.model.Showable;
+
+import static java.util.Collections.reverseOrder;
 
 
 public class MyCustomBaseAdapter extends BaseAdapter implements Filterable {
@@ -71,7 +75,8 @@ public class MyCustomBaseAdapter extends BaseAdapter implements Filterable {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-
+        //sort the arrayList by priorities
+        Collections.sort(arrayList,reverseOrder(new ShowableComparator()));
         holder.txtName.setText(arrayList.get(position).getName());
         holder.imageIcon.setImageBitmap(arrayList.get(position).getLogo());
         holder.ratingBar.setRating(arrayList.get(position).getRate());
@@ -93,6 +98,7 @@ public class MyCustomBaseAdapter extends BaseAdapter implements Filterable {
         }
 
         holder.ratingText.setText(String.valueOf(arrayList.get(position).getRate()));
+
         return convertView;
     }
 
@@ -151,6 +157,7 @@ public class MyCustomBaseAdapter extends BaseAdapter implements Filterable {
             arrayList = (ArrayList<Showable>) results.values;
             notifyDataSetChanged();
         }
+
 
     }
 }
