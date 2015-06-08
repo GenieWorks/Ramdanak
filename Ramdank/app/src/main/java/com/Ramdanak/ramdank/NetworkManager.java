@@ -16,6 +16,7 @@ import android.widget.Toast;
  * Checks for network connection
  * Created by mohamed on 4/21/15.
  */
+@Deprecated()
 public class NetworkManager {
     private static final String url = "";
     private static final String TAG = "CLIENT";

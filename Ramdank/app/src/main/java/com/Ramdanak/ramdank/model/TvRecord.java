@@ -1,7 +1,5 @@
 package com.Ramdanak.ramdank.model;
 
-import java.sql.Date;
-
 /**
  * Model of TvRecord
  */
@@ -12,8 +10,30 @@ public class TvRecord {
     private String startTime;
     private String endTime;
 
+    private boolean validData;
+
+    // id required by Parse cloud
+    private String server_id;
+
+    public boolean isValidData() {
+        return validData;
+    }
+
+    public void setValidData(boolean validData) {
+        this.validData = validData;
+    }
+
+    public String getServer_id() {
+        return server_id;
+    }
+
+    public void setServer_id(String server_id) {
+        this.server_id = server_id;
+    }
+
     public TvRecord(int id) {
         this.id = id;
+        validData = false;
     }
 
     public int getId() {

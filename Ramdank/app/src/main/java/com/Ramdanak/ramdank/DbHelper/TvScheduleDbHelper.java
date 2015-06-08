@@ -7,13 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
-import com.Ramdanak.ramdank.BitmapHelper;
+import com.Ramdanak.ramdank.utils.BitmapHelper;
 import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvRecord;
 import com.Ramdanak.ramdank.model.TvShow;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -94,9 +93,6 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         } catch (SQLiteException  e) {
             Log.w(TAG, e.getMessage());
         }
-        catch(IllegalStateException e){
-            Log.w(TAG, e.getMessage());
-        }
 
         // looping through all rows and adding to list
         if (c!= null && c.moveToFirst()) {
@@ -122,6 +118,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
                 ts.setDescription(description);
                 ts.setPrevious_rate(previous_rate);
                 ts.setIs_favorite(is_favorite);
+                ts.setValidData(true);
 
                 TvShowsList.add(ts);
 
@@ -152,9 +149,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         } catch (SQLiteException e) {
             Log.w(TAG, e.getMessage());
         }
-        catch( IllegalStateException e){
-            Log.w(TAG, e.getMessage());
-        }
+
         // looping through all rows and adding to list
         if (c!= null && c.moveToFirst()) {
             TvChannel tc; int id,is_favorite, vertical; String name, description; float rating,previous_rating; byte[] logo;
@@ -177,6 +172,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
                 tc.setPrevious_rate(previous_rating);
                 tc.setDescription(description);
                 tc.setIs_favorite(is_favorite);
+                tc.setValidData(true);
 
                 TvChannelsList.add(tc);
             } while (c.moveToNext());
@@ -233,6 +229,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
                 tr.setChannelId(channelId);
                 tr.setStartTime(startTime);
                 tr.setEndTime(endTime);
+                tr.setValidData(true);
 
 
                 TvRecordsNow.add(tr);
@@ -261,9 +258,6 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         } catch (SQLiteException e) {
             Log.w(TAG, e.getMessage());
         }
-        catch( IllegalStateException e){
-            Log.w(TAG, e.getMessage());
-        }
 
         if (c != null)
             c.moveToFirst();
@@ -278,6 +272,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         tc.setDescription(c.getString(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_DESCRIPTION)));
         tc.setPrevious_rate(c.getFloat(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_PREVIOUS_RATE)));
         tc.setIs_favorite(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvChannels.COLUMN_NAME_IS_FAVORITE)));
+        tc.setValidData(true);
 
         return tc;
 
@@ -305,9 +300,6 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         } catch (SQLiteException e) {
             Log.w(TAG, e.getMessage());
         }
-        catch( IllegalStateException e){
-            Log.w(TAG, e.getMessage());
-        }
 
         // looping through all rows and adding to list
         if (c!= null && c.moveToFirst()) {
@@ -320,7 +312,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
                 record.setShowId(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID)));
                 record.setStartTime(c.getString(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME)));
                 record.setEndTime(c.getString(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME)));
-
+                record.setValidData(true);
 
                 records.add(record);
             } while (c.moveToNext());
@@ -350,9 +342,6 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         } catch (SQLiteException e) {
             Log.w(TAG, e.getMessage());
         }
-        catch( IllegalStateException e){
-            Log.w(TAG, e.getMessage());
-        }
 
         if (c != null)
             c.moveToFirst();
@@ -366,9 +355,47 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         ts.setName(c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_NAME)));
         ts.setTrailer(c.getString(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_TRAILER)));
         ts.setIs_favorite(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvShows.COLUMN_NAME_IS_FAVORITE)));
+        ts.setValidData(true);
 
+        c.close();
         return ts;
+    }
 
+    /**
+     * Gets a TvRecord identified by its id.
+     * @param recordId row id
+     * @return TvRecord instance
+     */
+    public TvRecord getTvRecordByIdOrCreateNewOnFailure(long recordId){
+        String selectQuery = "SELECT  * FROM " + TvScheduleDatabase.TvRecord.TABLE_NAME + " WHERE "
+                + TvScheduleDatabase.TvRecord.COLUMN_NAME_ID + " = " + recordId;
+
+        Cursor c = null;
+        try {
+
+            // check connection
+            if (!database.isOpen()) {
+                database = getReadableDatabase();
+            }
+            c = database.rawQuery(selectQuery, null);
+            if (c != null)
+                c.moveToFirst();
+
+            TvRecord tr = new TvRecord(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_ID)));
+
+            tr.setChannelId(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID)));
+            tr.setShowId(c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID)));
+            tr.setStartTime(c.getString(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME)));
+            tr.setEndTime(c.getString(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME)));
+            tr.setValidData(true);
+
+            c.close();
+            return tr;
+
+        } catch (SQLiteException e) {
+            Log.w(TAG, e.getMessage());
+            return new TvRecord((int)recordId);
+        }
     }
 
     /*
@@ -391,9 +418,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         } catch (SQLiteException e) {
             Log.w(TAG, e.getMessage());
         }
-        catch( IllegalStateException e){
-            Log.w(TAG, e.getMessage());
-        }
+
         // looping through all rows and adding to list
         if (c!= null && c.moveToFirst()) {
 
@@ -428,9 +453,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         } catch (SQLiteException e) {
             Log.w(TAG, e.getMessage());
         }
-        catch( IllegalStateException e){
-            Log.w(TAG, e.getMessage());
-        }
+
         // looping through all rows and adding to list
         if (c!= null && c.moveToFirst()) {
 
@@ -445,48 +468,154 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         return TvShowsList;
     }
 
-    /*
+    public void updateTvShow(TvShow show) {
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
 
-       Update TvShow
-    */
-    public int updateTvShow(TvShow show) {
-        SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_NAME,show.getName());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING,show.getRating());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_LOGO,BitmapHelper.bitmapToBytes(show.getLogo()));
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_TRAILER,show.getTrailer());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_DESCRIPTION,show.getDescription());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_PREVIOUS_RATING,show.getPrevious_rate());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_IS_FAVORITE,show.getIs_favorite());
+            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SERVER_ID, show.getServer_id());
 
-        ContentValues values = new ContentValues();
-        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_NAME,show.getName());
-        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING,show.getRating());
-        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_LOGO,BitmapHelper.bitmapToBytes(show.getLogo()));
-        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_TRAILER,show.getTrailer());
-        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_DESCRIPTION,show.getDescription());
-        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_PREVIOUS_RATING,show.getPrevious_rate());
-        values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_IS_FAVORITE,show.getIs_favorite());
-
-
-        // updating row
-        return db.update(TvScheduleDatabase.TvShows.TABLE_NAME, values, TvScheduleDatabase.TvShows.COLUMN_NAME_ID + " = ?",
-                new String[] { String.valueOf(show.getId()) });
-
+            db.update(TvScheduleDatabase.TvShows.TABLE_NAME, values, TvScheduleDatabase.TvShows.COLUMN_NAME_ID + " = ?",
+                    new String[] { String.valueOf(show.getId()) });
+        } catch (SQLiteException e) {
+            Log.e(TAG, "getWritableDatabase failed!", e);
+        }
     }
 
-    /*
+    /**
+     * Update TvChannel
+     * @param channel ..
+     */
+    public void updateTvChannel(TvChannel channel) {
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
 
-      Update TvChannel
-   */
-    public int updateTvChannel(TvChannel channel) {
-        SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_ID, channel.getId());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING, channel.getRating());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_DESCRIPTION, channel.getDescription());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_IS_FAVORITE, channel.getIs_favorite());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO, BitmapHelper.bitmapToBytes(channel.getLogo()));
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME, channel.getName());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_PREVIOUS_RATE, channel.getPrevious_rate());
+            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SERVER_ID, channel.getServer_id());
 
-        ContentValues values = new ContentValues();
-        values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_ID,channel.getId());
-        values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING,channel.getRating());
-        values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_DESCRIPTION,channel.getDescription());
-        values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_IS_FAVORITE,channel.getIs_favorite());
-        values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO,BitmapHelper.bitmapToBytes(channel.getLogo()));
-        values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME,channel.getName());
-        values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_PREVIOUS_RATE,channel.getPrevious_rate());
+            db.update(TvScheduleDatabase.TvChannels.TABLE_NAME, values, TvScheduleDatabase.TvChannels.COLUMN_NAME_ID + " = ?",
+                    new String[]{String.valueOf(channel.getId())});
+        } catch (SQLiteException e) {
+            Log.e(TAG, "getWritableDatabase failed!", e);
+        }
+    }
 
-        // updating row
-        return db.update(TvScheduleDatabase.TvChannels.TABLE_NAME, values, TvScheduleDatabase.TvChannels.COLUMN_NAME_ID + " = ?",
-                new String[] { String.valueOf(channel.getId()) });
+    /**
+     * Update a TvRecord entry.
+     * @param record new data to be updated.
+     */
+    public void updateTvRecord(TvRecord record) {
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
 
+            ContentValues values = new ContentValues();
+            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_ID, record.getId());
+            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID, record.getChannelId());
+            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME, record.getEndTime());
+            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID, record.getShowId());
+            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME, record.getStartTime());
+            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SERVER_ID, record.getServer_id());
+
+            db.update(TvScheduleDatabase.TvRecord.TABLE_NAME, values, TvScheduleDatabase.TvRecord.COLUMN_NAME_ID + " = ?",
+                    new String[]{String.valueOf(record.getId())});
+        } catch (SQLiteException e) {
+            Log.e(TAG, "getWritableDatabase failed!", e);
+        }
+    }
+
+    /**
+     * Insert a new tv channel.
+     * @param channel data to be inserted.
+     */
+    public void addTvChannel(TvChannel channel) {
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_ID, channel.getId());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING, channel.getRating());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_DESCRIPTION, channel.getDescription());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_IS_FAVORITE, channel.getIs_favorite());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO, BitmapHelper.bitmapToBytes(channel.getLogo()));
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME, channel.getName());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_PREVIOUS_RATE, channel.getPrevious_rate());
+            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SERVER_ID, channel.getServer_id());
+
+            long rvalue = db.insert(TvScheduleDatabase.TvChannels.TABLE_NAME, null, values);
+            if (rvalue != -1)
+                Log.d(TAG, "new tv channel with id = " + rvalue);
+            else
+                Log.w(TAG, "failed to insert new tv channel");
+        } catch (SQLiteException e) {
+            Log.e(TAG, "getWritableDatabase failed!", e);
+        }
+    }
+
+    /**
+     * Insert new tv show.
+     * @param show ..
+     */
+    public void addTvShow(TvShow show) {
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_ID, show.getId());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING, show.getRating());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_DESCRIPTION, show.getDescription());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_IS_FAVORITE, show.getIs_favorite());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO, BitmapHelper.bitmapToBytes(show.getLogo()));
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME, show.getName());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_PREVIOUS_RATE, show.getPrevious_rate());
+            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SERVER_ID, show.getServer_id());
+
+            long rvalue = db.insert(TvScheduleDatabase.TvShows.TABLE_NAME, null, values);
+            if (rvalue != -1)
+                Log.d(TAG, "new tv channel with id = " + rvalue);
+            else
+                Log.w(TAG, "failed to insert new tv channel");
+        } catch (SQLiteException e) {
+            Log.e(TAG, "getWritableDatabase failed!", e);
+        }
+    }
+
+    /**
+     * Insert new tv record.
+     * @param record ..
+     */
+    public void addTvRecord(TvRecord record) {
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_ID, record.getId());
+            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID, record.getChannelId());
+            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME, record.getEndTime());
+            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID, record.getShowId());
+            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME, record.getStartTime());
+            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SERVER_ID, record.getServer_id());
+
+            long rvalue = db.insert(TvScheduleDatabase.TvRecord.TABLE_NAME, null, values);
+            if (rvalue != -1)
+                Log.d(TAG, "new tv channel with id = " + rvalue);
+            else
+                Log.w(TAG, "failed to insert new tv channel");
+        } catch (SQLiteException e) {
+            Log.e(TAG, "getWritableDatabase failed!", e);
+        }
     }
 }

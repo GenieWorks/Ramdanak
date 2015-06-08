@@ -1,11 +1,6 @@
 package com.Ramdanak.ramdank.model;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-
-import com.Ramdanak.ramdank.BitmapHelper;
-import com.Ramdanak.ramdank.R;
 
 /**
  * Model class for TvChannel used in Database
@@ -20,8 +15,30 @@ public class TvChannel  implements Showable {
     //0 if not in favorite list and 1 otherwise
     private int is_favorite;
 
+    private boolean validData;
+
+    // id required by Parse cloud
+    private String server_id;
+
+    public boolean isValidData() {
+        return validData;
+    }
+
+    public void setValidData(boolean validData) {
+        this.validData = validData;
+    }
+
+    public String getServer_id() {
+        return server_id;
+    }
+
+    public void setServer_id(String server_id) {
+        this.server_id = server_id;
+    }
+
     public TvChannel(int id) {
         this.id = id;
+        validData = false;
     }
 
     public int getId() {

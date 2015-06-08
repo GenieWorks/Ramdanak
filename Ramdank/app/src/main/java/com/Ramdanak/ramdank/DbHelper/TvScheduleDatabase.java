@@ -4,9 +4,7 @@ package com.Ramdanak.ramdank.DbHelper;
  * Schema of the database
  * Created by mohamed on 4/3/15.
  */
-public final class TvScheduleDatabase {
-    private TvScheduleDatabase() {}
-
+public abstract class TvScheduleDatabase {
     /**
      * The tv shows table
      */
@@ -21,6 +19,7 @@ public final class TvScheduleDatabase {
         public static final String COLUMN_NAME_PREVIOUS_RATING="previous_rate";
         public static final String COLUMN_NAME_DESCRIPTION = "description";
         public static final String COLUMN_NAME_IS_FAVORITE="is_favorite";
+        public static final String COLUMN_NAME_SERVER_ID="server_id";
     }
 
     /**
@@ -36,7 +35,7 @@ public final class TvScheduleDatabase {
         public static final String COLUMN_NAME_PREVIOUS_RATE="previous_rate";
         public static final String COLUMN_NAME_DESCRIPTION = "description";
         public static final String COLUMN_NAME_IS_FAVORITE="is_favorite";
-
+        public static final String COLUMN_NAME_SERVER_ID="server_id";
     }
 
     /**
@@ -50,5 +49,6 @@ public final class TvScheduleDatabase {
         public static final String COLUMN_NAME_SHOW_ID = "show_id";
         public static final String COLUMN_NAME_START_TIME = "start_time";
         public static final String COLUMN_NAME_END_TIME = "end_time";
+        public static final String COLUMN_NAME_SERVER_ID="server_id";
     }
 }

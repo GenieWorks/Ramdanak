@@ -12,7 +12,9 @@
     <string name="title_activity_times">times</string>
     <string name="title_activity_android_tab_layout">AndroidTabLayoutActivity</string>
 
+    <string name="package_name">com.Ramdanak.ramdank</string>
     <string name="parse_application_id">dQ0nrjH44IcJpXJgVq4o3ZtxTA2tpAInvpd1IQB5</string>
     <string name="parse_client_id">YkWmjRsjSnoHg5lCixj0BBGQfSjzZSP22hlQ3btX</string>
+    <string name="instabug_token">55e18901e18c3baaa8cb9b937925ea20</string>
 
 </resources>

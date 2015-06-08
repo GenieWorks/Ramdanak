@@ -17,12 +17,36 @@ public class TvShow implements Showable {
     //0 if not in favorite list and 1 otherwise
     private int is_favorite;
 
+    private boolean validData;
+
+    // id required by Parse cloud
+    private String server_id;
+
+    public boolean isValidData() {
+        return validData;
+    }
+
+    public void setValidData(boolean validData) {
+        this.validData = validData;
+    }
+
+    public String getServer_id() {
+        return server_id;
+    }
+
+    public void setServer_id(String server_id) {
+        this.server_id = server_id;
+    }
+
     /**
      * Create an instance with id
      * @param id show's identifier
      */
     public TvShow(int id) {
         this.id = id;
+        validData = false;
+
+
     }
 
     public void setName(String name) {
