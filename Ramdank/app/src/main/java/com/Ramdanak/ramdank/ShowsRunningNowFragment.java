@@ -1,7 +1,5 @@
 package com.Ramdanak.ramdank;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
@@ -25,17 +22,15 @@ import com.google.android.gms.ads.AdView;
 import java.util.ArrayList;
 
 /**
+ *
  * Created by Toshiba on 23/04/2015.
  */
 public class ShowsRunningNowFragment extends Fragment {
-    private static final String TAG = "SHOWSNOWFRAGMENT";
+    private static final String TAG = Application.APPTAG + "show_running_now_fragment";
     private static ArrayList<Showable> seriesList;
 
-    private static ArrayList<TvRecord> recordsNow;
     private MyCustomBaseAdapter adapter;
     private View v;
-
-    private EditText inputSearch;
 
 
     @Override
@@ -52,22 +47,14 @@ public class ShowsRunningNowFragment extends Fragment {
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-
-        // do it only once
-        if (seriesList == null) {
-            FetchDataWorker worker = new FetchDataWorker();
-            worker.execute();
-        } else {
-            setListView();
-        }
-
-        inputSearch=(EditText) v.findViewById(R.id.inputSearch);
+        EditText inputSearch = (EditText) v.findViewById(R.id.inputSearch);
 
         inputSearch.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-                adapter.getFilter().filter(cs.toString());
+                if (cs != null)
+                    adapter.getFilter().filter(cs.toString());
             }
 
             @Override
@@ -112,7 +99,7 @@ public class ShowsRunningNowFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... params) {
 
-            recordsNow=(ArrayList) TvScheduleDbHelper.getInstance().getSowsDisplayedNow();
+            ArrayList<TvRecord> recordsNow = (ArrayList) TvScheduleDbHelper.getInstance().getSowsDisplayedNow();
             seriesList=new ArrayList<Showable>();
 
 

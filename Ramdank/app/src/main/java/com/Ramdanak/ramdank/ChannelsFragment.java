@@ -1,18 +1,11 @@
 package com.Ramdanak.ramdank;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,23 +16,19 @@ import android.widget.ListView;
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 import com.Ramdanak.ramdank.model.Showable;
 import com.Ramdanak.ramdank.model.TvChannel;
-import com.Ramdanak.ramdank.model.TvShow;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-import java.nio.channels.Channel;
 import java.util.ArrayList;
 
 
 public class ChannelsFragment extends Fragment {
-    private static final String TAG = "CHANNELS";
+    private static final String TAG = Application.APPTAG + "channels_fragment";
     private static ArrayList<Showable> channelList;
     private MyCustomBaseAdapter adapter;
     private View v;
 
     private ListView listView;
-
-    private EditText inputSearch;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,13 +67,14 @@ public class ChannelsFragment extends Fragment {
             setListView();
         }
 
-        inputSearch=(EditText) v.findViewById(R.id.inputSearch);
+        EditText inputSearch = (EditText) v.findViewById(R.id.inputSearch);
 
         inputSearch.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-                adapter.getFilter().filter(cs.toString());
+                if (cs != null)
+                    adapter.getFilter().filter(cs.toString());
             }
 
             @Override
@@ -107,8 +97,6 @@ public class ChannelsFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        FetchDataWorker worker = new FetchDataWorker();
-        worker.execute();
     }
 
 

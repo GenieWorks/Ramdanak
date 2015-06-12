@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +73,8 @@ public class ShowsFragment extends Fragment   {
 
             @Override
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-                adapter.getFilter().filter(cs.toString());
+                if (cs != null)
+                    adapter.getFilter().filter(cs.toString());
             }
 
             @Override
@@ -94,8 +96,6 @@ public class ShowsFragment extends Fragment   {
     @Override
     public void onResume(){
        super.onResume();
-        FetchDataWorker worker = new FetchDataWorker();
-        worker.execute();
     }
 
 
@@ -112,6 +112,7 @@ public class ShowsFragment extends Fragment   {
     private class FetchDataWorker extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
+            Log.d(TAG, "doInBackGround");
             seriesList = (ArrayList) TvScheduleDbHelper.getInstance().getAllTvShows();
             return null;
         }
