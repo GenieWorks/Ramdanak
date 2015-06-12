@@ -748,11 +748,14 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
             values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_ID, channel.getId());
             values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING, channel.getRating());
             values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_DESCRIPTION, channel.getDescription());
-            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_IS_FAVORITE, channel.getIs_favorite());
             values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO, channel.getLogo());
             values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME, channel.getName());
-            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_PREVIOUS_RATE, channel.getPrevious_rate());
-            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SERVER_ID, channel.getServer_id());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_SERVER_ID, channel.getServer_id());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_IS_FAVORITE, 0);
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT, channel.getRating_count());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_PRIORITY, channel.getPriority());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_PREVIOUS_RATE, 0);
+
 
             long rvalue = writeableDatabase.insert(TvScheduleDatabase.TvChannels.TABLE_NAME, null, values);
             if (rvalue != -1)
@@ -775,14 +778,17 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
                 writeableDatabase = getWritableDatabase();
 
             ContentValues values = new ContentValues();
-            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_ID, show.getId());
-            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING, show.getRating());
-            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_DESCRIPTION, show.getDescription());
-            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_IS_FAVORITE, show.getIs_favorite());
-            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO, show.getLogo());
-            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME, show.getName());
-            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_PREVIOUS_RATE, show.getPrevious_rate());
-            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SERVER_ID, show.getServer_id());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_ID, show.getId());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING, show.getRating());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_DESCRIPTION, show.getDescription());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_IS_FAVORITE, 0);
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_LOGO, show.getLogo());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_NAME, show.getName());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_SERVER_ID, show.getServer_id());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_PREVIOUS_RATING, 0);
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_PRIORITY, show.getPriority());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_TRAILER, show.getTrailer());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT, show.getRating_count());
 
             long rvalue = writeableDatabase.insert(TvScheduleDatabase.TvShows.TABLE_NAME, null, values);
             if (rvalue != -1)
@@ -809,6 +815,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
             values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID, record.getShowId());
             values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME, record.getStartTime());
             values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SERVER_ID, record.getServer_id());
+            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_IS_REMINDED, 0);
 
             long rvalue = db.insert(TvScheduleDatabase.TvRecord.TABLE_NAME, null, values);
             if (rvalue != -1)

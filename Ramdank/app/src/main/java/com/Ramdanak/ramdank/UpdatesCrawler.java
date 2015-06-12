@@ -105,6 +105,17 @@ public class UpdatesCrawler {
                                 show.setDescription(description);
                                 show.setServer_id(server_id);
                                 show.setTrailer(trailer);
+
+                                try {
+                                    ParseFile f = object.getParseFile(TvScheduleDatabase.TvShows.COLUMN_NAME_LOGO);
+                                    if (f != null) {
+                                        byte[] logo = f.getData();
+                                        show.setLogo(logo);
+                                    }
+                                } catch (ParseException e1) {
+                                    Log.e(TAG, "bad parse file", e1);
+                                }
+                                
                                 updatedShows.add(show);
                             }
                         }
@@ -139,7 +150,6 @@ public class UpdatesCrawler {
                             // TODO: assign the defualt logo
                         }
 
-                        newShow.setIs_favorite(0);
                         newShow.setServer_id(server_id);
                         newShow.setDescription(description);
                         newShow.setName(name);
@@ -219,6 +229,15 @@ public class UpdatesCrawler {
                                 channel.setPriority(priority);
                                 channel.setDescription(description);
                                 channel.setServer_id(server_id);
+                                try {
+                                    ParseFile file = object.getParseFile(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO);
+                                    if (file != null) {
+                                        byte[] logo = file.getData();
+                                        channel.setLogo(logo);
+                                    }
+                                } catch (ParseException e1) {
+                                    Log.e(TAG, "bad parse file", e1);
+                                }
                                 updatedChannels.add(channel);
                             }
                         }
@@ -252,7 +271,6 @@ public class UpdatesCrawler {
                             // TODO: assign the default image
                         }
 
-                        channel.setIs_favorite(0);
                         channel.setServer_id(server_id);
                         channel.setDescription(description);
                         channel.setName(name);
