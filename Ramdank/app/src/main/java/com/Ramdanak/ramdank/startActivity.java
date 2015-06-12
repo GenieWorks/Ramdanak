@@ -23,6 +23,8 @@ public class startActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        // TODO: this should be moved to Application.onCreate
         ApplicationInitializer initializer = new ApplicationInitializer();
         initializer.execute();
     }
@@ -44,7 +46,6 @@ public class startActivity extends Activity {
                 , Toast.LENGTH_LONG).show();
             }
 
-            NetworkManager.init(getApplicationContext());
             return true;
         }
 
@@ -63,8 +64,13 @@ public class startActivity extends Activity {
             super.onPostExecute(aBoolean);
 
             // proceed to app if everything was initialized correctly
-            if (aBoolean)
+            if (aBoolean) {
+                // FIXME: not working
+                if (!NetworkManager.checkInternetOpened(getApplicationContext())) {
+                    Toast.makeText(getApplicationContext(), "ramadank a7la with internet connected", Toast.LENGTH_SHORT);
+                }
                 startActivity(new Intent(startActivity.this, Main.class));
+            }
 
             finish();
         }
