@@ -9,6 +9,7 @@ import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvRecord;
 import com.Ramdanak.ramdank.model.TvShow;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -112,36 +113,42 @@ public class UpdatesCrawler {
                     // the remaining elements in the feed are new data, insert them
                     TvShow newShow; byte [] logo;
                     for (ParseObject parseObject : feed.values()) {
+
+                        id = parseObject.getInt("identifier");
+                        Log.d(TAG, "adding new entry with id " + id);
+                        name = parseObject.getString(TvScheduleDatabase.TvShows.COLUMN_NAME_NAME);
+                        description = parseObject.getString(TvScheduleDatabase.TvShows.COLUMN_NAME_DESCRIPTION);
+                        rating = parseObject.getDouble(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING);
+                        rating_count = parseObject.getInt(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT);
+                        priority = parseObject.getInt(TvScheduleDatabase.TvShows.COLUMN_NAME_PRIORITY);
+                        server_id = parseObject.getObjectId();
+                        trailer = parseObject.getString(TvScheduleDatabase.TvShows.COLUMN_NAME_TRAILER);
+
+                        newShow = new TvShow(id);
+
                         try {
-                            id = parseObject.getInt("identifier");
-                            Log.d(TAG, "adding new entry with id " + id);
-                            name = parseObject.getString(TvScheduleDatabase.TvShows.COLUMN_NAME_NAME);
-                            description = parseObject.getString(TvScheduleDatabase.TvShows.COLUMN_NAME_DESCRIPTION);
-                            rating = parseObject.getDouble(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING);
-                            rating_count = parseObject.getInt(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT);
-                            priority = parseObject.getInt(TvScheduleDatabase.TvShows.COLUMN_NAME_PRIORITY);
-                            server_id = parseObject.getObjectId();
-                            trailer = parseObject.getString(TvScheduleDatabase.TvShows.COLUMN_NAME_TRAILER);
                             ParseFile f = parseObject.getParseFile(TvScheduleDatabase.TvShows.COLUMN_NAME_LOGO);
-                            newShow = new TvShow(id);
                             if (f != null) {
                                 logo = f.getData();
                                 newShow.setLogo(logo);
+                            } else {
+                                // TODO: assign the defualt logo
                             }
-
-                            newShow.setIs_favorite(0);
-                            newShow.setServer_id(server_id);
-                            newShow.setDescription(description);
-                            newShow.setName(name);
-                            newShow.setRating_count(rating_count);
-                            newShow.setRating((float) rating);
-                            newShow.setPriority(priority);
-                            newShow.setTrailer(trailer);
-
-                            newShows.add(newShow);
                         } catch (ParseException e1) {
                             Log.e(TAG, "bad parse file", e1);
+                            // TODO: assign the defualt logo
                         }
+
+                        newShow.setIs_favorite(0);
+                        newShow.setServer_id(server_id);
+                        newShow.setDescription(description);
+                        newShow.setName(name);
+                        newShow.setRating_count(rating_count);
+                        newShow.setRating((float) rating);
+                        newShow.setPriority(priority);
+                        newShow.setTrailer(trailer);
+
+                        newShows.add(newShow);
                     }
 
                     // do all operations
@@ -220,29 +227,41 @@ public class UpdatesCrawler {
                     // the remaining elements in the feed are new data, insert them
                     TvChannel channel; byte [] logo;
                     for (ParseObject parseObject : feed.values()) {
+
+                        Log.d(TAG, "adding new entry");
+                        id = parseObject.getInt("identifier");
+                        name = parseObject.getString(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME);
+                        description = parseObject.getString(TvScheduleDatabase.TvChannels.COLUMN_NAME_DESCRIPTION);
+                        rating = parseObject.getDouble(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING);
+                        rating_count = parseObject.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT);
+                        priority = parseObject.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_PRIORITY);
+                        server_id = parseObject.getObjectId();
+
+                        channel = new TvChannel(id);
+
                         try {
-                            Log.d(TAG, "adding new entry");
-                            id = parseObject.getInt("identifier");
-                            name = parseObject.getString(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME);
-                            description = parseObject.getString(TvScheduleDatabase.TvChannels.COLUMN_NAME_DESCRIPTION);
-                            rating = parseObject.getDouble(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING);
-                            rating_count = parseObject.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT);
-                            priority = parseObject.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_PRIORITY);
-                            server_id = parseObject.getObjectId();
-                            logo = parseObject.getParseFile(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO).getData();
-                            channel = new TvChannel(id);
-                            channel.setIs_favorite(0);
-                            channel.setServer_id(server_id);
-                            channel.setDescription(description);
-                            channel.setName(name);
-                            channel.setRating_count(rating_count);
-                            channel.setRating((float) rating);
-                            channel.setPriority(priority);
-                            channel.setLogo(logo);
-                            newChannels.add(channel);
+                            ParseFile file = parseObject.getParseFile(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO);
+                            if (file != null) {
+                                logo = file.getData();
+                                channel.setLogo(logo);
+                            } else {
+                                // TODO: assign the default image
+                            }
                         } catch (ParseException e1) {
                             Log.e(TAG, "bad parse file", e1);
+                            // TODO: assign the default image
                         }
+
+                        channel.setIs_favorite(0);
+                        channel.setServer_id(server_id);
+                        channel.setDescription(description);
+                        channel.setName(name);
+                        channel.setRating_count(rating_count);
+                        channel.setRating((float) rating);
+                        channel.setPriority(priority);
+
+                        newChannels.add(channel);
+
                     }
 
                     // do all operations
@@ -273,15 +292,14 @@ public class UpdatesCrawler {
                     // get all the tv channels we have
                     List<TvRecord> list1 = dbHelper.getAllTvRecords();
 
-                    List<TvRecord> newChannels = new ArrayList<TvRecord>();
-                    List<TvRecord> updatedChannels = new ArrayList<TvRecord>();
-                    List<TvRecord> deletedChannels = new ArrayList<TvRecord>();
+                    List<TvRecord> newRecord = new ArrayList<TvRecord>();
+                    List<TvRecord> updatedRecord = new ArrayList<TvRecord>();
+                    List<TvRecord> deletedRecord = new ArrayList<TvRecord>();
 
                     Log.d(TAG, "starting the merge");
                     // begin the local merge
-                    String server_id, name, description;
-                    int id, rating_count, priority;
-                    double rating;
+                    String server_id, start_time, end_time;
+                    int id, channel_id, show_id;
                     ParseObject object;
                     for (TvRecord record : list1) {
                         // find the entry in the feed
@@ -290,13 +308,53 @@ public class UpdatesCrawler {
                         // entry doesn't exist in the feed, delete it
                         if (object == null) {
                             Log.d(TAG, "deleted old entry with server_id " + record.getServer_id());
-                            deletedChannels.add(record);
+                            deletedRecord.add(record);
                         } else {
+                            // check if data was updated
+                            server_id = object.getObjectId();
+                            start_time = object.getString(TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME);
+                            end_time = object.getString(TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME);
+                            //id = object.getInt("identifier");
+                            channel_id = object.getInt(TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID);
+                            show_id = object.getInt(TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID);
 
+                            if (start_time != record.getStartTime() || end_time != record.getEndTime()
+                                    || channel_id != record.getChannelId() || show_id != record.getChannelId()
+                                    || server_id != record.getServer_id()) {
+                                Log.d(TAG, "entry to be updated with server id " + server_id);
+                                record.setEndTime(end_time);
+                                record.setShowId(show_id);
+                                record.setServer_id(server_id);
+                                record.setStartTime(start_time);
+                                record.setChannelId(channel_id);
+
+                                updatedRecord.add(record);
+                            }
                         }
                     }
 
+                    // the rest of the feed is new data
+                    TvRecord record;
+                    for (ParseObject parseObject : feed.values()) {
+                        server_id = parseObject.getObjectId();
+                        start_time = parseObject.getString(TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME);
+                        end_time = parseObject.getString(TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME);
+                        id = parseObject.getInt("identifier");
+                        channel_id = parseObject.getInt(TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID);
+                        show_id = parseObject.getInt(TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID);
 
+                        record = new TvRecord(id);
+                        record.setEndTime(end_time);
+                        record.setShowId(show_id);
+                        record.setServer_id(server_id);
+                        record.setStartTime(start_time);
+                        record.setChannelId(channel_id);
+
+                        newRecord.add(record);
+                    }
+
+                    Log.d(TAG, "Merge completed successfully");
+                    dbHelper.batchUpdatesForTvRecords(newRecord, updatedRecord, deletedRecord);
                 } else {
                     Log.e(TAG, "failed to find records", e);
                 }
