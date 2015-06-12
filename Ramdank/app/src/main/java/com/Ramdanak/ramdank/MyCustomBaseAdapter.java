@@ -21,19 +21,10 @@ import static java.util.Collections.reverseOrder;
 
 
 public class MyCustomBaseAdapter extends BaseAdapter implements Filterable {
-    //for debugging
-    private static String TAG = "CustomBaseAdapter";
-
     private ArrayList<Showable> originalData;
-
-    //filtered data
     private ArrayList<Showable> arrayList;
-
     private LayoutInflater mInflater;
-
-    //action text in listView viewed in Channel and Show Activities list view
     private String actionText;
-
     private ItemFilter mFilter;
 
     public MyCustomBaseAdapter(Context context, ArrayList<Showable> series,String action) {
@@ -73,9 +64,16 @@ public class MyCustomBaseAdapter extends BaseAdapter implements Filterable {
             holder = (ViewHolder) convertView.getTag();
         }
         //sort the arrayList by priorities
-        Collections.sort(arrayList,reverseOrder(new ShowableComparator()));
+        Collections.sort(arrayList, reverseOrder(new ShowableComparator()));
         holder.txtName.setText(arrayList.get(position).getName());
-        holder.imageIcon.setImageBitmap(BitmapHelper.BytesToBitmap(arrayList.get(position).getLogo()));
+
+        // set the logo
+        byte[] logo = arrayList.get(position).getLogo();
+        if (logo == null)
+            holder.imageIcon.setImageResource(R.drawable.ic_launcher);
+        else
+            holder.imageIcon.setImageBitmap(BitmapHelper.BytesToBitmap(logo));
+
         holder.ratingBar.setRating(arrayList.get(position).getRate());
 
         //default hide action textView and show favorite star
@@ -97,14 +95,6 @@ public class MyCustomBaseAdapter extends BaseAdapter implements Filterable {
         holder.ratingText.setText(String.valueOf(arrayList.get(position).getRate()));
 
         return convertView;
-    }
-
-
-
-    public void updateList(ArrayList<Showable> newList) {
-        arrayList.clear();
-        arrayList.addAll(newList);
-        this.notifyDataSetChanged();
     }
 
     private class ViewHolder {
