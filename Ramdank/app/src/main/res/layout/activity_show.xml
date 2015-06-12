@@ -87,7 +87,6 @@
         android:layout_marginTop="20dp"
         android:layout_below="@+id/showLogo"
         android:layout_alignParentRight="true"
-        android:drawableRight="@drawable/arrow"
         />
 
 
@@ -99,7 +98,6 @@
 
         android:text="اضف تقييم"
         android:background="@drawable/button_shape"
-        android:drawableRight="@drawable/arrow"
         android:layout_below="@+id/showLogo"
         android:layout_width="130dp"
         android:layout_marginLeft="20dp"
