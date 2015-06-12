@@ -4,8 +4,7 @@ package com.Ramdanak.ramdank.DbHelper;
  * Schema of the database
  * Created by mohamed on 4/3/15.
  */
-public final class TvScheduleDatabase {
-    private TvScheduleDatabase() {}
+public abstract class TvScheduleDatabase {
 
     /**
      * The tv shows table
