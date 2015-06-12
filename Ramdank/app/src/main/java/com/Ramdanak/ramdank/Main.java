@@ -25,7 +25,6 @@ public class Main extends FragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        TvScheduleDbHelper.getInstance().close();
     }
 
     /**
