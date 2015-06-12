@@ -11,7 +11,6 @@ import com.Ramdanak.ramdank.Application;
 import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvRecord;
 import com.Ramdanak.ramdank.model.TvShow;
-import com.google.android.gms.location.internal.LocationRequestUpdateData;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.text.DateFormat;
@@ -52,6 +51,10 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
 
     }
 
+    /**
+     * Gets an instance of the singleton class.
+     * @return singleton instance or maybe null.
+     */
     public static TvScheduleDbHelper getInstance() {
         return instance;
     }
@@ -64,8 +67,11 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         return instance;
     }
 
+    /**
+     * Close the underlined database connections.
+     */
     @Override
-    public synchronized void close() {
+    public void close() {
 
         if(database != null)
             database.close();
@@ -90,6 +96,10 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         }
     }
 
+    /**
+     * Delete a given show from database
+     * @param show to be deleted
+     */
     public void deleteTvShow(TvShow show) {
         Log.d(TAG, "deleting show with id " + show.getId());
         try {
@@ -98,20 +108,28 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
 
             writeableDatabase.delete(TvScheduleDatabase.TvShows.TABLE_NAME, TvScheduleDatabase.TvShows.COLUMN_NAME_ID + " = ?",
                     new String[]{String.valueOf(show.getId())});
+
+            Log.d(TAG, "successfully deleted show with id " + show.getId());
         } catch (SQLiteException e) {
             Log.e(TAG, "failed to delete show", e);
         }
     }
 
+    /**
+     * Delete a given record from database
+     * @param record to be deleted
+     */
     public void deleteTvRecord(TvRecord record) {
+        Log.d(TAG, "deleting record with id " + record.getId());
         try {
             if (writeableDatabase == null)
                 writeableDatabase = getWritableDatabase();
 
             writeableDatabase.delete(TvScheduleDatabase.TvRecord.TABLE_NAME, TvScheduleDatabase.TvRecord.COLUMN_NAME_ID + " = ?",
                     new String[]{String.valueOf(record.getId())});
+            Log.d(TAG, "successfully deleted record with id " + record.getId());
         } catch (SQLiteException e) {
-            Log.e(TAG, "failed to delete", e);
+            Log.e(TAG, "failed to delete record", e);
         }
     }
 
@@ -120,9 +138,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
      * @return list of all TvShows
      */
     public List<TvShow> getAllTvShows(){
-        List<TvShow> TvShowsList =new ArrayList<TvShow>();
-        //SQLiteDatabase db=this.getReadableDatabase();
-
+        List<TvShow> TvShowsList = new ArrayList<TvShow>();
         String selectQuery = "SELECT  * FROM " + TvScheduleDatabase.TvShows.TABLE_NAME;
 
         Cursor c = null;
@@ -134,7 +150,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
             }
             c = database.rawQuery(selectQuery, null);
         } catch (SQLiteException  e) {
-            Log.w(TAG, e.getMessage());
+            Log.e(TAG, "get all shows failed", e);
         }
 
         // looping through all rows and adding to list
@@ -194,11 +210,11 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
             }
             c = database.rawQuery(selectQuery, null);
         } catch (SQLiteException e) {
-            Log.w(TAG, e.getMessage());
+            Log.e(TAG, "get all channels failed", e);
         }
 
         // looping through all rows and adding to list
-        if (c!= null && c.moveToFirst()) {
+        if (c != null && c.moveToFirst()) {
             TvChannel tc; int id,is_favorite,rating_count,priority; String name,server_id, description; float rating,previous_rating; byte[] logo;
 
             do {
@@ -237,14 +253,12 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
     }
 
     public List<TvRecord> getAllTvRecords(){
-        List<TvRecord> tvChannels = new ArrayList<TvRecord>();
+        List<TvRecord> tvRecords = new ArrayList<TvRecord>();
 
         String selectQuery = "SELECT  * FROM " + TvScheduleDatabase.TvRecord.TABLE_NAME;
 
-        Cursor c = null;
+        Cursor c;
         try {
-
-            // check connection
             if (!database.isOpen()) {
                 database = getReadableDatabase();
             }
@@ -252,9 +266,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
 
             // looping through all rows and adding to list
             if (c!= null && c.moveToFirst()) {
-                TvRecord tr; int id, channel_id,rating_count,priority;
-                String name,server_id, description; float rating,previous_rating; byte[] logo;
-
+                TvRecord tr;
                 do {
                     tr = new TvRecord(
                             c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_ID))
@@ -278,15 +290,15 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
                     tr.setIs_reminded(
                             c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_IS_REMINDED))
                     );
-                    tvChannels.add(tr);
+                    tvRecords.add(tr);
                 } while (c.moveToNext());
 
                 c.close();
             }
-            return tvChannels;
+            return tvRecords;
         } catch (SQLiteException e) {
-            Log.w(TAG, e.getMessage());
-            return tvChannels;
+            Log.e(TAG, "get all records failed", e);
+            return tvRecords;
         }
     }
 
@@ -302,8 +314,6 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
 
         String selectQuery ="SELECT * FROM "+TvScheduleDatabase.TvRecord.TABLE_NAME +" WHERE "+"strftime( \'%H:%M\',"+"'"+dateNowString+"') >="+" strftime( \'%H:%M\',"+TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME+")"
                 +" AND "+"strftime( \'%H:%M\',"+"'"+dateNowString+"') <="+" strftime( \'%H:%M\',"+TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME+")";
-
-
 
         Cursor c = null;
         try {
@@ -350,8 +360,8 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
 
     /**
      * get TvChannel by Id
-     * @param tvChannelId
-     * @return
+     * @param tvChannelId channel id
+     * @return corresponding channel or null if channel doesn't exists
      */
     public TvChannel getTvChannelById(long tvChannelId) {
         String selectQuery = "SELECT  * FROM " + TvScheduleDatabase.TvChannels.TABLE_NAME + " WHERE "
@@ -389,6 +399,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
             return tc;
         }
 
+        // FIXME: how to deal with null?
         return null;
     }
 
@@ -412,9 +423,6 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
             }
             c = database.rawQuery(selectQuery, null);
         } catch (SQLiteException e) {
-            Log.w(TAG, e.getMessage());
-        }
-        catch( IllegalStateException e){
             Log.w(TAG, e.getMessage());
         }
 
@@ -449,7 +457,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
         String selectQuery = "SELECT  * FROM " + TvScheduleDatabase.TvShows.TABLE_NAME + " WHERE "
                 + TvScheduleDatabase.TvShows.COLUMN_NAME_ID + " = " + tvShowId;
 
-        Cursor c = null;
+        Cursor c;
         try {
 
             // check connection
@@ -570,6 +578,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
 
             writeableDatabase.update(TvScheduleDatabase.TvShows.TABLE_NAME, values, TvScheduleDatabase.TvShows.COLUMN_NAME_ID + " = ?",
                     new String[]{String.valueOf(show.getId())});
+            Log.d(TAG, "updated show successfully");
         } catch (SQLiteException e) {
             Log.e(TAG, "failed to update show", e);
         }
@@ -597,6 +606,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
 
             writeableDatabase.update(TvScheduleDatabase.TvChannels.TABLE_NAME, values, TvScheduleDatabase.TvChannels.COLUMN_NAME_ID + " = ?",
                     new String[]{String.valueOf(channel.getId())});
+            Log.d(TAG, "updated channel successfully");
         } catch (SQLiteException e) {
             Log.e(TAG, "updating channel failed", e);
         }
@@ -620,8 +630,9 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
 
             db.update(TvScheduleDatabase.TvRecord.TABLE_NAME, values, TvScheduleDatabase.TvRecord.COLUMN_NAME_ID + " = ?",
                     new String[]{String.valueOf(record.getId())});
+            Log.d(TAG, "updated record successfully");
         } catch (SQLiteException e) {
-            Log.e(TAG, "getWritableDatabase failed!", e);
+            Log.e(TAG, "getWritableDatabase record failed!", e);
         }
     }
 
