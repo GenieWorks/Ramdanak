@@ -11,7 +11,7 @@ import android.util.Log;
  * Modified 6/5/15
  */
 public final class AlarmEventReceiver extends BroadcastReceiver {
-    private static final String TAG = "ALARM_ADAPTER";
+    private static final String TAG = Application.APPTAG + "alarm_listener";
     private static final String TV = "TV";
     private static final String SHOW = "SHOW";
 

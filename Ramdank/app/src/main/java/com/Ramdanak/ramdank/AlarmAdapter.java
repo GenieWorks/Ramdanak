@@ -14,7 +14,7 @@ import java.util.Calendar;
  * Created by Mohamed on 6/5/2015.
  */
 public class AlarmAdapter {
-    public static final String TAG = "ALARM_ADAPTER";
+    public static final String TAG = Application.APPTAG + "alarm_adapter";
     public static final String TV = "TV";
     public static final String SHOW = "SHOW";
 
