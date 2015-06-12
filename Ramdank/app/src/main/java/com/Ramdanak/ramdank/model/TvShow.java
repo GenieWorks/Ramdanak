@@ -1,7 +1,5 @@
 package com.Ramdanak.ramdank.model;
 
-import android.graphics.Bitmap;
-
 /**
  * Model class for TvShow used in Database
  */
@@ -10,7 +8,7 @@ public class TvShow implements Showable {
     private int id;
     private String name;
     private String trailer;
-    private Bitmap logo;
+    private byte[] logo;
     private float rating;
     private float previous_rate;
     private String description;
@@ -49,7 +47,7 @@ public class TvShow implements Showable {
         this.description = description;
     }
 
-    public void setLogo(Bitmap logo) {
+    public void setLogo(byte[] logo) {
         this.logo = logo;
     }
 
@@ -84,7 +82,7 @@ public class TvShow implements Showable {
     }
 
     @Override
-    public Bitmap getLogo() {
+    public byte[] getLogo() {
         return logo;
     }
 
@@ -94,10 +92,7 @@ public class TvShow implements Showable {
     //0->not favourite 1->favourite
     @Override
     public boolean isFavorite(){
-        if(this.is_favorite==0)
-            return false;
-        else
-            return true;
+        return this.is_favorite != 0;
     }
 
     @Override

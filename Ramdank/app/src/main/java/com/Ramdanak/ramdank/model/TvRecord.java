@@ -1,7 +1,5 @@
 package com.Ramdanak.ramdank.model;
 
-import java.sql.Date;
-
 /**
  * Model of TvRecord
  */

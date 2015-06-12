@@ -3,10 +3,10 @@ package com.Ramdanak.ramdank;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.media.Rating;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,42 +24,29 @@ import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 import com.Ramdanak.ramdank.model.Showable;
 import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvShow;
+import com.parse.FunctionCallback;
+import com.parse.ParseCloud;
+import com.parse.ParseException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Activity of a certain Show (series or program).
  *
  */
 public class Show extends Activity {
+    private static String TAG = Application.APPTAG + "show_activity";
 
     private TvScheduleDbHelper dbHelper;
 
     private TvShow tvShow;
 
-    private ImageView tvShowLogo;
-
-    private TextView tvShowNameView;
-
-    private RatingBar tvShowRatingBar;
-
     private ListView channelsListView;
 
     private static ArrayList<Showable> channelList;
 
-    private MyCustomBaseAdapter adapter;
-
-    private TextView ratingText;
-
-    private TextView description;
-
-    private Button videoButton;
-
-    private Button ratingButton;
-
     private ImageButton favouriteImageButton;
-
-    private TextView ratingCountText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,21 +58,21 @@ public class Show extends Activity {
 
         tvShow=dbHelper.getTvShowById(Globals.tvShowId);
 
-        tvShowLogo=(ImageView) findViewById(R.id.showLogo);
+        ImageView tvShowLogo = (ImageView) findViewById(R.id.showLogo);
 
-        tvShowLogo.setImageBitmap(tvShow.getLogo());
+        tvShowLogo.setImageBitmap(BitmapHelper.BytesToBitmap(tvShow.getLogo()));
 
         this.setTitle(tvShow.getName());
 
-        ratingText=(TextView) findViewById(R.id.ratingText);
+        TextView ratingText = (TextView) findViewById(R.id.ratingText);
 
         ratingText.setText(String.valueOf(tvShow.getRate()));
 
-        ratingCountText=(TextView) findViewById(R.id.ratingCount);
+        TextView ratingCountText = (TextView) findViewById(R.id.ratingCount);
 
-        ratingCountText.setText (tvShow.getRating_count()+"  "+ "تقييم");
+        ratingCountText.setText(tvShow.getRating_count() + "  " + "تقييم");
 
-        description=(TextView) findViewById(R.id.descText);
+        TextView description = (TextView) findViewById(R.id.descText);
 
         description.setText(tvShow.getDescription());
 
@@ -128,7 +115,7 @@ public class Show extends Activity {
 
         });
 
-        videoButton=(Button) findViewById(R.id.videoButton);
+        Button videoButton = (Button) findViewById(R.id.videoButton);
 
 
 
@@ -138,10 +125,9 @@ public class Show extends Activity {
             public void onClick(View arg0) {
                 try {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(tvShow.getTrailer())));
-                }
-                catch(Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(),"sorry we couldn't open this video for you,shake your device to use instabug and tell us what is wrong",
+                    Toast.makeText(getApplicationContext(), "sorry we couldn't open this video for you,shake your device to use instabug and tell us what is wrong",
                             Toast.LENGTH_LONG).show();
                 }
             }
@@ -149,7 +135,7 @@ public class Show extends Activity {
         });
 
 
-        ratingButton=(Button) findViewById(R.id.ratingButton);
+        Button ratingButton = (Button) findViewById(R.id.ratingButton);
 
 
 
@@ -162,13 +148,13 @@ public class Show extends Activity {
 
         });
 
-        tvShowNameView=(TextView) findViewById(R.id.name);
+        TextView tvShowNameView = (TextView) findViewById(R.id.name);
 
         tvShowNameView.setText(tvShow.getName());
 
-        tvShowRatingBar=(RatingBar) findViewById(R.id.ratingBar);
+        RatingBar tvShowRatingBar = (RatingBar) findViewById(R.id.ratingBar);
 
-        tvShowRatingBar.setRating((float)tvShow.getRate());
+        tvShowRatingBar.setRating(tvShow.getRate());
 
        channelsListView=(ListView) findViewById(R.id.channelList);
 
@@ -216,11 +202,6 @@ public class Show extends Activity {
         return true;
     }
 
-    // Call to update the share intent
-    private void setShareIntent(Intent shareIntent) {
-
-    }
-
     /*
         shows dialogBox to add rating to the show
      */
@@ -239,17 +220,31 @@ public class Show extends Activity {
         if(tvShow.getPrevious_rate()!=0){
             ratingBar.setRating(tvShow.getPrevious_rate());
         }
-        TextView text = (TextView) rankDialog.findViewById(R.id.rank_dialog_text1);
-
 
         Button updateButton = (Button) rankDialog.findViewById(R.id.rank_dialog_button);
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                float ratingValue=ratingBar.getRating();
+                float ratingValue = ratingBar.getRating();
                 tvShow.setPrevious_rate(ratingValue);
-                UpDateDataWorker myWorker=new UpDateDataWorker();
+                UpDateDataWorker myWorker = new UpDateDataWorker();
                 myWorker.execute();
+
+                /// send user rating to server
+                HashMap<String, String> values = new HashMap<String, String>();
+                values.put("server_id", tvShow.getServer_id());
+                values.put("rating", String.valueOf(ratingBar.getRating()));
+                ParseCloud.callFunctionInBackground("showRating", values, new FunctionCallback<String>() {
+                    @Override
+                    public void done(String s, ParseException e) {
+                        if (e == null) {
+                            Log.d(TAG, s);
+                        } else {
+                            Log.e(TAG, "failed to update rating to the cloud", e);
+                        }
+                    }
+                });
+
                 rankDialog.dismiss();
             }
         });
@@ -261,7 +256,7 @@ public class Show extends Activity {
    */
     private void setChannelListView() {
 
-        adapter = new MyCustomBaseAdapter(this, channelList,"اعرض المواعيد");
+        MyCustomBaseAdapter adapter = new MyCustomBaseAdapter(this, channelList, "اعرض المواعيد");
         channelsListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 

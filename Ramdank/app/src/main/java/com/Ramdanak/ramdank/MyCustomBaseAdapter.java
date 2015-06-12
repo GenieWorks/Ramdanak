@@ -1,13 +1,6 @@
 package com.Ramdanak.ramdank;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import android.content.Context;
-import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +12,10 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.Ramdanak.ramdank.model.Showable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static java.util.Collections.reverseOrder;
 
@@ -78,17 +75,17 @@ public class MyCustomBaseAdapter extends BaseAdapter implements Filterable {
         //sort the arrayList by priorities
         Collections.sort(arrayList,reverseOrder(new ShowableComparator()));
         holder.txtName.setText(arrayList.get(position).getName());
-        holder.imageIcon.setImageBitmap(arrayList.get(position).getLogo());
+        holder.imageIcon.setImageBitmap(BitmapHelper.BytesToBitmap(arrayList.get(position).getLogo()));
         holder.ratingBar.setRating(arrayList.get(position).getRate());
 
         //default hide action textView and show favorite star
         holder.favoriteStar.setVisibility(View.VISIBLE);
         holder.actionTextView.setVisibility(View.GONE);
 
-        if(arrayList.get(position).isFavorite()&&actionText=="") {
+        if(arrayList.get(position).isFavorite()&&actionText == "") {
             holder.favoriteStar.setImageResource(R.drawable.glow_star);
         }
-        else if(actionText=="") {
+        else if(actionText == "") {
             holder.favoriteStar.setImageResource(R.drawable.empty_star);
         }
         else {

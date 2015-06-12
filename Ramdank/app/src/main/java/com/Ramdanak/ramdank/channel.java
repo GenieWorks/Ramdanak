@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,8 +23,12 @@ import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 import com.Ramdanak.ramdank.model.Showable;
 import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvShow;
+import com.parse.FunctionCallback;
+import com.parse.ParseCloud;
+import com.parse.ParseException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /*
 
@@ -31,32 +36,17 @@ import java.util.ArrayList;
     it also enable user to rate it add to favorites ,show programmes and series on it.
  */
 public class channel extends Activity {
+    private static String TAG = Application.APPTAG + "channel_activity";
 
     private TvScheduleDbHelper dbHelper;
 
     private TvChannel tvChannel;
 
-    private ImageView tvChannelLogo;
-
-    private TextView tvChannelNameView;
-
-    private RatingBar tvChannelRatingBar;
-
     private ListView showsListView;
 
     private static ArrayList<Showable> showsList;
 
-    private MyCustomBaseAdapter adapter;
-
-    private TextView ratingText;
-
-    private TextView description;
-
-    private Button ratingButton;
-
     private ImageButton favouriteImageButton;
-
-    private TextView ratingCountText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,21 +56,21 @@ public class channel extends Activity {
 
         tvChannel=dbHelper.getTvChannelById(Globals.tvChannelId);
 
-        tvChannelLogo=(ImageView) findViewById(R.id.channelLogo);
+        ImageView tvChannelLogo = (ImageView) findViewById(R.id.channelLogo);
 
-        tvChannelLogo.setImageBitmap(tvChannel.getLogo());
+        tvChannelLogo.setImageBitmap(BitmapHelper.BytesToBitmap(tvChannel.getLogo()));
 
         this.setTitle(tvChannel.getName());
 
-        ratingText=(TextView) findViewById(R.id.ratingText);
+        TextView ratingText = (TextView) findViewById(R.id.ratingText);
 
         ratingText.setText(String.valueOf(tvChannel.getRate()));
 
-        description=(TextView) findViewById(R.id.descText);
+        TextView description = (TextView) findViewById(R.id.descText);
 
-        ratingCountText=(TextView) findViewById(R.id.ratingCount);
+        TextView ratingCountText = (TextView) findViewById(R.id.ratingCount);
 
-        ratingCountText.setText (tvChannel.getRating_count()+ "  "+ "تقييم");
+        ratingCountText.setText(tvChannel.getRating_count() + "  " + "تقييم");
 
         description.setText(tvChannel.getDescription());
 
@@ -122,7 +112,7 @@ public class channel extends Activity {
         });
 
 
-        ratingButton=(Button) findViewById(R.id.ratingButton);
+        Button ratingButton = (Button) findViewById(R.id.ratingButton);
 
 
 
@@ -135,13 +125,13 @@ public class channel extends Activity {
 
         });
 
-        tvChannelNameView=(TextView) findViewById(R.id.name);
+        TextView tvChannelNameView = (TextView) findViewById(R.id.name);
 
         tvChannelNameView.setText(tvChannel.getName());
 
-        tvChannelRatingBar=(RatingBar) findViewById(R.id.ratingBar);
+        RatingBar tvChannelRatingBar = (RatingBar) findViewById(R.id.ratingBar);
 
-        tvChannelRatingBar.setRating((float) tvChannel.getRate());
+        tvChannelRatingBar.setRating(tvChannel.getRate());
 
         showsListView=(ListView) findViewById(R.id.showsList);
 
@@ -209,9 +199,6 @@ public class channel extends Activity {
             ratingBar.setRating(tvChannel.getPrevious_rate());
         }
 
-        TextView text = (TextView) rankDialog.findViewById(R.id.rank_dialog_text1);
-
-
         Button updateButton = (Button) rankDialog.findViewById(R.id.rank_dialog_button);
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,6 +207,22 @@ public class channel extends Activity {
                 tvChannel.setPrevious_rate(ratingValue);
                 UpDateDataWorker myWorker=new UpDateDataWorker();
                 myWorker.execute();
+
+                /// send user rating to server
+                HashMap<String, String> values = new HashMap<String, String>();
+                values.put("server_id", tvChannel.getServer_id());
+                values.put("rating", String.valueOf(ratingBar.getRating()));
+                ParseCloud.callFunctionInBackground("channelRating", values, new FunctionCallback<String>() {
+                    @Override
+                    public void done(String s, ParseException e) {
+                        if (e == null) {
+                            Log.d(TAG, s);
+                        } else {
+                            Log.e(TAG, "failed to update rating to the cloud", e);
+                        }
+                    }
+                });
+
                 rankDialog.dismiss();
             }
         });
@@ -231,7 +234,7 @@ public class channel extends Activity {
    */
     private void setShowsListView() {
 
-        adapter = new MyCustomBaseAdapter(this, showsList,"اعرض المواعيد");
+        MyCustomBaseAdapter adapter = new MyCustomBaseAdapter(this, showsList, "اعرض المواعيد");
         showsListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
