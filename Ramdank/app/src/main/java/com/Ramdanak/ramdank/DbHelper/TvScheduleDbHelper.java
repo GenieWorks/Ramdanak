@@ -11,6 +11,7 @@ import com.Ramdanak.ramdank.Application;
 import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvRecord;
 import com.Ramdanak.ramdank.model.TvShow;
+import com.readystatesoftware.sqliteasset.SQLiteAssetException;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.text.DateFormat;
@@ -574,6 +575,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
             values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_DESCRIPTION,show.getDescription());
             values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_PREVIOUS_RATING,show.getPrevious_rate());
             values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_IS_FAVORITE,show.getIs_favorite());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_PRIORITY,show.getPriority());
             values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SERVER_ID, show.getServer_id());
 
             writeableDatabase.update(TvScheduleDatabase.TvShows.TABLE_NAME, values, TvScheduleDatabase.TvShows.COLUMN_NAME_ID + " = ?",
@@ -602,6 +604,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
             values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO, channel.getLogo());
             values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME, channel.getName());
             values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_PREVIOUS_RATE, channel.getPrevious_rate());
+            values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_PRIORITY,channel.getPriority());
             values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SERVER_ID, channel.getServer_id());
 
             writeableDatabase.update(TvScheduleDatabase.TvChannels.TABLE_NAME, values, TvScheduleDatabase.TvChannels.COLUMN_NAME_ID + " = ?",
