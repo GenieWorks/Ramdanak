@@ -65,10 +65,6 @@ public class startActivity extends Activity {
 
             // proceed to app if everything was initialized correctly
             if (aBoolean) {
-                // FIXME: not working
-                if (!NetworkManager.checkInternetOpened(getApplicationContext())) {
-                    Toast.makeText(getApplicationContext(), "ramadank a7la with internet connected", Toast.LENGTH_SHORT);
-                }
                 startActivity(new Intent(startActivity.this, Main.class));
             }
 

@@ -3,6 +3,8 @@ package com.Ramdanak.ramdank;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 
@@ -20,6 +22,15 @@ public class Main extends FragmentActivity {
 
         this.setTitle("رمضانك");
         init();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!NetworkManager.checkInternetOpened(getApplicationContext())) {
+            Log.d(Application.APPTAG, "not connected to internet");
+            Toast.makeText(this, "ramadank a7la with internet connected", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
