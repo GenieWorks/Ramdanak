@@ -83,7 +83,6 @@
         android:id="@+id/ratingButton"
         android:text="اضف تقييم"
         android:background="@drawable/button_shape"
-        android:drawableRight="@drawable/arrow"
         android:layout_below="@+id/channelLogo"
         android:layout_width="130dp"
         android:layout_centerHorizontal="true"
