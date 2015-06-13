@@ -156,14 +156,6 @@ public class channel extends Activity {
                 startActivity(intent);
             }
         });
-
-        if (showsList == null) {
-            FetchDataWorker worker = new FetchDataWorker();
-            worker.execute();
-        } else {
-            setShowsListView();
-        }
-
     }
 
 
@@ -189,6 +181,13 @@ public class channel extends Activity {
 
         // Return true to display menu
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FetchDataWorker worker = new FetchDataWorker();
+        worker.execute();
     }
 
     /*
