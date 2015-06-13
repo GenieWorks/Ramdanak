@@ -629,6 +629,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
             values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME, record.getEndTime());
             values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID, record.getShowId());
             values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME, record.getStartTime());
+            values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_IS_REMINDED,record.is_reminded());
             values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SERVER_ID, record.getServer_id());
 
             db.update(TvScheduleDatabase.TvRecord.TABLE_NAME, values, TvScheduleDatabase.TvRecord.COLUMN_NAME_ID + " = ?",
