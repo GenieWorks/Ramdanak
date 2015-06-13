@@ -251,6 +251,12 @@ public class channel extends Activity {
 
     }
 
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        Globals.updated=true;
+    }
+
     /**
      * Fetch the data of the shows from the database
      */

@@ -8,4 +8,7 @@ public abstract class Globals {
     public static int tvShowId;
 
     public static int tvChannelId;
+
+    //to update main listView after coming from Show or Channel
+       public static boolean updated=false;
 }

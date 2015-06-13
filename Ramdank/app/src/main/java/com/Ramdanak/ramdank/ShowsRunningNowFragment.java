@@ -53,7 +53,7 @@ public class ShowsRunningNowFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-                if (cs != null)
+                if (cs != null&&adapter != null)
                     adapter.getFilter().filter(cs.toString());
             }
 
@@ -77,8 +77,12 @@ public class ShowsRunningNowFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        FetchDataWorker worker = new FetchDataWorker();
-        worker.execute();
+        //update the listView
+        if(Globals.updated){
+            FetchDataWorker worker = new FetchDataWorker();
+            worker.execute();
+            Globals.updated=false;
+        }
     }
 
     private void setListView() {

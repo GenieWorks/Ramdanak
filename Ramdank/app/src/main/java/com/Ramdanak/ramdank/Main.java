@@ -46,10 +46,10 @@ public class Main extends FragmentActivity {
         mTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
 
         mTabHost.addTab(
-                mTabHost.newTabSpec("allSeriesTab").setIndicator("كل المسلسلات"),
+                mTabHost.newTabSpec("allSeriesTab").setIndicator("البرامج والمسلسلات"),
                 ShowsFragment.class, null);
         mTabHost.addTab(
-                mTabHost.newTabSpec("allChannelsTab").setIndicator("كل القنوات"),
+                mTabHost.newTabSpec("allChannelsTab").setIndicator("القنوات"),
                 ChannelsFragment.class, null);
         mTabHost.addTab(
                 mTabHost.newTabSpec("favouriteSeriesTab").setIndicator("يعرض الان"),

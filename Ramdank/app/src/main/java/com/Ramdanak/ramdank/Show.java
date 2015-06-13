@@ -265,6 +265,12 @@ public class Show extends Activity {
 
         rankDialog.show();
     }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        Globals.updated=true;
+    }
     /*
           set list view of channels
    */

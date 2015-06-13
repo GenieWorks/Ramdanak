@@ -73,8 +73,10 @@ public class ChannelsFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-                if (cs != null)
-                    adapter.getFilter().filter(cs.toString());
+
+                    if (cs != null&&adapter != null)
+                        adapter.getFilter().filter(cs.toString());
+
             }
 
             @Override
@@ -97,6 +99,12 @@ public class ChannelsFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
+        //update the listView
+        if(Globals.updated){
+            FetchDataWorker worker = new FetchDataWorker();
+            worker.execute();
+            Globals.updated=false;
+        }
     }
 
 
