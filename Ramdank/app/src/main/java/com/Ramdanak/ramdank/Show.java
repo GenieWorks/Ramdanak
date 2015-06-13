@@ -3,6 +3,7 @@ package com.Ramdanak.ramdank;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,8 +29,11 @@ import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * Activity of a certain Show (series or program).
@@ -60,7 +64,17 @@ public class Show extends Activity {
 
         ImageView tvShowLogo = (ImageView) findViewById(R.id.showLogo);
 
-        tvShowLogo.setImageBitmap(BitmapHelper.BytesToBitmap(tvShow.getLogo()));
+        // set the logo
+        byte[] logo = tvShow.getLogo();
+        if (logo == null)
+            tvShowLogo.setImageResource(R.drawable.ic_launcher);
+        else {
+            Bitmap bitmap = BitmapHelper.decodeSampledBitmapFromBytes(logo, 120, 170);
+            if (bitmap == null)
+                tvShowLogo.setImageResource(R.drawable.ic_launcher);
+            else
+                tvShowLogo.setImageBitmap(bitmap);
+        }
 
         this.setTitle(tvShow.getName());
 
@@ -126,7 +140,7 @@ public class Show extends Activity {
                 try {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(tvShow.getTrailer())));
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.d(TAG, "trailer couldn't opened", e);
                     Toast.makeText(getApplicationContext(), "sorry we couldn't open this video for you,shake your device to use instabug and tell us what is wrong",
                             Toast.LENGTH_LONG).show();
                 }
@@ -231,7 +245,7 @@ public class Show extends Activity {
                 myWorker.execute();
 
                 /// send user rating to server
-                HashMap<String, String> values = new HashMap<String, String>();
+                HashMap<String, Object> values = new HashMap<String, Object>();
                 values.put("server_id", tvShow.getServer_id());
                 values.put("rating", String.valueOf(ratingBar.getRating()));
                 ParseCloud.callFunctionInBackground("showRating", values, new FunctionCallback<String>() {

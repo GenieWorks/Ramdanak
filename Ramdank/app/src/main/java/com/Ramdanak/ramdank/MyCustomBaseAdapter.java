@@ -1,6 +1,7 @@
 package com.Ramdanak.ramdank;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,8 +72,13 @@ public class MyCustomBaseAdapter extends BaseAdapter implements Filterable {
         byte[] logo = arrayList.get(position).getLogo();
         if (logo == null)
             holder.imageIcon.setImageResource(R.drawable.ic_launcher);
-        else
-            holder.imageIcon.setImageBitmap(BitmapHelper.BytesToBitmap(logo));
+        else {
+            Bitmap bitmap = BitmapHelper.decodeSampledBitmapFromBytes(logo, 50, 40);
+            if (bitmap == null)
+                holder.imageIcon.setImageResource(R.drawable.ic_launcher);
+            else
+                holder.imageIcon.setImageBitmap(bitmap);
+        }
 
         holder.ratingBar.setRating(arrayList.get(position).getRate());
 

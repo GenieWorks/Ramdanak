@@ -3,6 +3,7 @@ package com.Ramdanak.ramdank;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -58,7 +59,17 @@ public class channel extends Activity {
 
         ImageView tvChannelLogo = (ImageView) findViewById(R.id.channelLogo);
 
-        tvChannelLogo.setImageBitmap(BitmapHelper.BytesToBitmap(tvChannel.getLogo()));
+        // set the logo
+        byte[] logo = tvChannel.getLogo();
+        if (logo == null)
+            tvChannelLogo.setImageResource(R.drawable.ic_launcher);
+        else {
+            Bitmap bitmap = BitmapHelper.decodeSampledBitmapFromBytes(logo, 120, 170);
+            if (bitmap == null)
+                tvChannelLogo.setImageResource(R.drawable.ic_launcher);
+            else
+                tvChannelLogo.setImageBitmap(bitmap);
+        }
 
         this.setTitle(tvChannel.getName());
 
@@ -209,7 +220,7 @@ public class channel extends Activity {
                 myWorker.execute();
 
                 /// send user rating to server
-                HashMap<String, String> values = new HashMap<String, String>();
+                HashMap<String, Object> values = new HashMap<String, Object>();
                 values.put("server_id", tvChannel.getServer_id());
                 values.put("rating", String.valueOf(ratingBar.getRating()));
                 ParseCloud.callFunctionInBackground("channelRating", values, new FunctionCallback<String>() {
