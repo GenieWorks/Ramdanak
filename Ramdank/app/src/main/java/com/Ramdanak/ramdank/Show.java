@@ -26,14 +26,14 @@ import com.Ramdanak.ramdank.model.Showable;
 import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvShow;
 import com.parse.FunctionCallback;
+import com.parse.GetCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
-
-import org.json.JSONObject;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 /**
  * Activity of a certain Show (series or program).
@@ -84,13 +84,15 @@ public class Show extends Activity {
 
         this.setTitle(tvShow.getName());
 
-         ratingText = (TextView) findViewById(R.id.ratingText);
+        ratingText = (TextView) findViewById(R.id.ratingText);
 
         ratingText.setText(String.valueOf(tvShow.getRate()));
 
-         ratingCountText = (TextView) findViewById(R.id.ratingCount);
+        ratingCountText = (TextView) findViewById(R.id.ratingCount);
 
-        int total_rating_count=tvShow.getRating_1()+tvShow.getRating_2()+tvShow.getRating_3()+tvShow.getRating_4()+tvShow.getRating_5();
+        int total_rating_count = tvShow.getRating_1() + tvShow.getRating_2() +
+                tvShow.getRating_3() + tvShow.getRating_4() + tvShow.getRating_5();
+
         ratingCountText.setText(total_rating_count+ "  " + "تقييم");
 
         TextView description = (TextView) findViewById(R.id.descText);
@@ -173,11 +175,11 @@ public class Show extends Activity {
 
         tvShowNameView.setText(tvShow.getName());
 
-         tvShowRatingBar = (RatingBar) findViewById(R.id.ratingBar);
+        tvShowRatingBar = (RatingBar) findViewById(R.id.ratingBar);
 
         tvShowRatingBar.setRating(tvShow.getRate());
 
-       channelsListView=(ListView) findViewById(R.id.channelList);
+        channelsListView=(ListView) findViewById(R.id.channelList);
 
         channelsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -189,16 +191,14 @@ public class Show extends Activity {
                 startActivity(intent);
             }
         });
-
-       if (channelList == null) {
-           FetchDataWorker worker = new FetchDataWorker();
-            worker.execute();
-        } else {
-            setChannelListView();
-        }
-
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FetchDataWorker worker = new FetchDataWorker();
+        worker.execute();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -226,14 +226,10 @@ public class Show extends Activity {
     /*
         shows dialogBox to add rating to the show
      */
-    private void addRating(){
-
-
+    private void addRating() {
         final Dialog rankDialog = new Dialog(Show.this, R.style.FullHeightDialog);
         rankDialog.setContentView(R.layout.rank_dialog);
         rankDialog.setCancelable(true);
-
-        //TODO add a facebook share button to share user rating :)
 
        final RatingBar ratingBar = (RatingBar)rankDialog.findViewById(R.id.dialog_ratingbar);
 
@@ -246,62 +242,83 @@ public class Show extends Activity {
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                float ratingValue = ratingBar.getRating();
+                final int ratingValue = (int) ratingBar.getRating();
                 tvShow.setPrevious_rate(ratingValue);
 
-                //upDate activity and dataBase according to the new rate
-
                 //the user has updates his rate
-                if(tvShow.getPrevious_rate()!=0){
+                if(tvShow.getPrevious_rate() != 0) {
                     Toast.makeText(getApplicationContext(),"تمت أضافه تقيمك وتغير تقييمك السابق",
                             Toast.LENGTH_SHORT).show();
-                }
-                else{
+                } else {
                     Toast.makeText(getApplicationContext(),"تمت أضافه تقييمك",
                             Toast.LENGTH_SHORT).show();
                 }
 
-                if(ratingValue==1){
-                    tvShow.setRating_1(tvShow.getRating_1()+1);
+                switch (ratingValue) {
+                    case 1:
+                        tvShow.setRating_1(tvShow.getRating_1()+1);
+                        break;
+                    case 2:
+                        tvShow.setRating_2(tvShow.getRating_2()+1);
+                        break;
+                    case 3:
+                        tvShow.setRating_3(tvShow.getRating_3()+1);
+                        break;
+                    case 4:
+                        tvShow.setRating_4(tvShow.getRating_4()+1);
+                        break;
+                    case 5:
+                        tvShow.setRating_5(tvShow.getRating_5()+1);
+                        break;
                 }
-                else if(ratingValue==2){
-                    tvShow.setRating_2(tvShow.getRating_2()+1);
-                }
-                else if(ratingValue==3){
-                    tvShow.setRating_3(tvShow.getRating_3()+1);
-                }
-                else if(ratingValue==4){
-                    tvShow.setRating_4(tvShow.getRating_4()+1);
-                }
-                else if(ratingValue==5){
-                    tvShow.setRating_5(tvShow.getRating_5()+1);
-                }
-                int total_votes=tvShow.getRating_1()+tvShow.getRating_2()+tvShow.getRating_3()+tvShow.getRating_4()+tvShow.getRating_5();
-                float total_rating=(tvShow.getRating_1()+tvShow.getRating_2()*2+tvShow.getRating_3()*3+tvShow.getRating_4()*4+tvShow.getRating_5()*5)/total_votes;
+
+                // send to server
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Show");
+                query.getInBackground(tvShow.getServer_id(), new GetCallback<ParseObject>() {
+                    @Override
+                    public void done(ParseObject parseObject, ParseException e) {
+                        if (e == null) {
+                            switch (ratingValue) {
+                                case 1:
+                                    parseObject.increment("rating1");
+                                    break;
+                                case 2:
+                                    parseObject.increment("rating2");
+                                    break;
+                                case 3:
+                                    parseObject.increment("rating3");
+                                    break;
+                                case 4:
+                                    parseObject.increment("rating4");
+                                    break;
+                                case 5:
+                                    parseObject.increment("rating5");
+                                    break;
+                            }
+                        } else {
+                            Log.e(TAG, "failed to send rating to server", e);
+                        }
+                    }
+                });
+
+
+                int total_votes = tvShow.getRating_1() + tvShow.getRating_2() + tvShow.getRating_3()
+                        + tvShow.getRating_4() + tvShow.getRating_5();
+
+                float total_rating = (tvShow.getRating_1() + tvShow.getRating_2()*2 +
+                        tvShow.getRating_3()*3 + tvShow.getRating_4()*4 + tvShow.getRating_5()*5)
+                            /total_votes;
+
                 tvShow.setRating(total_rating);
 
                 //update the database
                 UpDateDataWorker myWorker = new UpDateDataWorker();
                 myWorker.execute();
+
                 //update the activity
                 ratingBar.setRating(tvShow.getRating());
                 ratingText.setText(String.valueOf(tvShow.getRate()));
                 ratingCountText.setText(total_votes);
-
-                /// send user rating to server
-                HashMap<String, Object> values = new HashMap<String, Object>();
-                values.put("server_id", tvShow.getServer_id());
-                values.put("rating", String.valueOf(ratingBar.getRating()));
-                ParseCloud.callFunctionInBackground("showRating", values, new FunctionCallback<String>() {
-                    @Override
-                    public void done(String s, ParseException e) {
-                        if (e == null) {
-                            Log.d(TAG, s);
-                        } else {
-                            Log.e(TAG, "failed to update rating to the cloud", e);
-                        }
-                    }
-                });
 
                 rankDialog.dismiss();
             }

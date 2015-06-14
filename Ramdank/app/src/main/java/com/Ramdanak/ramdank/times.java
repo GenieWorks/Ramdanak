@@ -6,8 +6,6 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -20,11 +18,8 @@ import com.Ramdanak.ramdank.model.TvShow;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Locale;
 
 /**
  * show times of a certain series or programme  on a certain channel
@@ -36,8 +31,6 @@ public class times extends Activity {
 
     private ListView timesListView;
 
-    private TimesCustomBaseAdapter adapter;
-
     private AlarmAdapter myAlarm;
 
     private TvShow myShow;
@@ -48,7 +41,7 @@ public class times extends Activity {
 
     private TvRecord myRecord;
 
-    private static final String TAG = "Times";
+    private static final String TAG = Application.APPTAG + "Times";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +50,11 @@ public class times extends Activity {
 
         this.setTitle("مواعيد العرض");
 
-        myAlarm=new AlarmAdapter(this);
+        myAlarm = new AlarmAdapter(this);
 
-        dbHelper=TvScheduleDbHelper.getInstance();
+        dbHelper = TvScheduleDbHelper.getInstance();
 
-        timesListView=(ListView) findViewById(R.id.timesList);
+        timesListView = (ListView) findViewById(R.id.timesList);
 
         AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -72,22 +65,26 @@ public class times extends Activity {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 myRecord =(TvRecord) timesListView.getItemAtPosition(position);
+                String startTime = myRecord.getStartTime();
 
-                Calendar cal = Calendar.getInstance();
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm",Locale.FRANCE);
                 try {
-                    cal.setTime(sdf.parse(myRecord.getStartTime()));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTimeInMillis(System.currentTimeMillis());
+                    cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(startTime.substring(0, 1)));
+                    cal.set(Calendar.MINUTE, Integer.parseInt(startTime.substring(3, 4)));
 
-                //remind the user with this time
-                if(!myRecord.is_reminded()){
-                    reminderMessage(cal);
-                }
-                //cancel this remind
-                else{
-                    cancelReminderMessage(cal);
+                    Log.d(TAG, startTime);
+                    Log.d(TAG, cal.getTime().toString());
+                    // remind the user with this time or
+                    // cancel this remind
+                    if (!myRecord.is_reminded()) {
+                        reminderMessage(cal);
+                    } else {
+                        cancelReminderMessage(cal);
+                    }
+                } catch (NumberFormatException e) {
+                    Log.e(TAG, "parsing start time failed, time = " + startTime, e);
+                    Toast.makeText(getApplicationContext(), "can't make request", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -101,26 +98,14 @@ public class times extends Activity {
     }
 
     private void setTimesListView() {
-        adapter =new TimesCustomBaseAdapter(this,recordsList);
+        TimesCustomBaseAdapter adapter = new TimesCustomBaseAdapter(this, recordsList);
         timesListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.times, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
-
-    /*
-        *Message to tell the user he wants to add a reminder or not
+    /**
+     * Message to tell the user he wants to add a reminder or not
+     * @param cal calendar of the time to be reminded
      */
     private void reminderMessage(final Calendar cal){
 
@@ -194,7 +179,7 @@ public class times extends Activity {
     }
 
     @Override
-    public void onResume(){
+    protected void onResume(){
        super.onResume();
         if(myShow==null||myChannel==null) {
             FetchDataWorker worker = new FetchDataWorker();

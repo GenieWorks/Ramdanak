@@ -70,8 +70,7 @@ public class UpdatesCrawler {
                     Log.d(TAG, "starting the merge");
                     // begin the local merge
                     String server_id, name, description, trailer;
-                    int id, rating_count, priority;
-                    double rating;
+                    int id, rating1, rating2, rating3, rating4, rating5, priority;
                     ParseObject object;
                     for (TvShow show : list1) {
                         // find the entry in the feed
@@ -87,20 +86,28 @@ public class UpdatesCrawler {
                             feed.remove(show.getServer_id());
                             name = object.getString(TvScheduleDatabase.TvShows.COLUMN_NAME_NAME);
                             description = object.getString(TvScheduleDatabase.TvShows.COLUMN_NAME_DESCRIPTION);
-                            rating = object.getDouble(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING);
-                            rating_count = object.getInt(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT);
+                            rating1 = object.getInt(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT_1);
+                            rating2 = object.getInt(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT_2);
+                            rating3 = object.getInt(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT_3);
+                            rating4 = object.getInt(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT_4);
+                            rating5 = object.getInt(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT_5);
                             priority = object.getInt(TvScheduleDatabase.TvShows.COLUMN_NAME_PRIORITY);
                             server_id = object.getObjectId();
                             trailer = object.getString(TvScheduleDatabase.TvShows.COLUMN_NAME_TRAILER);
 
-                            if (show.getRate() != rating || show.getRating_count() != rating_count
+                            if (show.getRating_1() != rating1 || show.getRating_2() != rating2 ||
+                            show.getRating_3() != rating3 || show.getRating_4() != rating4 ||
+                                    show.getRating_5() != rating5
                                     || show.getTrailer() != trailer
                             || show.getPriority() != priority || show.getDescription() != description
                                     || show.getName() != name ) {
                                 Log.d(TAG, "updating show entry with id: " + show.getId());
                                 show.setName(name);
-                                show.setRating((float) rating);
-                                show.setRating_count(rating_count);
+                                show.setRating_1(rating1);
+                                show.setRating_2(rating2);
+                                show.setRating_3(rating3);
+                                show.setRating_4(rating4);
+                                show.setRating_5(rating5);
                                 show.setPriority(priority);
                                 show.setDescription(description);
                                 show.setServer_id(server_id);
@@ -111,9 +118,12 @@ public class UpdatesCrawler {
                                     if (f != null) {
                                         byte[] logo = f.getData();
                                         show.setLogo(logo);
+                                    } else {
+                                        show.setLogo(null);
                                     }
                                 } catch (ParseException e1) {
                                     Log.e(TAG, "bad parse file", e1);
+                                    show.setLogo(null);
                                 }
                                 
                                 updatedShows.add(show);
@@ -129,8 +139,11 @@ public class UpdatesCrawler {
                         Log.d(TAG, "adding new entry with id " + id);
                         name = parseObject.getString(TvScheduleDatabase.TvShows.COLUMN_NAME_NAME);
                         description = parseObject.getString(TvScheduleDatabase.TvShows.COLUMN_NAME_DESCRIPTION);
-                        rating = parseObject.getDouble(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING);
-                        rating_count = parseObject.getInt(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT);
+                        rating1 = parseObject.getInt(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT_1);
+                        rating2 = parseObject.getInt(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT_2);
+                        rating3 = parseObject.getInt(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT_3);
+                        rating4 = parseObject.getInt(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT_4);
+                        rating5 = parseObject.getInt(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT_5);
                         priority = parseObject.getInt(TvScheduleDatabase.TvShows.COLUMN_NAME_PRIORITY);
                         server_id = parseObject.getObjectId();
                         trailer = parseObject.getString(TvScheduleDatabase.TvShows.COLUMN_NAME_TRAILER);
@@ -143,18 +156,21 @@ public class UpdatesCrawler {
                                 logo = f.getData();
                                 newShow.setLogo(logo);
                             } else {
-                                // TODO: assign the defualt logo
+                                newShow.setLogo(null);
                             }
                         } catch (ParseException e1) {
                             Log.e(TAG, "bad parse file", e1);
-                            // TODO: assign the defualt logo
+                            newShow.setLogo(null);
                         }
 
                         newShow.setServer_id(server_id);
                         newShow.setDescription(description);
                         newShow.setName(name);
-                        newShow.setRating_count(rating_count);
-                        newShow.setRating((float) rating);
+                        newShow.setRating_1(rating1);
+                        newShow.setRating_2(rating2);
+                        newShow.setRating_3(rating3);
+                        newShow.setRating_4(rating4);
+                        newShow.setRating_5(rating5);
                         newShow.setPriority(priority);
                         newShow.setTrailer(trailer);
 
@@ -197,8 +213,7 @@ public class UpdatesCrawler {
                     Log.d(TAG, "starting the merge");
                     // begin the local merge
                     String server_id, name, description;
-                    int id, rating_count, priority;
-                    double rating;
+                    int id, rating1, rating2, rating3, rating4, rating5, priority;
                     ParseObject object;
                     for (TvChannel channel : list1) {
                         // find the entry in the feed
@@ -214,18 +229,26 @@ public class UpdatesCrawler {
                             feed.remove(channel.getServer_id());
                             name = object.getString(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME);
                             description = object.getString(TvScheduleDatabase.TvChannels.COLUMN_NAME_DESCRIPTION);
-                            rating = object.getDouble(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING);
-                            rating_count = object.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT);
+                            rating1 = object.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_1);
+                            rating2 = object.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_2);
+                            rating3 = object.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_3);
+                            rating4 = object.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_4);
+                            rating5 = object.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_5);
                             priority = object.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_PRIORITY);
                             server_id = object.getObjectId();
 
-                            if (channel.getRate() != rating || channel.getRating_count() != rating_count
+                            if (channel.getRating_1() != rating1 || channel.getRating_2() != rating2 ||
+                                    channel.getRating_3() != rating3 || channel.getRating_4() != rating4 ||
+                                    channel.getRating_5() != rating5
                                     || channel.getPriority() != priority || channel.getDescription() != description
                                     || channel.getName() != name ) {
                                 Log.d(TAG, "updating channel entry with id: " + channel.getId());
                                 channel.setName(name);
-                                channel.setRating((float) rating);
-                                channel.setRating_count(rating_count);
+                                channel.setRating_1(rating1);
+                                channel.setRating_2(rating2);
+                                channel.setRating_3(rating3);
+                                channel.setRating_4(rating4);
+                                channel.setRating_5(rating5);
                                 channel.setPriority(priority);
                                 channel.setDescription(description);
                                 channel.setServer_id(server_id);
@@ -234,9 +257,12 @@ public class UpdatesCrawler {
                                     if (file != null) {
                                         byte[] logo = file.getData();
                                         channel.setLogo(logo);
+                                    } else {
+                                        channel.setLogo(null);
                                     }
                                 } catch (ParseException e1) {
                                     Log.e(TAG, "bad parse file", e1);
+                                    channel.setLogo(null);
                                 }
                                 updatedChannels.add(channel);
                             }
@@ -251,8 +277,11 @@ public class UpdatesCrawler {
                         id = parseObject.getInt("identifier");
                         name = parseObject.getString(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME);
                         description = parseObject.getString(TvScheduleDatabase.TvChannels.COLUMN_NAME_DESCRIPTION);
-                        rating = parseObject.getDouble(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING);
-                        rating_count = parseObject.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT);
+                        rating1 = parseObject.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_1);
+                        rating2 = parseObject.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_2);
+                        rating3 = parseObject.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_3);
+                        rating4 = parseObject.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_4);
+                        rating5 = parseObject.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_5);
                         priority = parseObject.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_PRIORITY);
                         server_id = parseObject.getObjectId();
 
@@ -264,18 +293,21 @@ public class UpdatesCrawler {
                                 logo = file.getData();
                                 channel.setLogo(logo);
                             } else {
-                                // TODO: assign the default image
+                                channel.setLogo(null);
                             }
                         } catch (ParseException e1) {
                             Log.e(TAG, "bad parse file", e1);
-                            // TODO: assign the default image
+                            channel.setLogo(null);
                         }
 
                         channel.setServer_id(server_id);
                         channel.setDescription(description);
                         channel.setName(name);
-                        channel.setRating_count(rating_count);
-                        channel.setRating((float) rating);
+                        channel.setRating_1(rating1);
+                        channel.setRating_2(rating2);
+                        channel.setRating_3(rating3);
+                        channel.setRating_4(rating4);
+                        channel.setRating_5(rating5);
                         channel.setPriority(priority);
 
                         newChannels.add(channel);
