@@ -23,6 +23,7 @@ public abstract class BitmapHelper {
     }
 
     @Deprecated
+    @SuppressWarnings("unused")
     public static Bitmap BytesToBitmap(byte [] image) {
         return BitmapFactory.decodeByteArray(image, 0, image.length);
     }
