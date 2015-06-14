@@ -25,15 +25,12 @@ import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 import com.Ramdanak.ramdank.model.Showable;
 import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvShow;
-import com.parse.FunctionCallback;
 import com.parse.GetCallback;
-import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Activity of a certain Show (series or program).
