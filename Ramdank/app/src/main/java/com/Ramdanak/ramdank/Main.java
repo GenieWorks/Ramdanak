@@ -13,8 +13,6 @@ import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
  */
 public class Main extends FragmentActivity {
 
-    private TvScheduleDbHelper dbHelper;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
