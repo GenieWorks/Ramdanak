@@ -18,7 +18,11 @@ public abstract class TvScheduleDatabase {
         public static final String COLUMN_NAME_LOGO = "logo";
         public static final String COLUMN_NAME_RATING = "rating";
         public static final String COLUMN_NAME_PREVIOUS_RATING = "previous_rate";
-        public static final String COLUMN_NAME_RATING_COUNT = "rating_count";
+        public static final String COLUMN_NAME_RATING_COUNT_1 = "rating_1";
+        public static final String COLUMN_NAME_RATING_COUNT_2 = "rating_2";
+        public static final String COLUMN_NAME_RATING_COUNT_3 = "rating_3";
+        public static final String COLUMN_NAME_RATING_COUNT_4 = "rating_4";
+        public static final String COLUMN_NAME_RATING_COUNT_5 = "rating_5";
         public static final String COLUMN_NAME_DESCRIPTION = "description";
         public static final String COLUMN_NAME_IS_FAVORITE = "is_favorite";
         public static final String COLUMN_NAME_PRIORITY = "priority";
@@ -36,7 +40,11 @@ public abstract class TvScheduleDatabase {
         public static final String COLUMN_NAME_LOGO = "logo";
         public static final String COLUMN_NAME_RATING = "rating";
         public static final String COLUMN_NAME_PREVIOUS_RATE = "previous_rate";
-        public static final String COLUMN_NAME_RATING_COUNT = "rating_count";
+        public static final String COLUMN_NAME_RATING_COUNT_1 = "rating_1";
+        public static final String COLUMN_NAME_RATING_COUNT_2 = "rating_2";
+        public static final String COLUMN_NAME_RATING_COUNT_3 = "rating_3";
+        public static final String COLUMN_NAME_RATING_COUNT_4 = "rating_4";
+        public static final String COLUMN_NAME_RATING_COUNT_5 = "rating_5";
         public static final String COLUMN_NAME_DESCRIPTION = "description";
         public static final String COLUMN_NAME_IS_FAVORITE = "is_favorite";
         public static final String COLUMN_NAME_PRIORITY = "priority";

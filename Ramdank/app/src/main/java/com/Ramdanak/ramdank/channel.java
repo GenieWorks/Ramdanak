@@ -49,6 +49,12 @@ public class channel extends Activity {
 
     private ImageButton favouriteImageButton;
 
+    private TextView ratingCountText;
+
+    private TextView ratingText;
+
+    private RatingBar tvChannelRatingBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,15 +79,16 @@ public class channel extends Activity {
 
         this.setTitle(tvChannel.getName());
 
-        TextView ratingText = (TextView) findViewById(R.id.ratingText);
+        ratingText = (TextView) findViewById(R.id.ratingText);
 
         ratingText.setText(String.valueOf(tvChannel.getRate()));
 
         TextView description = (TextView) findViewById(R.id.descText);
 
-        TextView ratingCountText = (TextView) findViewById(R.id.ratingCount);
+         ratingCountText = (TextView) findViewById(R.id.ratingCount);
 
-        ratingCountText.setText(tvChannel.getRating_count() + "  " + "تقييم");
+        int total_rating_count=tvChannel.getRating_1()+tvChannel.getRating_2()+tvChannel.getRating_3()+tvChannel.getRating_4()+tvChannel.getRating_5();
+        ratingCountText.setText(total_rating_count + "  " + "تقييم");
 
         description.setText(tvChannel.getDescription());
 
@@ -140,7 +147,7 @@ public class channel extends Activity {
 
         tvChannelNameView.setText(tvChannel.getName());
 
-        RatingBar tvChannelRatingBar = (RatingBar) findViewById(R.id.ratingBar);
+         tvChannelRatingBar = (RatingBar) findViewById(R.id.ratingBar);
 
         tvChannelRatingBar.setRating(tvChannel.getRate());
 
@@ -200,7 +207,6 @@ public class channel extends Activity {
         rankDialog.setContentView(R.layout.rank_dialog);
         rankDialog.setCancelable(true);
 
-        //TODO add a facebook share button to share user rating :)
 
         final RatingBar ratingBar = (RatingBar)rankDialog.findViewById(R.id.dialog_ratingbar);
 
@@ -215,8 +221,46 @@ public class channel extends Activity {
             public void onClick(View v) {
                 float ratingValue=ratingBar.getRating();
                 tvChannel.setPrevious_rate(ratingValue);
+
+                //upDate activity and dataBase according to the new rate
+
+                //the user has updates his rate
+                if(tvChannel.getPrevious_rate()!=0){
+                    Toast.makeText(getApplicationContext(),"تمت أضافه تقيمك وتغير تقييمك السابق",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),"تمت أضافه تقييمك",
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                if(ratingValue==1){
+                    tvChannel.setRating_1(tvChannel.getRating_1()+1);
+                }
+                else if(ratingValue==2){
+                    tvChannel.setRating_2(tvChannel.getRating_2()+1);
+                }
+                else if(ratingValue==3){
+                    tvChannel.setRating_3(tvChannel.getRating_3()+1);
+                }
+                else if(ratingValue==4){
+                    tvChannel.setRating_4(tvChannel.getRating_4()+1);
+                }
+                else if(ratingValue==5){
+                    tvChannel.setRating_5(tvChannel.getRating_5()+1);
+                }
+                int total_votes=tvChannel.getRating_1()+tvChannel.getRating_2()+tvChannel.getRating_3()+tvChannel.getRating_4()+tvChannel.getRating_5();
+                float total_rating=(tvChannel.getRating_1()+tvChannel.getRating_2()*2+tvChannel.getRating_3()*3+tvChannel.getRating_4()*4+tvChannel.getRating_5()*5)/total_votes;
+                tvChannel.setRating(total_rating);
+
+                //update the database
                 UpDateDataWorker myWorker=new UpDateDataWorker();
                 myWorker.execute();
+
+                //update the activity
+                ratingBar.setRating(tvChannel.getRate());
+                ratingText.setText(String.valueOf(tvChannel.getRate()));
+                ratingCountText.setText(total_votes);
 
                 /// send user rating to server
                 HashMap<String, Object> values = new HashMap<String, Object>();

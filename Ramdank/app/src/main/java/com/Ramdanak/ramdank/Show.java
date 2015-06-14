@@ -52,6 +52,12 @@ public class Show extends Activity {
 
     private ImageButton favouriteImageButton;
 
+    private RatingBar tvShowRatingBar;
+
+    private TextView ratingText;
+
+    private TextView ratingCountText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,13 +84,14 @@ public class Show extends Activity {
 
         this.setTitle(tvShow.getName());
 
-        TextView ratingText = (TextView) findViewById(R.id.ratingText);
+         ratingText = (TextView) findViewById(R.id.ratingText);
 
         ratingText.setText(String.valueOf(tvShow.getRate()));
 
-        TextView ratingCountText = (TextView) findViewById(R.id.ratingCount);
+         ratingCountText = (TextView) findViewById(R.id.ratingCount);
 
-        ratingCountText.setText(tvShow.getRating_count() + "  " + "تقييم");
+        int total_rating_count=tvShow.getRating_1()+tvShow.getRating_2()+tvShow.getRating_3()+tvShow.getRating_4()+tvShow.getRating_5();
+        ratingCountText.setText(total_rating_count+ "  " + "تقييم");
 
         TextView description = (TextView) findViewById(R.id.descText);
 
@@ -166,7 +173,7 @@ public class Show extends Activity {
 
         tvShowNameView.setText(tvShow.getName());
 
-        RatingBar tvShowRatingBar = (RatingBar) findViewById(R.id.ratingBar);
+         tvShowRatingBar = (RatingBar) findViewById(R.id.ratingBar);
 
         tvShowRatingBar.setRating(tvShow.getRate());
 
@@ -241,8 +248,45 @@ public class Show extends Activity {
             public void onClick(View v) {
                 float ratingValue = ratingBar.getRating();
                 tvShow.setPrevious_rate(ratingValue);
+
+                //upDate activity and dataBase according to the new rate
+
+                //the user has updates his rate
+                if(tvShow.getPrevious_rate()!=0){
+                    Toast.makeText(getApplicationContext(),"تمت أضافه تقيمك وتغير تقييمك السابق",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),"تمت أضافه تقييمك",
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                if(ratingValue==1){
+                    tvShow.setRating_1(tvShow.getRating_1()+1);
+                }
+                else if(ratingValue==2){
+                    tvShow.setRating_2(tvShow.getRating_2()+1);
+                }
+                else if(ratingValue==3){
+                    tvShow.setRating_3(tvShow.getRating_3()+1);
+                }
+                else if(ratingValue==4){
+                    tvShow.setRating_4(tvShow.getRating_4()+1);
+                }
+                else if(ratingValue==5){
+                    tvShow.setRating_5(tvShow.getRating_5()+1);
+                }
+                int total_votes=tvShow.getRating_1()+tvShow.getRating_2()+tvShow.getRating_3()+tvShow.getRating_4()+tvShow.getRating_5();
+                float total_rating=(tvShow.getRating_1()+tvShow.getRating_2()*2+tvShow.getRating_3()*3+tvShow.getRating_4()*4+tvShow.getRating_5()*5)/total_votes;
+                tvShow.setRating(total_rating);
+
+                //update the database
                 UpDateDataWorker myWorker = new UpDateDataWorker();
                 myWorker.execute();
+                //update the activity
+                ratingBar.setRating(tvShow.getRating());
+                ratingText.setText(String.valueOf(tvShow.getRate()));
+                ratingCountText.setText(total_votes);
 
                 /// send user rating to server
                 HashMap<String, Object> values = new HashMap<String, Object>();

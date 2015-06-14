@@ -13,7 +13,12 @@ public class TvChannel  implements Showable {
     //0 if not in favorite list and 1 otherwise
     private int is_favorite;
 
-    private int rating_count;
+    private int rating_1;
+    private int rating_2;
+    private int rating_3;
+    private int rating_4;
+    private int rating_5;
+
     private int priority;
     private String server_id;
 
@@ -53,16 +58,28 @@ public class TvChannel  implements Showable {
         return priority;
     }
 
-    public double getRating() {
-        return rating;
-    }
-
     public float getPrevious_rate() {
         return previous_rate;
     }
 
-    public int getRating_count() {
-        return rating_count;
+    public int getRating_5() {
+        return rating_5;
+    }
+
+    public int getRating_4() {
+        return rating_4;
+    }
+
+    public int getRating_3() {
+        return rating_3;
+    }
+
+    public int getRating_2() {
+        return rating_2;
+    }
+
+    public int getRating_1() {
+        return rating_1;
     }
 
     public String getServer_id() {
@@ -105,8 +122,24 @@ public class TvChannel  implements Showable {
         this.priority = priority;
     }
 
-    public void setRating_count(int rating_count) {
-        this.rating_count = rating_count;
+    public void setRating_1(int rating_1) {
+        this.rating_1 = rating_1;
+    }
+
+    public void setRating_2(int rating_2) {
+        this.rating_2 = rating_2;
+    }
+
+    public void setRating_3(int rating_3) {
+        this.rating_3 = rating_3;
+    }
+
+    public void setRating_4(int rating_4) {
+        this.rating_4 = rating_4;
+    }
+
+    public void setRating_5(int rating_5) {
+        this.rating_5 = rating_5;
     }
 }
 
