@@ -1,6 +1,5 @@
 package com.Ramdanak.ramdank;
 
-import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -56,7 +55,7 @@ public class Application extends android.app.Application {
         UIController.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(getApplicationContext(), "ramadank is on low memory, please close some applications", Toast.LENGTH_LONG);
+                Toast.makeText(getApplicationContext(), "ramadank is on low memory, please close some applications", Toast.LENGTH_LONG).show();
             }
         });
     }
