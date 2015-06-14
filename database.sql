@@ -2,7 +2,7 @@ CREATE TABLE SHOW (
 	_id	INTEGER,
 	name	TEXT NOT NULL,
 	trailer	TEXT,
-	logo	BLOB NOT NULL,
+	logo	BLOB ,
 	rating	REAL NOT NULL DEFAULT 0,
 	previous_rate	REAL NOT NULL DEFAULT 0,
 	description	NUMERIC,
@@ -21,7 +21,7 @@ CREATE TABLE SHOW (
 CREATE TABLE CHANNEL (
 	_id	INTEGER,
 	name	TEXT NOT NULL,
-	logo	BLOB NOT NULL,
+	logo	BLOB ,
 	rating	REAL NOT NULL DEFAULT 0,
 	description	TEXT,
 	previous_rate	REAL NOT NULL DEFAULT 0,
