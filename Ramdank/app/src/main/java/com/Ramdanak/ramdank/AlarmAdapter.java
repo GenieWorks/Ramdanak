@@ -4,7 +4,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.util.Log;
 
 import java.util.Calendar;
@@ -34,7 +33,16 @@ public class AlarmAdapter {
 
     /**
      * Register an alarm.
-     * @param calendar of the time of the alarm
+     * @param calendar of the time of the alarm, you should use it like that
+     *
+     *                 Calendar calendar = Calendar.getInstance();
+     *                 calendar.setTimeInMillis(System.currentTimeMillis());
+     *                 calendar.set(Calendar.HOUR_OF_DAY, hours); // required hours in 24
+     *                 calendar.set(Calendar.MINUTE, minutes);    // required minutes
+     *
+     *                 Note that the Parse server should store the time in UTC, and
+     *                 each device should adjust the UTC time to its locale time zone
+     *
      */
     public void setAlarmForShow(String show, String channel, Calendar calendar) {
         Intent intent = new Intent(context.getApplicationContext(), AlarmEventReceiver.class);
@@ -47,12 +55,10 @@ public class AlarmAdapter {
 
             pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
-            if (Build.VERSION.SDK_INT >= 19)
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            else
-                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY, pendingIntent);
 
-            Log.d(TAG, "registered alarm");
+            Log.d(TAG, "registered alarm at " + calendar.getTime());
         } else {
             Log.w(TAG, "empty channel or show");
         }
