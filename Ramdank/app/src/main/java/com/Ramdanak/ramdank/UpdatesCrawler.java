@@ -9,7 +9,6 @@ import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvRecord;
 import com.Ramdanak.ramdank.model.TvShow;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -98,9 +97,9 @@ public class UpdatesCrawler {
                             if (show.getRating_1() != rating1 || show.getRating_2() != rating2 ||
                             show.getRating_3() != rating3 || show.getRating_4() != rating4 ||
                                     show.getRating_5() != rating5
-                                    || show.getTrailer() != trailer
-                            || show.getPriority() != priority || show.getDescription() != description
-                                    || show.getName() != name ) {
+                                    || !show.getTrailer().equals(trailer)
+                            || show.getPriority() != priority || !show.getDescription().equals(description)
+                                    || !show.getName().equals(name) ) {
                                 Log.d(TAG, "updating show entry with id: " + show.getId());
                                 show.setName(name);
                                 show.setRating_1(rating1);
@@ -240,8 +239,8 @@ public class UpdatesCrawler {
                             if (channel.getRating_1() != rating1 || channel.getRating_2() != rating2 ||
                                     channel.getRating_3() != rating3 || channel.getRating_4() != rating4 ||
                                     channel.getRating_5() != rating5
-                                    || channel.getPriority() != priority || channel.getDescription() != description
-                                    || channel.getName() != name ) {
+                                    || channel.getPriority() != priority || !channel.getDescription().equals(description)
+                                    || !channel.getName().equals(name) ) {
                                 Log.d(TAG, "updating channel entry with id: " + channel.getId());
                                 channel.setName(name);
                                 channel.setRating_1(rating1);
@@ -368,9 +367,9 @@ public class UpdatesCrawler {
                             channel_id = object.getInt(TvScheduleDatabase.TvRecord.COLUMN_NAME_CHANNEL_ID);
                             show_id = object.getInt(TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID);
 
-                            if (start_time != record.getStartTime() || end_time != record.getEndTime()
+                            if (!start_time.equals(record.getStartTime()) || !end_time.equals(record.getEndTime())
                                     || channel_id != record.getChannelId() || show_id != record.getChannelId()
-                                    || server_id != record.getServer_id()) {
+                                    || !server_id.equals(record.getServer_id())) {
                                 Log.d(TAG, "entry to be updated with server id " + server_id);
                                 record.setEndTime(end_time);
                                 record.setShowId(show_id);

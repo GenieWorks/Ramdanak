@@ -15,8 +15,6 @@ import java.util.ArrayList;
  * CustomBaseAdapter for Times Activity ListView
  */
 public class TimesCustomBaseAdapter extends BaseAdapter {
-    //for debugging
-    private static String TAG = "TimesCustomBaseAdapter";
 
     private ArrayList<TvRecord> arrayList;
 
@@ -64,12 +62,6 @@ public class TimesCustomBaseAdapter extends BaseAdapter {
 
 
         return convertView;
-    }
-
-    public void updateList(ArrayList<TvRecord> newList) {
-        arrayList.clear();
-        arrayList.addAll(newList);
-        this.notifyDataSetChanged();
     }
 
     private class ViewHolder {

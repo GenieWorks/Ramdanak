@@ -86,10 +86,10 @@ public class MyCustomBaseAdapter extends BaseAdapter implements Filterable {
         holder.favoriteStar.setVisibility(View.VISIBLE);
         holder.actionTextView.setVisibility(View.GONE);
 
-        if(arrayList.get(position).isFavorite()&&actionText == "") {
+        if(arrayList.get(position).isFavorite() && actionText.equals("")) {
             holder.favoriteStar.setImageResource(R.drawable.glow_star);
         }
-        else if(actionText == "") {
+        else if(actionText.equals("")) {
             holder.favoriteStar.setImageResource(R.drawable.empty_star);
         }
         else {
