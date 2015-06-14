@@ -66,14 +66,23 @@ public class times extends Activity {
                                     int position, long id) {
                 myRecord =(TvRecord) timesListView.getItemAtPosition(position);
                 String startTime = myRecord.getStartTime();
+                //String startTime = "01:06";
+
+                // pre-ramadan release check
+                if (startTime.equals( "قريباً")) {
+                    Toast.makeText(getApplicationContext(), "انتظر المواعيد في رمضان", Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "lessa mgash ramadan");
+                    return;
+                }
 
                 try {
                     Calendar cal = Calendar.getInstance();
                     cal.setTimeInMillis(System.currentTimeMillis());
-                    cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(startTime.substring(0, 1)));
-                    cal.set(Calendar.MINUTE, Integer.parseInt(startTime.substring(3, 4)));
+                    cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(startTime.substring(0, 2)));
+                    cal.set(Calendar.MINUTE, Integer.parseInt(startTime.substring(3, 5)));
 
-                    Log.d(TAG, startTime);
+                    Log.d(TAG, startTime.substring(0, 2));
+                    Log.d(TAG, startTime.substring(3, 5));
                     Log.d(TAG, cal.getTime().toString());
                     // remind the user with this time or
                     // cancel this remind
