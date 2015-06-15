@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 import com.Ramdanak.ramdank.model.Showable;
@@ -116,6 +117,23 @@ public class ChannelsFragment extends Fragment {
        adapter = new MyCustomBaseAdapter(this.getActivity(), channelList,"");
        listView.setAdapter(adapter);
        adapter.notifyDataSetChanged();
+        if(adapter.getCount()==0) {
+
+            if (!NetworkManager.checkInternetOpened(getActivity())) {
+                Toast.makeText(getActivity(), "برجاء الاتصال بالانترنت لتحميل البيانات",
+                        Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getActivity(), "برجاء الأنتظار قليلا جارى تحميل البيانات",
+                        Toast.LENGTH_LONG).show();
+            }
+                new Thread(new Runnable() {
+                    public void run() {
+                        UpdatesCrawler crawler = new UpdatesCrawler(getActivity());
+                        crawler.getLatestUpdates();
+                    }
+                }).start();
+
+        }
 
     }
 

@@ -11,10 +11,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.ShareActionProvider;
@@ -313,15 +315,37 @@ public class Show extends Activity {
                 myWorker.execute();
 
                 //update the activity
-                ratingBar.setRating(tvShow.getRating());
+                tvShowRatingBar.setRating(tvShow.getRating());
                 ratingText.setText(String.valueOf(tvShow.getRate()));
-                ratingCountText.setText(total_votes);
+                ratingCountText.setText(String.valueOf(total_votes));
 
                 rankDialog.dismiss();
             }
         });
 
         rankDialog.show();
+    }
+
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null)
+            return;
+
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 
     @Override
@@ -337,6 +361,7 @@ public class Show extends Activity {
         MyCustomBaseAdapter adapter = new MyCustomBaseAdapter(this, channelList, "اعرض المواعيد");
         channelsListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+        setListViewHeightBasedOnChildren(channelsListView);
 
    }
 

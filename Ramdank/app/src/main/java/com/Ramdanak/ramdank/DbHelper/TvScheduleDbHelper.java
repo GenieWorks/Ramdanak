@@ -11,6 +11,7 @@ import com.Ramdanak.ramdank.Application;
 import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvRecord;
 import com.Ramdanak.ramdank.model.TvShow;
+import com.readystatesoftware.sqliteasset.SQLiteAssetException;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.text.DateFormat;
@@ -599,6 +600,11 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
             values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_PREVIOUS_RATING,show.getPrevious_rate());
             values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_IS_FAVORITE,show.getIs_favorite());
             values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_PRIORITY,show.getPriority());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT_1,show.getRating_1());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT_2,show.getRating_2());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT_3,show.getRating_3());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT_4,show.getRating_4());
+            values.put(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT_5,show.getRating_5());
             values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SERVER_ID, show.getServer_id());
 
             writeableDatabase.update(TvScheduleDatabase.TvShows.TABLE_NAME, values, TvScheduleDatabase.TvShows.COLUMN_NAME_ID + " = ?",
@@ -751,7 +757,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
 
             // update channel
             for (TvRecord record : updatedRecord) {
-                addTvRecord(record);
+                updateTvRecord(record);
             }
 
             // delete channels
@@ -773,8 +779,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
     public void addTvChannel(TvChannel channel) {
         Log.d(TAG, "adding new channel with id " + channel.getId());
         try {
-            if (writeableDatabase == null)
-                writeableDatabase = getWritableDatabase();
+            SQLiteDatabase db = this.getWritableDatabase();
 
             ContentValues values = new ContentValues();
             values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_ID, channel.getId());
@@ -793,7 +798,7 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
             values.put(TvScheduleDatabase.TvChannels.COLUMN_NAME_PREVIOUS_RATE, 0);
 
 
-            long rvalue = writeableDatabase.insert(TvScheduleDatabase.TvChannels.TABLE_NAME, null, values);
+            long rvalue = db.insert(TvScheduleDatabase.TvChannels.TABLE_NAME, null, values);
             if (rvalue != -1)
                 Log.d(TAG, "new tv channel with id = " + rvalue);
             else
@@ -846,7 +851,8 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
      */
     public void addTvRecord(TvRecord record) {
         try {
-            SQLiteDatabase db = this.getWritableDatabase();
+            if (writeableDatabase == null)
+                writeableDatabase= this.getWritableDatabase();
 
             ContentValues values = new ContentValues();
             values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_ID, record.getId());
@@ -857,7 +863,8 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
             values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_SERVER_ID, record.getServer_id());
             values.put(TvScheduleDatabase.TvRecord.COLUMN_NAME_IS_REMINDED, 0);
 
-            long rvalue = db.insert(TvScheduleDatabase.TvRecord.TABLE_NAME, null, values);
+
+            long rvalue = writeableDatabase.insert(TvScheduleDatabase.TvRecord.TABLE_NAME, null, values);
             if (rvalue != -1)
                 Log.d(TAG, "new tv channel with id = " + rvalue);
             else

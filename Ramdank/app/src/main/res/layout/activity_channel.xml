@@ -128,7 +128,7 @@
         android:id="@+id/listText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="المسلسلات والبرامج"
+        android:text="يعرض عليها"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_below="@+id/ratingButton"
         android:textSize="25dp"

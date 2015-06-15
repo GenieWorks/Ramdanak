@@ -1,6 +1,7 @@
 package com.Ramdanak.ramdank;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 import com.Ramdanak.ramdank.model.Showable;
@@ -28,6 +30,8 @@ public class ShowsFragment extends Fragment   {
     private MyCustomBaseAdapter adapter;
     private View v;
     private ListView listView;
+
+
 
     private EditText inputSearch;
 
@@ -97,7 +101,7 @@ public class ShowsFragment extends Fragment   {
     public void onResume(){
         super.onResume();
         //update the listView
-        if(Globals.updated){
+        if(Globals.updated  || adapter.getCount()==0){
             FetchDataWorker worker = new FetchDataWorker();
             worker.execute();
             Globals.updated=false;
@@ -110,6 +114,25 @@ public class ShowsFragment extends Fragment   {
         adapter = new MyCustomBaseAdapter(this.getActivity(), seriesList,"");
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+        if(adapter.getCount()==0){
+            if(!NetworkManager.checkInternetOpened(getActivity())){
+                Toast.makeText(getActivity(), "برجاء الاتصال بالانترنت لتحميل البيانات",
+                        Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(getActivity(), "برجاء الأنتظار قليلا جارى تحميل البيانات",
+                        Toast.LENGTH_LONG).show();
+            }
+                new Thread(new Runnable() {
+                    public void run() {
+                        UpdatesCrawler crawler = new UpdatesCrawler(getActivity());
+                        crawler.getLatestUpdates();
+                    }
+
+
+                }).start();
+
+        }
     }
 
     /**
@@ -130,4 +153,5 @@ public class ShowsFragment extends Fragment   {
             setListView();
         }
     }
+
 }

@@ -54,7 +54,7 @@ public class UpdatesCrawler {
                     Log.d(TAG, "fetched " + list.size() + " shows");
 
                     // prepare them in a HashMap to search them by id
-                    HashMap<String, ParseObject> feed = new HashMap<>();
+                    HashMap<String, ParseObject> feed = new HashMap<String, ParseObject>();
                     for (ParseObject object : list) {
                         feed.put(object.getObjectId(), object);
                     }
@@ -197,7 +197,7 @@ public class UpdatesCrawler {
                     Log.d(TAG, "fetched " + list.size() + " channels");
 
                     // prepare them in a HashMap to search them by id
-                    HashMap<String, ParseObject> feed = new HashMap<>();
+                    HashMap<String, ParseObject> feed = new HashMap<String, ParseObject>();
                     for (ParseObject object : list) {
                         feed.put(object.getObjectId(), object);
                     }
@@ -326,6 +326,7 @@ public class UpdatesCrawler {
         Log.d(TAG, "checking for tv record");
         // check for updated fields
         ParseQuery<ParseObject> updatedQuery = ParseQuery.getQuery("TV_RECORD");
+        updatedQuery.setLimit(1000);
         updatedQuery.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
@@ -333,7 +334,7 @@ public class UpdatesCrawler {
                     Log.d(TAG, "fetched " + list.size() + " records");
 
                     // prepare them in a HashMap to search them by id
-                    HashMap<String, ParseObject> feed = new HashMap<>();
+                    HashMap<String, ParseObject> feed = new HashMap<String, ParseObject>();
                     for (ParseObject object : list) {
                         feed.put(object.getObjectId(), object);
                     }
