@@ -359,6 +359,7 @@ public class UpdatesCrawler {
                             Log.d(TAG, "deleted old entry with server_id " + record.getServer_id());
                             deletedRecord.add(record);
                         } else {
+							feed.remove(record.getServer_id());
                             // check if data was updated
                             server_id = object.getObjectId();
                             start_time = object.getString(TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME);
