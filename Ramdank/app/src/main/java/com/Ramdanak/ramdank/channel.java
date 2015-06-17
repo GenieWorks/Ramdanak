@@ -281,9 +281,13 @@ public class channel extends Activity {
 
                 int total_votes = tvChannel.getRating_1() + tvChannel.getRating_2() +
                         tvChannel.getRating_3() + tvChannel.getRating_4() + tvChannel.getRating_5();
-                float total_rating = (tvChannel.getRating_1() + tvChannel.getRating_2()*2 +
-                        tvChannel.getRating_3()*3 + tvChannel.getRating_4()*4 + tvChannel.getRating_5()*5)
-                        /total_votes;
+
+                float total_rating=0 ;
+                if(total_votes!=0) {
+                    total_rating = (tvChannel.getRating_1() + tvChannel.getRating_2() * 2 +
+                            tvChannel.getRating_3() * 3 + tvChannel.getRating_4() * 4 + tvChannel.getRating_5() * 5)
+                            / total_votes;
+                }
                 tvChannel.setRating(total_rating);
 
                 //update the database

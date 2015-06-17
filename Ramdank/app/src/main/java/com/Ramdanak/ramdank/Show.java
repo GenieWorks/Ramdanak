@@ -213,7 +213,7 @@ public class Show extends Activity {
         if (mShareActionProvider != null) {
             Intent shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND);
-            shareIntent.putExtra(Intent.EXTRA_TEXT, "المسلسل ده فشيخ " + tvShow.getName());
+            shareIntent.putExtra(Intent.EXTRA_TEXT, "المسلسل ده حلو جدا" + tvShow.getName());
             shareIntent.setType("text/plain");
             mShareActionProvider.setShareIntent(shareIntent);
         }
@@ -304,10 +304,13 @@ public class Show extends Activity {
                 int total_votes = tvShow.getRating_1() + tvShow.getRating_2() + tvShow.getRating_3()
                         + tvShow.getRating_4() + tvShow.getRating_5();
 
-                float total_rating = (tvShow.getRating_1() + tvShow.getRating_2()*2 +
-                        tvShow.getRating_3()*3 + tvShow.getRating_4()*4 + tvShow.getRating_5()*5)
-                            /total_votes;
-
+                float total_rating=0;
+                if(total_votes!=0) {
+                     total_rating = (tvShow.getRating_1() + tvShow.getRating_2() * 2 +
+                            tvShow.getRating_3() * 3 + tvShow.getRating_4() * 4 + tvShow.getRating_5() * 5)
+                            / total_votes;
+                }
+                
                 tvShow.setRating(total_rating);
 
                 //update the database
