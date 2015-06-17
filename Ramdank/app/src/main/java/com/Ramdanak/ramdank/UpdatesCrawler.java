@@ -227,7 +227,7 @@ public class UpdatesCrawler {
                             // then check if it was changed
                             feed.remove(channel.getServer_id());
                             name = object.getString(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME);
-                            description = object.getString(TvScheduleDatabase.TvChannels.COLUMN_NAME_DESCRIPTION);
+                            //description = object.getString(TvScheduleDatabase.TvChannels.COLUMN_NAME_DESCRIPTION);
                             rating1 = object.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_1);
                             rating2 = object.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_2);
                             rating3 = object.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_3);
@@ -239,7 +239,7 @@ public class UpdatesCrawler {
                             if (channel.getRating_1() != rating1 || channel.getRating_2() != rating2 ||
                                     channel.getRating_3() != rating3 || channel.getRating_4() != rating4 ||
                                     channel.getRating_5() != rating5
-                                    || channel.getPriority() != priority || !channel.getDescription().equals(description)
+                                    || channel.getPriority() != priority
                                     || !channel.getName().equals(name) ) {
                                 Log.d(TAG, "updating channel entry with id: " + channel.getId());
                                 channel.setName(name);
@@ -249,7 +249,6 @@ public class UpdatesCrawler {
                                 channel.setRating_4(rating4);
                                 channel.setRating_5(rating5);
                                 channel.setPriority(priority);
-                                channel.setDescription(description);
                                 channel.setServer_id(server_id);
                                 try {
                                     ParseFile file = object.getParseFile(TvScheduleDatabase.TvChannels.COLUMN_NAME_LOGO);
@@ -275,7 +274,7 @@ public class UpdatesCrawler {
                         Log.d(TAG, "adding new entry");
                         id = parseObject.getInt("identifier");
                         name = parseObject.getString(TvScheduleDatabase.TvChannels.COLUMN_NAME_NAME);
-                        description = parseObject.getString(TvScheduleDatabase.TvChannels.COLUMN_NAME_DESCRIPTION);
+                        //description = parseObject.getString(TvScheduleDatabase.TvChannels.COLUMN_NAME_DESCRIPTION);
                         rating1 = parseObject.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_1);
                         rating2 = parseObject.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_2);
                         rating3 = parseObject.getInt(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_3);
@@ -300,7 +299,8 @@ public class UpdatesCrawler {
                         }
 
                         channel.setServer_id(server_id);
-                        channel.setDescription(description);
+                        // TODO: remove the description field from database
+                        channel.setDescription("");
                         channel.setName(name);
                         channel.setRating_1(rating1);
                         channel.setRating_2(rating2);
