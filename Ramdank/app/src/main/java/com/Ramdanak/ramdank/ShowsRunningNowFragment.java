@@ -87,7 +87,7 @@ public class ShowsRunningNowFragment extends Fragment {
 
     private void setListView() {
         ListView listView = (ListView) v.findViewById(R.id.srListView);
-        adapter = new MyCustomBaseAdapter(this.getActivity(), seriesList,"");
+        adapter = new MyCustomBaseAdapter(this.getActivity(), seriesList,"hide");
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         if(seriesList.isEmpty()) {
