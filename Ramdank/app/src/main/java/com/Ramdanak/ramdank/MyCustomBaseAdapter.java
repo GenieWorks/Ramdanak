@@ -70,7 +70,7 @@ public class MyCustomBaseAdapter extends BaseAdapter implements Filterable {
 
         // set the logo
         byte[] logo = arrayList.get(position).getLogo();
-        if (logo == null)
+        if (logo == null || Application.isTurnAround())
             holder.imageIcon.setImageResource(R.drawable.ic_launcher);
         else {
             Bitmap bitmap = BitmapHelper.decodeSampledBitmapFromBytes(logo, 50, 40);

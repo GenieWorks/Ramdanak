@@ -10,14 +10,22 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.util.List;
 
 /**
  * Start Activity of the app
  */
 public class startActivity extends Activity {
+    private static final String TAG = Application.APPTAG + "start";
     private Context context;
 
     @Override
@@ -37,7 +45,6 @@ public class startActivity extends Activity {
     protected void onStart() {
         super.onStart();
 
-        // TODO: this should be moved to Application.onCreate
         ApplicationInitializer initializer = new ApplicationInitializer();
         initializer.execute();
     }
@@ -50,15 +57,33 @@ public class startActivity extends Activity {
         protected Boolean doInBackground(Void... params) {
             try {
                 if (TvScheduleDbHelper.createInstance(getApplicationContext()) == null) {
-                    Log.d("START", "configuration failed!");
+                    Log.d(TAG, "configuration failed!");
                     return false;
                 }
+
+                // see issue #14
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("GoogleTurnAround");
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> list, ParseException e) {
+                        if (e == null) {
+                            for(ParseObject object : list) {
+                                if (object.getBoolean("turn_around")) {
+                                    Log.d(TAG, "turnaround");
+                                    Application.setTurnAround();
+                                }
+                            }
+                        }
+                    }
+                });
 
                 Log.d("START", "first runs!");
                 if (Application.isFirstRun()) {
                     UIController.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            TextView textBox = (TextView) findViewById(R.id.LoadingText);
+                            textBox.setVisibility(View.VISIBLE);
                             Toast.makeText(context, "downloading content", Toast.LENGTH_LONG).show();
                         }
                     });
@@ -69,11 +94,11 @@ public class startActivity extends Activity {
                         crawler.getLatestUpdates();
 
                         while (!crawler.isDone()) {
-                            /*try {
+                            try {
                                 Thread.sleep(100, 40);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
-                            }*/
+                            }
                         }
 
                         if (crawler.isBad()) {
@@ -83,6 +108,8 @@ public class startActivity extends Activity {
                                     Toast.makeText(context, "retry later", Toast.LENGTH_SHORT).show();
                                 }
                             });
+                        } else {
+                            NotificationHelper.makeNotification(context, "Ramadank is Ready", "content download is ready, open ramadank now");
                         }
                     } else {
                         UIController.runOnUiThread(new Runnable() {
@@ -97,7 +124,7 @@ public class startActivity extends Activity {
 
                 }
             } catch (InstantiationError e) {
-                //Log.e(TAG, e.getMessage());
+                Log.e(TAG, "ramadank failed", e);
                 Toast.makeText(getApplicationContext(), "Ramdanak failed to start! please contact the developers for details"
                 , Toast.LENGTH_LONG).show();
                 return false;

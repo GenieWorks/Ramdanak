@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,8 @@ public class ShowsRunningNowFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Log.d(TAG, "onCreate View");
         v = inflater.inflate(R.layout.shows_layout, container, false);
 
         AdView mAdView = (AdView) v.findViewById(R.id.adView);
@@ -78,11 +81,8 @@ public class ShowsRunningNowFragment extends Fragment {
     public void onResume(){
         super.onResume();
         //update the listView
-        if(Globals.updated){
-            FetchDataWorker worker = new FetchDataWorker();
-            worker.execute();
-            Globals.updated=false;
-        }
+        FetchDataWorker worker = new FetchDataWorker();
+        worker.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void setListView() {
@@ -109,7 +109,7 @@ public class ShowsRunningNowFragment extends Fragment {
 
             for(TvRecord tvRecord : recordsNow){
                 TvShow tvShow=TvScheduleDbHelper.getInstance().getTvShowById(tvRecord.getChannelId());
-                String nameOnList=tvShow.getName() +" "+  "يعرض على" +TvScheduleDbHelper.getInstance().getTvChannelById(tvRecord.getChannelId()).getName();
+                String nameOnList=tvShow.getName() + " يعرض علي " + TvScheduleDbHelper.getInstance().getTvChannelById(tvRecord.getChannelId()).getName();
 
                 tvShow.setName(nameOnList);
                 seriesList.add(tvShow);

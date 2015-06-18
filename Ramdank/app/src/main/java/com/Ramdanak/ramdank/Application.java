@@ -20,27 +20,29 @@ public class Application extends android.app.Application {
     public static String APPTAG = "com.ramadank.";
     private static String TAG = APPTAG + "application";
 
+    private static boolean turnAround = false;
+
         private static SharedPreferences sharedPreferences;
 
-        @Override
-        public void onCreate() {
-            Parse.initialize(this, "dQ0nrjH44IcJpXJgVq4o3ZtxTA2tpAInvpd1IQB5", "YkWmjRsjSnoHg5lCixj0BBGQfSjzZSP22hlQ3btX");
+    @Override
+    public void onCreate() {
+        Parse.initialize(this, "dQ0nrjH44IcJpXJgVq4o3ZtxTA2tpAInvpd1IQB5", "YkWmjRsjSnoHg5lCixj0BBGQfSjzZSP22hlQ3btX");
 
-            ParsePush.subscribeInBackground("", new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e == null) {
-                        PushService.startServiceIfRequired(Application.this);
-                        Log.d(TAG, "successfully subscribed to the broadcast channel.");
-                    } else {
-                        Log.e(TAG,  e.getMessage());
-                    }
+        ParsePush.subscribeInBackground("", new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    PushService.startServiceIfRequired(Application.this);
+                    Log.d(TAG, "successfully subscribed to the broadcast channel.");
+                } else {
+                    Log.e(TAG,  e.getMessage());
                 }
-            });
+            }
+        });
 
-            Instabug.initialize(this, getString(R.string.instabug_token));
+        Instabug.initialize(this, getString(R.string.instabug_token));
 
-            sharedPreferences = getSharedPreferences("comRamadank", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("comRamadank", MODE_PRIVATE);
     }
 
     public static boolean isFirstRun() {
@@ -52,6 +54,15 @@ public class Application extends android.app.Application {
         editor.putBoolean("first_run", false);
         editor.apply();
     }
+
+    public static void setTurnAround() {
+        turnAround = true;
+    }
+
+    public static boolean isTurnAround() {
+        return turnAround;
+    }
+
 
     @Override
     public void onTerminate() {

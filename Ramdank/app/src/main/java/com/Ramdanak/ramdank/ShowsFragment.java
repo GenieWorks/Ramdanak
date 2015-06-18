@@ -1,7 +1,6 @@
 package com.Ramdanak.ramdank;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 import com.Ramdanak.ramdank.model.Showable;
@@ -30,10 +28,6 @@ public class ShowsFragment extends Fragment  {
     private MyCustomBaseAdapter adapter;
     private View v;
     private ListView listView;
-
-
-
-    private EditText inputSearch;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,13 +65,13 @@ public class ShowsFragment extends Fragment  {
             setListView();
         }
 
-        inputSearch=(EditText) v.findViewById(R.id.inputSearch);
+        EditText inputSearch = (EditText) v.findViewById(R.id.inputSearch);
 
         inputSearch.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-                if (cs != null&&adapter != null)
+                if (cs != null && adapter != null)
                     adapter.getFilter().filter(cs.toString());
             }
 

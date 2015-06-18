@@ -65,7 +65,12 @@ public class Show extends Activity {
 
         this.setTitle("");
 
-        tvShow=dbHelper.getTvShowById(Globals.tvShowId);
+        tvShow = dbHelper.getTvShowById(Globals.tvShowId);
+
+        if (tvShow == null) {
+            finish();
+            return;
+        }
 
         ImageView tvShowLogo = (ImageView) findViewById(R.id.showLogo);
 
@@ -210,7 +215,7 @@ public class Show extends Activity {
         // Fetch and store ShareActionProvider
         ShareActionProvider mShareActionProvider = (ShareActionProvider) item.getActionProvider();
 
-        if (mShareActionProvider != null) {
+        if (mShareActionProvider != null && tvShow != null) {
             Intent shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND);
             shareIntent.putExtra(Intent.EXTRA_TEXT, "المسلسل ده حلو جدا" + tvShow.getName());
@@ -372,6 +377,8 @@ public class Show extends Activity {
      * Fetch the data of the channels from the database
      */
     private class FetchDataWorker extends AsyncTask<Void, Void, Void> {
+
+        @SuppressWarnings("unchecked")
         @Override
         protected Void doInBackground(Void... params) {
             channelList = (ArrayList) TvScheduleDbHelper.getInstance().getChannelsShowingAShow(Globals.tvShowId);

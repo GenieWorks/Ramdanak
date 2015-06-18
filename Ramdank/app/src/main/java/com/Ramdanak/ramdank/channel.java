@@ -64,6 +64,11 @@ public class channel extends Activity {
 
         tvChannel=dbHelper.getTvChannelById(Globals.tvChannelId);
 
+        if (tvChannel == null) {
+            finish();
+            return;
+        }
+
         ImageView tvChannelLogo = (ImageView) findViewById(R.id.channelLogo);
 
         // set the logo
@@ -167,7 +172,6 @@ public class channel extends Activity {
         });
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate menu resource file.
@@ -179,7 +183,7 @@ public class channel extends Activity {
         // Fetch and store ShareActionProvider
         ShareActionProvider mShareActionProvider = (ShareActionProvider) item.getActionProvider();
 
-        if (mShareActionProvider != null) {
+        if (mShareActionProvider != null && tvChannel != null) {
             Intent shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND);
             shareIntent.putExtra(Intent.EXTRA_TEXT, "افضل قناة في رمضان " + tvChannel.getName());
