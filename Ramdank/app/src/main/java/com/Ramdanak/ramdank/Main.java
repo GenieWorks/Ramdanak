@@ -25,10 +25,6 @@ public class Main extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!NetworkManager.checkInternetOpened(getApplicationContext())) {
-            Log.d(Application.APPTAG, "not connected to internet");
-            Toast.makeText(this, "ramadank a7la with internet connected", Toast.LENGTH_LONG).show();
-        }
     }
 
     @Override

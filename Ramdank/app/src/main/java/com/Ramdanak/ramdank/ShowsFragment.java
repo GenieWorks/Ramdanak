@@ -24,7 +24,7 @@ import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 
-public class ShowsFragment extends Fragment   {
+public class ShowsFragment extends Fragment  {
     private static final String TAG = "SHOWS";
     private static ArrayList<Showable> seriesList;
     private MyCustomBaseAdapter adapter;
@@ -116,10 +116,6 @@ public class ShowsFragment extends Fragment   {
         adapter.notifyDataSetChanged();
         listView.refreshDrawableState();
         Log.d(TAG, "settingListView");
-        if(seriesList.isEmpty()){
-            FetchDataWorker2 worker =new FetchDataWorker2();
-            worker.execute();
-        }
     }
 
     /**
@@ -136,69 +132,9 @@ public class ShowsFragment extends Fragment   {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-
-
-
-            if(seriesList.isEmpty()) {
-
-                if (!NetworkManager.checkInternetOpened(getActivity())) {
-                    Toast.makeText(getActivity(), "برجاء الاتصال بالانترنت لتحميل البيانات",
-                            Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(getActivity(), "برجاء الأنتظار قليلا جارى تحميل البيانات",
-                            Toast.LENGTH_LONG).show();
-                }
-                FetchParser p=new FetchParser();
-                p.execute();
-
-            }
-            else{
                 setListView();
-            }
-
         }
     }
-
-    private class FetchParser extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            Log.d(TAG, "doInBackGround parser");
-            UpdatesCrawler crawler = new UpdatesCrawler(getActivity());
-            crawler.getLatestUpdates();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            Log.d(TAG, "fineshed fetching");
-            setListView();
-
-
-        }
-    }
-
-    private class FetchDataWorker2 extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            Log.d(TAG, "doInBackGround");
-            seriesList = (ArrayList) TvScheduleDbHelper.getInstance().getAllTvShows();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-
-
-
-                setListView();
-
-
-        }
-    }
-
 
 
 }

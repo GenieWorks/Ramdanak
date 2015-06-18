@@ -1,5 +1,6 @@
 package com.Ramdanak.ramdank;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,25 +20,37 @@ public class Application extends android.app.Application {
     public static String APPTAG = "com.ramadank.";
     private static String TAG = APPTAG + "application";
 
-    @Override
-    public void onCreate() {
-        Log.d(TAG, getPackageName());
-        // initialize the parse magic
-        Parse.initialize(this, getString(R.string.parse_application_id), getString(R.string.parse_client_id));
-        PushService.startServiceIfRequired(this);
+        private static SharedPreferences sharedPreferences;
 
-        ParsePush.subscribeInBackground("", new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Log.d(TAG, "successfully subscribed to the broadcast channel.");
-                } else {
-                    Log.e(TAG,  e.getMessage());
+        @Override
+        public void onCreate() {
+            Parse.initialize(this, "dQ0nrjH44IcJpXJgVq4o3ZtxTA2tpAInvpd1IQB5", "YkWmjRsjSnoHg5lCixj0BBGQfSjzZSP22hlQ3btX");
+
+            ParsePush.subscribeInBackground("", new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        PushService.startServiceIfRequired(Application.this);
+                        Log.d(TAG, "successfully subscribed to the broadcast channel.");
+                    } else {
+                        Log.e(TAG,  e.getMessage());
+                    }
                 }
-            }
-        });
+            });
 
-        Instabug.initialize(this, getString(R.string.instabug_token));
+            Instabug.initialize(this, getString(R.string.instabug_token));
+
+            sharedPreferences = getSharedPreferences("comRamadank", MODE_PRIVATE);
+    }
+
+    public static boolean isFirstRun() {
+        return sharedPreferences.getBoolean("first_run", true);
+    }
+
+    public static void setFirstRun() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("first_run", false);
+        editor.apply();
     }
 
     @Override
