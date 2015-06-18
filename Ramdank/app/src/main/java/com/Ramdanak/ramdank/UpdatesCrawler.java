@@ -25,12 +25,12 @@ import java.util.List;
  * Created by Mohamed on 6/8/2015.
  */
 public class UpdatesCrawler {
-    private static String TAG = Application.APPTAG + "updates";
+    private static final String TAG = Application.APPTAG + "updates";
     private TvScheduleDbHelper dbHelper;
     private int tasksFinished;
     private int badTasks;
 
-
+    public static int instances = 0;
 
     /**
      * Creates instance of the crawler that will get updates after the last updates time.
@@ -40,6 +40,13 @@ public class UpdatesCrawler {
         dbHelper = TvScheduleDbHelper.createInstance(context);
         tasksFinished = 0;
         badTasks = 0;
+        instances++;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        instances--;
     }
 
     private synchronized void reportDone() {
@@ -449,8 +456,7 @@ public class UpdatesCrawler {
                     show_id = object.getInt(TvScheduleDatabase.TvRecord.COLUMN_NAME_SHOW_ID);
 
                     if (!start_time.equals(record.getStartTime()) || !end_time.equals(record.getEndTime())
-                            || channel_id != record.getChannelId() || show_id != record.getChannelId()
-                            || !server_id.equals(record.getServer_id())) {
+                            || channel_id != record.getChannelId() || show_id != record.getChannelId()) {
                         Log.d(TAG, "entry to be updated with server id " + server_id);
                         record.setEndTime(end_time);
                         record.setShowId(show_id);

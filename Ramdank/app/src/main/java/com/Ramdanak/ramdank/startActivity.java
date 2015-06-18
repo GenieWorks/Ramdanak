@@ -77,52 +77,6 @@ public class startActivity extends Activity {
                     }
                 });
 
-                Log.d("START", "first runs!");
-                if (Application.isFirstRun()) {
-                    UIController.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            TextView textBox = (TextView) findViewById(R.id.LoadingText);
-                            textBox.setVisibility(View.VISIBLE);
-                            Toast.makeText(context, "downloading content", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                    if (NetworkManager.checkInternetOpened(context)) {
-                        Application.setFirstRun();
-
-                        UpdatesCrawler crawler = new UpdatesCrawler(context);
-                        crawler.getLatestUpdates();
-
-                        while (!crawler.isDone()) {
-                            try {
-                                Thread.sleep(100, 40);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        if (crawler.isBad()) {
-                            UIController.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(context, "retry later", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        } else {
-                            NotificationHelper.makeNotification(context, "Ramadank is Ready", "content download is ready, open ramadank now");
-                        }
-                    } else {
-                        UIController.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                Toast.makeText(context, "need internet connection", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                        return false;
-                    }
-
-                }
             } catch (InstantiationError e) {
                 Log.e(TAG, "ramadank failed", e);
                 Toast.makeText(getApplicationContext(), "Ramdanak failed to start! please contact the developers for details"

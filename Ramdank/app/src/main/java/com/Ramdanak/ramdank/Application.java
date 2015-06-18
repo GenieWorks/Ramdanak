@@ -22,8 +22,6 @@ public class Application extends android.app.Application {
 
     private static boolean turnAround = false;
 
-        private static SharedPreferences sharedPreferences;
-
     @Override
     public void onCreate() {
         Parse.initialize(this, "dQ0nrjH44IcJpXJgVq4o3ZtxTA2tpAInvpd1IQB5", "YkWmjRsjSnoHg5lCixj0BBGQfSjzZSP22hlQ3btX");
@@ -41,18 +39,6 @@ public class Application extends android.app.Application {
         });
 
         Instabug.initialize(this, getString(R.string.instabug_token));
-
-        sharedPreferences = getSharedPreferences("comRamadank", MODE_PRIVATE);
-    }
-
-    public static boolean isFirstRun() {
-        return sharedPreferences.getBoolean("first_run", true);
-    }
-
-    public static void setFirstRun() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("first_run", false);
-        editor.apply();
     }
 
     public static void setTurnAround() {
