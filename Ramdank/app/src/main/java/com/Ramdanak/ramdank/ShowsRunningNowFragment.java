@@ -96,7 +96,7 @@ public class ShowsRunningNowFragment extends Fragment {
         }
     }
 
-    /**
+    //**
      * Fetch the data of the shows from the database
      */
     private class FetchDataWorker extends AsyncTask<Void, Void, Void> {
@@ -108,7 +108,7 @@ public class ShowsRunningNowFragment extends Fragment {
 
 
             for(TvRecord tvRecord : recordsNow){
-                TvShow tvShow=TvScheduleDbHelper.getInstance().getTvShowById(tvRecord.getChannelId());
+                TvShow tvShow=TvScheduleDbHelper.getInstance().getTvShowById(tvRecord.getShowId());
                 String nameOnList=tvShow.getName() + " يعرض علي " + TvScheduleDbHelper.getInstance().getTvChannelById(tvRecord.getChannelId()).getName();
 
                 tvShow.setName(nameOnList);

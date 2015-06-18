@@ -325,9 +325,10 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
     public List<TvRecord> getSowsDisplayedNow(){
         List<TvRecord> TvRecordsNow=new ArrayList<TvRecord>();
 
-        DateFormat df = new SimpleDateFormat("HH:MM");
+        DateFormat df = new SimpleDateFormat("HH:mm");
         String dateNowString = df.format(Calendar.getInstance(Locale.getDefault()).getTime());
 
+        Log.d(TAG,"time now "+dateNowString);
 
         String selectQuery ="SELECT * FROM "+TvScheduleDatabase.TvRecord.TABLE_NAME +" WHERE "+"strftime( \'%H:%M\',"+"'"+dateNowString+"') >="+" strftime( \'%H:%M\',"+TvScheduleDatabase.TvRecord.COLUMN_NAME_START_TIME+")"
                 +" AND "+"strftime( \'%H:%M\',"+"'"+dateNowString+"') <="+" strftime( \'%H:%M\',"+TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME+")";
@@ -358,6 +359,12 @@ public class TvScheduleDbHelper extends SQLiteAssetHelper {
                 endTime = c.getString(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_END_TIME));
                 is_reminded=c.getInt(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_IS_REMINDED));
                 server_id=c.getString(c.getColumnIndex(TvScheduleDatabase.TvRecord.COLUMN_NAME_SERVER_ID));
+
+                Log.d(TAG+" now","show id:"+String.valueOf(showId));
+                Log.d(TAG+" now","channel id:"+String.valueOf(channelId));
+                Log.d(TAG+" now","start time:"+startTime);
+                Log.d(TAG+" now","end time:"+endTime);
+                Log.d(TAG+" now","id:"+String.valueOf(id));
 
                 tr = new TvRecord(id);
                 tr.setShowId(showId);
