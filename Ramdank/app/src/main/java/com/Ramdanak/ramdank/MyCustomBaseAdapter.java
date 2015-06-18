@@ -66,42 +66,45 @@ public class MyCustomBaseAdapter extends BaseAdapter implements Filterable {
         }
         //sort the arrayList by priorities
         Collections.sort(arrayList, reverseOrder(new ShowableComparator()));
-        holder.txtName.setText(arrayList.get(position).getName());
 
-        // set the logo
-        byte[] logo = arrayList.get(position).getLogo();
-        if (logo == null || Application.isTurnAround())
-            holder.imageIcon.setImageResource(R.drawable.ic_launcher);
-        else {
-            Bitmap bitmap = BitmapHelper.decodeSampledBitmapFromBytes(logo, 50, 40);
-            if (bitmap == null)
+        Showable showable = arrayList.get(position);
+
+        if (showable != null) {
+            holder.txtName.setText(showable.getName());
+
+            // set the logo
+            byte[] logo = showable.getLogo();
+            if (logo == null || Application.isTurnAround())
                 holder.imageIcon.setImageResource(R.drawable.ic_launcher);
-            else
-                holder.imageIcon.setImageBitmap(bitmap);
-        }
+            else {
+                Bitmap bitmap = BitmapHelper.decodeSampledBitmapFromBytes(logo, 50, 40);
+                if (bitmap == null)
+                    holder.imageIcon.setImageResource(R.drawable.ic_launcher);
+                else
+                    holder.imageIcon.setImageBitmap(bitmap);
+            }
 
-        holder.ratingBar.setRating(arrayList.get(position).getRate());
+            holder.ratingBar.setRating(showable.getRate());
 
-        //default hide action textView and show favorite star
-        holder.favoriteStar.setVisibility(View.VISIBLE);
-        holder.actionTextView.setVisibility(View.GONE);
+            //default hide action textView and show favorite star
+            holder.favoriteStar.setVisibility(View.VISIBLE);
+            holder.actionTextView.setVisibility(View.GONE);
 
-        if(arrayList.get(position).isFavorite() && actionText.equals("")) {
-            holder.favoriteStar.setImageResource(R.drawable.glow_star);
-        }
-        else if(actionText.equals("")) {
-            holder.favoriteStar.setImageResource(R.drawable.empty_star);
-        }
-        else if(actionText.equals("hide")){
-            holder.favoriteStar.setVisibility(View.GONE);
-        }
-        else {
-            holder.actionTextView.setText(actionText);
-            holder.actionTextView.setVisibility(View.VISIBLE);
-            holder.favoriteStar.setVisibility(View.GONE);
-        }
+            if (showable.isFavorite() && actionText.equals("")) {
+                holder.favoriteStar.setImageResource(R.drawable.glow_star);
+            } else if (actionText.equals("")) {
+                holder.favoriteStar.setImageResource(R.drawable.empty_star);
+            } else if(actionText.equals("hide")){
+                holder.favoriteStar.setVisibility(View.GONE);
+            }
+            else {
+                holder.actionTextView.setText(actionText);
+                holder.actionTextView.setVisibility(View.VISIBLE);
+                holder.favoriteStar.setVisibility(View.GONE);
+            }
 
-        holder.ratingText.setText(String.valueOf(arrayList.get(position).getRate()));
+            holder.ratingText.setText(String.valueOf(showable.getRate()));
+        }
 
         return convertView;
     }
