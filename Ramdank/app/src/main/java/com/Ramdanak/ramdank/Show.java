@@ -189,10 +189,13 @@ public class Show extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                TvChannel tvChannelSelected =(TvChannel) channelsListView.getItemAtPosition(position);
-                Globals.tvChannelId=tvChannelSelected.getId();
-                Intent intent = new Intent(Show.this,times.class);
-                startActivity(intent);
+                TvChannel tvChannelSelected = (TvChannel) channelsListView.getItemAtPosition(position);
+
+                if (tvChannelSelected != null) {
+                    Globals.tvChannelId = tvChannelSelected.getId();
+                    Intent intent = new Intent(Show.this, times.class);
+                    startActivity(intent);
+                }
             }
         });
     }
