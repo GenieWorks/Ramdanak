@@ -11,6 +11,7 @@ import com.Ramdanak.ramdank.Application;
 import com.Ramdanak.ramdank.model.TvChannel;
 import com.Ramdanak.ramdank.model.TvRecord;
 import com.Ramdanak.ramdank.model.TvShow;
+import com.readystatesoftware.sqliteasset.SQLiteAssetException;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.text.DateFormat;

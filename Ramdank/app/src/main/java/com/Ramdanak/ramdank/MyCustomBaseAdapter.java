@@ -85,6 +85,10 @@ public class MyCustomBaseAdapter extends BaseAdapter implements Filterable {
             }
 
             holder.ratingBar.setRating(showable.getRate());
+            if(actionText.equals("hide")){
+                holder.ratingBar.setVisibility(View.GONE);
+                holder.ratingText.setVisibility(View.GONE);
+            }
 
             //default hide action textView and show favorite star
             holder.favoriteStar.setVisibility(View.VISIBLE);

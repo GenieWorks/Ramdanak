@@ -96,7 +96,7 @@ public class ShowsRunningNowFragment extends Fragment {
         }
     }
 
-    //**
+    /**
      * Fetch the data of the shows from the database
      */
     private class FetchDataWorker extends AsyncTask<Void, Void, Void> {
