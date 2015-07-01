@@ -22,6 +22,7 @@ import android.widget.ShareActionProvider;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Ramdanak.ramdank.DbHelper.TvScheduleDatabase;
 import com.Ramdanak.ramdank.DbHelper.TvScheduleDbHelper;
 import com.Ramdanak.ramdank.model.Showable;
 import com.Ramdanak.ramdank.model.TvChannel;
@@ -30,6 +31,7 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 
@@ -243,23 +245,33 @@ public class channel extends Activity {
                         if (e == null) {
                             switch (ratingValue) {
                                 case 1:
-                                    parseObject.increment("rating1");
+                                    parseObject.increment(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_1);
                                     break;
                                 case 2:
-                                    parseObject.increment("rating2");
+                                    parseObject.increment(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_2);
                                     break;
                                 case 3:
-                                    parseObject.increment("rating3");
+                                    parseObject.increment(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_3);
                                     break;
                                 case 4:
-                                    parseObject.increment("rating4");
+                                    parseObject.increment(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_4);
                                     break;
                                 case 5:
-                                    parseObject.increment("rating5");
+                                    parseObject.increment(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_5);
                                     break;
                             }
+
+                            parseObject.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if (e != null)
+                                        Log.e(TAG, "failed to add rating", e);
+                                    else
+                                        Log.d(TAG, "updated rating");
+                                }
+                            });
                         } else {
-                            Log.e(TAG, "failed sending rating to server", e);
+                            Log.e(TAG, "failed to get object from parse", e);
                         }
                     }
                 });
