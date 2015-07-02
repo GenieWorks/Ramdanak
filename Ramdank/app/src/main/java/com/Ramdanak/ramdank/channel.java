@@ -226,7 +226,7 @@ public class channel extends Activity {
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int ratingValue = (int)ratingBar.getRating();
+                final float ratingValue = (float)ratingBar.getRating();
                 tvChannel.setPrevious_rate(ratingValue);
 
                 //the user has updates his rate
@@ -243,7 +243,7 @@ public class channel extends Activity {
                     @Override
                     public void done(ParseObject parseObject, ParseException e) {
                         if (e == null) {
-                            switch (ratingValue) {
+                            switch ((int)ratingValue) {
                                 case 1:
                                     parseObject.increment(TvScheduleDatabase.TvChannels.COLUMN_NAME_RATING_COUNT_1);
                                     break;
@@ -276,7 +276,7 @@ public class channel extends Activity {
                     }
                 });
 
-                switch (ratingValue) {
+                switch ((int)ratingValue) {
                     case 1:
                         tvChannel.setRating_1(tvChannel.getRating_1()+1);
                         break;
@@ -313,7 +313,7 @@ public class channel extends Activity {
                 //update the activity
                 tvChannelRatingBar.setRating(tvChannel.getRate());
                 ratingText.setText(String.valueOf(tvChannel.getRate()));
-                ratingCountText.setText(String.valueOf(total_votes));
+                ratingCountText.setText(String.valueOf(total_votes)+" تقييم ");
 
                 rankDialog.dismiss();
             }

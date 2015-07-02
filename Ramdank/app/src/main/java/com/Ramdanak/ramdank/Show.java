@@ -99,7 +99,7 @@ public class Show extends Activity {
         int total_rating_count = tvShow.getRating_1() + tvShow.getRating_2() +
                 tvShow.getRating_3() + tvShow.getRating_4() + tvShow.getRating_5();
 
-        ratingCountText.setText(total_rating_count+ "  " + "تقييم");
+        ratingCountText.setText(total_rating_count+" تقييم ");
 
         TextView description = (TextView) findViewById(R.id.descText);
 
@@ -251,7 +251,7 @@ public class Show extends Activity {
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int ratingValue = (int) ratingBar.getRating();
+                final float ratingValue = (float) ratingBar.getRating();
                 tvShow.setPrevious_rate(ratingValue);
 
                 //the user has updates his rate
@@ -263,7 +263,7 @@ public class Show extends Activity {
                             Toast.LENGTH_SHORT).show();
                 }
 
-                switch (ratingValue) {
+                switch ((int) ratingValue) {
                     case 1:
                         tvShow.setRating_1(tvShow.getRating_1()+1);
                         break;
@@ -287,7 +287,7 @@ public class Show extends Activity {
                     @Override
                     public void done(ParseObject parseObject, ParseException e) {
                         if (e == null) {
-                            switch (ratingValue) {
+                            switch ((int) ratingValue) {
                                 case 1:
                                     parseObject.increment(TvScheduleDatabase.TvShows.COLUMN_NAME_RATING_COUNT_1);
                                     break;
@@ -340,7 +340,7 @@ public class Show extends Activity {
                 //update the activity
                 tvShowRatingBar.setRating(tvShow.getRating());
                 ratingText.setText(String.valueOf(tvShow.getRate()));
-                ratingCountText.setText(String.valueOf(total_votes));
+                ratingCountText.setText(String.valueOf(total_votes)+" تقييم ");
 
                 rankDialog.dismiss();
             }
